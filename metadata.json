@@ -1,0 +1,6 @@
+{
+  "name": "PromptMatrix_Local",
+  "description": "A tool to help users understand prompt engineering principles and create effective, well-structured prompts using various Prompt Frameworks by providing guided input fields.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
