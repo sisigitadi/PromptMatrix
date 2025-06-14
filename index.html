@@ -1,0 +1,463 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptMatrix</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='appLogoGradFavicon' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230D9488'/%3E%3C!-- teal-600 --%3E%3Cstop offset='100%25' stop-color='%230F766E'/%3E%3C!-- teal-700 --%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='6' y='6' width='8' height='8' rx='1' fill='url(%23appLogoGradFavicon)'/%3E%3Crect x='18' y='6' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='6' y='18' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='18' y='18' width='8' height='8' rx='1' fill='url(%23appLogoGradFavicon)'/%3E%3C/svg%3E" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg-primary: #0f172a; /* slate-900 */
+      --bg-secondary: #1e293b; /* slate-800 */
+      --bg-tertiary: #334155; /* slate-700 */
+      --text-primary: #f1f5f9; /* slate-100 */
+      --text-secondary: #94a3b8; /* slate-400 */
+      --text-accent: #0F766E; /* teal-700 */
+      --text-accent-hover: #0D9488; /* teal-600 */
+      --text-accent-active: #134E4A; /* teal-900 (darker for active state on teal) */
+      --border-color: #475569; /* slate-600 */
+      --ring-color: #0F766E; /* teal-700 */
+      --selection-bg: #0F766E; /* teal-700 */
+      --selection-text: #ffffff;
+      --scrollbar-thumb: #0F766E; /* teal-700 */
+      --scrollbar-track: #1e293b; /* slate-800 */
+
+      /* Text animation colors for TEAL accent */
+      --text-anim-default-hover: #14B8A6; /* teal-500 */
+      --text-anim-default-active: #A3FAF0; /* teal-200 */
+      --text-anim-accent-bg-hover: #F0FDFA; /* teal-50 */
+      --text-anim-accent-bg-active: #CCFBF1; /* teal-100 */
+      --text-disconnected: #F43F5E; /* rose-500 */
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); 
+      scrollbar-width: thin;
+    }
+    
+    ::selection {
+      background-color: var(--selection-bg);
+      color: var(--selection-text);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-accent-hover);
+    }
+
+    @keyframes pulse-bg-intensified {
+      0%, 100% { background-color: var(--text-accent); transform: scale(1.03); }
+      50% { background-color: color-mix(in srgb, var(--text-accent) 70%, white); transform: scale(1.06); }
+    }
+    .animate-pulse-bg-custom {
+      animation: pulse-bg-intensified 1.2s infinite ease-in-out;
+    }
+
+    @keyframes click-text-effect {
+      0% { color: inherit; transform: scale(1); }
+      25% { color: var(--text-accent-hover); transform: scale(1.05); }
+      50% { color: var(--text-accent); transform: scale(0.95); opacity: 0.7; }
+      75% { color: var(--text-accent-active); transform: scale(1.05); opacity: 1; }
+      100% { color: inherit; transform: scale(1); }
+    }
+    .animate-just-clicked-text > span {
+      display: inline-block;
+      animation: click-text-effect 0.8s ease-in-out;
+    }
+    
+     @keyframes footer-sig-blink { 
+      0%, 100% { opacity: 1; } 
+      50% { opacity: 0.7; } 
+    }
+    .animated-signature {
+      animation: footer-sig-blink 2.2s infinite ease-in-out;
+      font-weight: bold;
+      color: color-mix(in srgb, var(--text-accent) 80%, var(--text-primary) 20%);
+    }
+    
+    footer a[href^="mailto:si.sigitadi@gmail.com"] {
+      color: var(--text-accent-hover); 
+      text-decoration: none;
+    }
+    footer a[href^="mailto:si.sigitadi@gmail.com"]:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes header-frame-glow-animation {
+      0%, 100% {
+        border-color: color-mix(in srgb, var(--text-accent) 60%, transparent);
+        box-shadow: 0 0 5px color-mix(in srgb, var(--text-accent) 50%, transparent),
+                    0 0 8px color-mix(in srgb, var(--text-accent) 30%, transparent) inset;
+      }
+      50% {
+        border-color: var(--text-accent-hover);
+        box-shadow: 0 0 10px var(--text-accent-hover),
+                    0 0 12px var(--text-accent-hover) inset,
+                    0 0 12px var(--text-accent-hover);
+      }
+    }
+    .header-glowing-frame {
+      border-width: 2px;
+      border-style: solid;
+      animation: header-frame-glow-animation 3.5s infinite ease-in-out;
+    }
+
+
+    @keyframes word-up-down-animation {
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(-1px); } 
+      75% { transform: translateY(1px); }  
+    }
+
+    .animate-word-up-down-1, .animate-word-up-down-2 {
+      display: inline-block;
+      animation-name: word-up-down-animation;
+      animation-duration: 2.2s; 
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+      
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+      letter-spacing: 0.08em; 
+      font-weight: 300; 
+      
+      color: color-mix(in srgb, var(--text-secondary) 70%, var(--bg-primary) 30%); 
+      opacity: 0.65; 
+      text-shadow: none; 
+    }
+    .animate-word-up-down-2 {
+      animation-delay: 0.4s; 
+    }
+    
+    .animate-word-up-down-disconnected-1, .animate-word-up-down-disconnected-2 {
+      display: inline-block;
+      animation-name: word-up-down-animation;
+      animation-duration: 2.0s; /* Slightly faster for attention */
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+      letter-spacing: 0.05em;
+      font-weight: 400;
+      color: var(--text-disconnected);
+      opacity: 0.85;
+      text-shadow: 0 0 3px color-mix(in srgb, var(--text-disconnected) 30%, transparent);
+    }
+    .animate-word-up-down-disconnected-2 {
+      animation-delay: 0.3s;
+    }
+
+
+    @keyframes subtitle-pulse {
+      0%, 100% {
+        opacity: 0.7; 
+        color: var(--text-secondary);
+      }
+      50% {
+        opacity: 1;
+        color: color-mix(in srgb, var(--text-accent) 50%, var(--text-primary) 50%); 
+      }
+    }
+    .animate-subtitle-pulse {
+      animation: subtitle-pulse 2.0s infinite ease-in-out; 
+    }
+
+    /* General collapsible styles for main panels */
+    .collapsible-content {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out 0.1s, visibility 0s linear 0.5s;
+      visibility: hidden;
+    }
+    .collapsible-content.open {
+      max-height: 2000px; /* Ample height for content */
+      opacity: 1;
+      visibility: visible;
+      transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
+    }
+    
+    /* Collapsible styles for multiple choice in InteractivePromptBuilder */
+    .collapsible-mc-content {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out, padding 0.35s ease-in-out;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .collapsible-mc-content.open {
+      max-height: 500px; /* Adjust as needed for typical content height */
+      opacity: 1;
+      transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out, padding 0.35s ease-in-out;
+    }
+
+    .non-copyable-input-field {
+      user-select: none;
+      -webkit-user-select: none; /* Safari */
+      -moz-user-select: none;    /* Firefox */
+      -ms-user-select: none;     /* Internet Explorer/Edge */
+    }
+    .non-copyable-input-field::placeholder {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      font-style: italic; 
+      /* Color is handled by Tailwind: placeholder-[var(--text-secondary)] dark:placeholder-slate-400/80 */
+    }
+
+    @keyframes subtle-button-pulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--text-accent) 40%, transparent);
+        transform: scale(1.0);
+      }
+      50% {
+        box-shadow: 0 0 0 5px color-mix(in srgb, var(--text-accent) 10%, transparent);
+        transform: scale(1.03);
+      }
+    }
+    .animate-subtle-pulse {
+      animation: subtle-button-pulse 2s infinite ease-in-out;
+    }
+
+    /* Button Text Animations */
+    .button-text-content {
+      display: inline-block; /* Allows transform */
+      transition: transform 0.1s ease-out, color 0.1s ease-out;
+      will-change: transform, color; /* Optimize for animations */
+    }
+
+    /* Default buttons (teal based text animations for buttons that turn teal on hover) */
+    button:hover .button-text-content { 
+      color: var(--text-anim-default-hover); 
+    }
+    button:active .button-text-content { 
+      color: var(--text-anim-default-active); 
+      transform: translateY(1px); /* Press down effect */
+    }
+    
+    /* Specifically target slate buttons that get teal BG on hover */
+    button.bg-slate-600:hover .button-text-content,
+    button.bg-slate-700:hover .button-text-content {
+        color: var(--text-anim-accent-bg-hover); /* Ensure text becomes lighter on teal bg */
+    }
+    button.bg-slate-600:active .button-text-content,
+    button.bg-slate-700:active .button-text-content {
+        color: var(--text-anim-accent-bg-active);
+        transform: translateY(1px);
+    }
+    
+    /* Override for buttons with explicit TEAL background and white text */
+    button.bg-teal-700 > .button-text-content,
+    button.bg-teal-600 > .button-text-content {
+        color: #FFFFFF; /* Initial text color for teal buttons */
+    }
+    button.bg-teal-700:hover > .button-text-content,
+    button.bg-teal-600:hover > .button-text-content {
+      color: var(--text-anim-accent-bg-hover); /* Slightly off-white/lighter for hover on dark teal */
+    }
+    button.bg-teal-700:active > .button-text-content,
+    button.bg-teal-600:active > .button-text-content {
+      color: var(--text-anim-accent-bg-active); /* Slightly more off-white/lighter for active on dark teal */
+      transform: translateY(1px);
+    }
+
+    /* Rose buttons text animation */
+    button.bg-rose-600 > .button-text-content {
+       color: #FFFFFF; /* Initial text color for rose buttons */
+    }
+    button.bg-rose-600:hover > .button-text-content {
+      color: #FFE4E6; /* Lighter rose/pink for hover */
+    }
+    button.bg-rose-600:active > .button-text-content {
+      color: #FFF1F2; /* Even lighter rose/pink for active */
+      transform: translateY(1px);
+    }
+
+    /* Green buttons text animation (for 'Copied' state) */
+    button.bg-green-500 > .button-text-content {
+       color: #FFFFFF; /* Initial text color for green buttons */
+    }
+    button.bg-green-500:hover > .button-text-content {
+      color: #D1FAE5; /* Lighter green for hover */
+    }
+    button.bg-green-500:active > .button-text-content {
+      color: #F0FDF4; /* Even lighter green for active */
+      transform: translateY(1px);
+    }
+    
+    /* Ensure framework selection buttons' text also animate correctly */
+    /* Selected state has a strong teal background */
+    button.bg-teal-600.border-teal-500.text-white:hover > .button-text-content,
+    button.bg-teal-700.border-teal-500.text-white:hover > .button-text-content {
+      color: var(--text-anim-accent-bg-hover);
+    }
+    button.bg-teal-600.border-teal-500.text-white:active > .button-text-content,
+    button.bg-teal-700.border-teal-500.text-white:active > .button-text-content {
+      color: var(--text-anim-accent-bg-active);
+      transform: translateY(1px);
+    }
+    /* Non-selected state for framework buttons (slate bg, hover to teal) */
+    button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700 > .button-text-content,
+    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-slate-600 > .button-text-content { 
+        color: #E2E8F0; /* Initial slate-200 like color */
+    }
+    /* This rule needs to specifically target the case where the BG turns teal */
+    button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700:hover > .button-text-content,
+    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:hover > .button-text-content { /* For buttons that turn teal-700 on hover */
+        color: var(--text-anim-accent-bg-hover); /* text should be light on teal bg */
+    }
+    button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content,
+    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content {
+        color: var(--text-anim-accent-bg-active); 
+        transform: translateY(1px);
+    }
+    
+    /* Enhance with AI button specific styles */
+    button.bg-purple-600 > .button-text-content {
+       color: #FFFFFF;
+    }
+    button.bg-purple-600:hover > .button-text-content {
+      color: #E9D5FF; /* Lighter purple for hover */
+    }
+    button.bg-purple-600:active > .button-text-content {
+      color: #F3E8FF; /* Even lighter purple for active */
+      transform: translateY(1px);
+    }
+
+    /* FAB Container */
+    .fab-container {
+      position: fixed;
+      bottom: 1.5rem; /* 24px */
+      right: 1.5rem; /* 24px */
+      z-index: 40; /* Ensure it's above content but below modals */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end; /* Align items to the right if container is wider */
+      gap: 0.75rem; /* 12px */
+    }
+
+    /* Individual FAB styling */
+    .fab-button {
+      width: 3rem; /* 48px */
+      height: 3rem; /* 48px */
+      border-radius: 9999px; /* full */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      transition-property: background-color, transform, box-shadow;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+    .fab-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+    .fab-button:active {
+      transform: scale(0.98);
+    }
+
+    /* Translation status box within FAB container */
+    .fab-translation-status {
+      padding: 0.5rem 0.75rem; /* p-2 px-3 */
+      font-size: 0.75rem; /* text-xs */
+      border-radius: 0.375rem; /* rounded-md */
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      background-color: var(--bg-secondary); /* slate-800 equivalent */
+      text-align: center;
+      margin-bottom: 0.25rem; /* Add a bit of space from the buttons */
+    }
+    .fab-visual-effect { /* Added this class based on App.tsx usage */
+      backdrop-filter: blur(4px); /* Equivalent to backdrop-blur-sm */
+      border: 1px solid rgba(71, 85, 105, 0.5); /* slate-600 with opacity for subtlety */
+    }
+
+
+    /* Styling for select dropdown to match theme */
+    select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* slate-500 arrow */
+      background-position: right 0.5rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+      padding-right: 2.5rem; /* Ensure space for arrow */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      /* Tailwind classes in component handle bg, border, text, focus rings */
+    }
+    select:focus { /* Change arrow color on focus to match ring */
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230D9488' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* teal-600 arrow */
+    }
+
+    /* Attempt to style option elements */
+    select option {
+      background-color: var(--bg-secondary); /* Dark background for dropdown options */
+      color: var(--text-primary);       /* Light text for dropdown options */
+    }
+    select option:checked,
+    select option:hover {
+      background-color: var(--text-accent); /* Teal background for hovered/selected option */
+      color: var(--text-primary);          /* Light text for hovered/selected option */
+    }
+
+    /* Style for the 'Other...' option to make it slightly distinct if needed */
+    select option[value="LAINNYA_INTERAKTIF_PLACEHOLDER"] {
+      font-style: italic;
+      color: var(--text-secondary); /* Or a slightly different color */
+    }
+
+    /* Additional styling for textarea for AI Framework Suggester */
+    .ai-suggestion-textarea {
+      min-height: 60px; /* Ensure a decent minimum height */
+    }
+
+    /* Styling for suggestion list in InteractivePromptBuilder (for "Other..." input) */
+    .interactive-suggestion-list-container {
+      margin-top: 0.125rem; /* Equivalent to mt-0.5 */
+      position: absolute;
+      z-index: 20; 
+      width: 100%; 
+    }
+    /* Styling for multiple-choice collapsible header (chevron) */
+    .mc-collapsible-header button svg {
+      transition: transform 0.3s ease-in-out;
+    }
+    .mc-collapsible-header button[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+
+  </style>
+
+<link rel="stylesheet" href="/index.css">
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.5.1",
+    "vite": "https://esm.sh/vite@^6.3.5",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/promptmatrix/assets/index-D8r4HbyA.js"></script>
+</head>
+<body class="antialiased theme-dark"> 
+  <div id="root"></div>
+</body>
+</html>
