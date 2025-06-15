@@ -3,7 +3,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An intuitive web application designed to help users **understand prompt engineering principles** and **construct effective, well-structured prompts** for various AI models. PromptMatrix V5.0 is your enhanced guide and toolkit for mastering AI communication, offering structured and interactive frameworks for text, image, video, and music generation. This tool is **not an AI itself**, but a powerful assistant for building and learning about prompts.
+An intuitive web application designed to help users **understand prompt engineering principles** and **construct effective, well-structured prompts** for various AI models. PromptMatrix V5.0 is your enhanced guide and toolkit for mastering AI communication, offering structured and interactive framework for text, image, video, and music generation. This tool is **not an AI itself**, but a powerful assistant for building and learning about prompts.
 
 **[➡️ Live Demo (GitHub Pages) Link: https://sisigitadi.github.io/promptmatrix/](#)**
 
@@ -39,7 +39,7 @@ PromptMatrix V5.0 introduces a suite of major enhancements focusing on a more in
 ## ✨ Features (Core & Enhanced in V5.0)
 
 *   **Educational Focus:** Learn the "why" and "how" behind effective prompts.
-*   **Multi-Framework Support:** Explore diverse prompting frameworks for text, plus **newly interactive frameworks** for image, video, and music.
+*   **Multi-Framework Support:** Explore diverse prompting framework, plus **newly interactive framework** for image, video, and music.
 *   **Interactive Prompt Studio (NEW for Media/Music):** Step-by-step guidance with dropdowns, collapsible checkboxes, and "Other..." options.
 *   **Structured Input Guidance (Text Frameworks):** Dynamically updating input fields with examples.
 *   **AI-Powered Framework Suggestions (NEW - API Key Req.):** Get AI recommendations for the best framework based on your goal.
@@ -59,16 +59,16 @@ PromptMatrix V5.0 introduces a suite of major enhancements focusing on a more in
 **Example Screenshot Placeholder (Replace this):**
 ![PromptMatrix V5.0 Screenshot](https://via.placeholder.com/800x450.png?text=PromptMatrix+V5.0+App+Screenshot+Here)
 
-## 🛠️ Frameworks Supported
+## 🛠️ Framework Supported
 
-PromptMatrix V5.0 provides structured inputs and guidance for understanding and using the following frameworks:
+PromptMatrix V5.0 provides structured inputs and guidance for understanding and using the following framework:
 
-### 📜 Text Prompt Frameworks (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/pencil.svg" width="16" height="16"> icon):
+### 📜 Text Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/pencil.svg" width="16" height="16"> icon):
 
 (Uses standard component-based input. Used for crafting prompts for AI like ChatGPT, Gemini, Claude, etc.)
-*   RTF, CARE, CO-STAR, BAB, TAG, AIDA, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, IDEATE, PACT. *(26 Frameworks)*
+*   RTF, CARE, CO-STAR, BAB, TAG, AIDA, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, IDEATE, PACT. *(26 Framework)*
 
-### 🖼️ Image & Video Prompt Frameworks (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/camera.svg" width="16" height="16"> icon):
+### 🖼️ Image & Video Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/camera.svg" width="16" height="16"> icon):
 
 **(ALL NEWLY INTERACTIVE IN V5.0!)** (Used for crafting prompts for AI like Midjourney, DALL-E, Stable Diffusion, Runway, Pika, etc.)
 *   Midjourney (Interactive)
@@ -87,7 +87,7 @@ PromptMatrix V5.0 provides structured inputs and guidance for understanding and 
 *   NightCafe Creator (Detailed Interactive)
 *   Clipdrop (Stability AI - Detailed Interactive)
 
-### 🎵 Music Prompt Frameworks (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/musical-note.svg" width="16" height="16"> icon):
+### 🎵 Music Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/musical-note.svg" width="16" height="16"> icon):
 **(ALL NEWLY INTERACTIVE IN V5.0!)** (Used for crafting prompts for AI like Suno, Udio, Google MusicFX, etc.)
 *   Suno AI Music (Interactive)
 *   Udio AI Music (Detailed Interactive)
@@ -110,13 +110,13 @@ PromptMatrix V5.0 is designed to help you *learn* and *build* with enhanced guid
 
 1.  **Check API Key Status:** Look at the header. "AI Inside" means AI features are active. "Disconnected" means you need to configure an API Key for AI features.
 2.  **Select a Language:** Use the FAB (<img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/20/solid/language.svg" width="14" height="14" style="filter: invert(1);">) to toggle between English (EN) or Indonesian (ID).
-3.  **Explore Framework Categories:** Click a category (Text, Media, Music).
-4.  **Optional: Get AI Framework Suggestions (API Key Req.):** In the "AI Framework Suggester" section within "Prompt Studio," describe your goal and click "Get Framework Suggestions." Recommended frameworks in the current category will be highlighted with a <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/20/solid/star.svg" width="14" height="14" style="filter: invert(93%) sepia(38%) saturate(2235%) hue-rotate(336deg) brightness(103%) contrast(101%);">.
+3.  **Explore Framework Category:** Click a category (Text, Media, Music).
+4.  **Optional: Get AI Framework Suggestions (API Key Req.):** In the "AI Framework Suggester" section within "Prompt Studio," describe your goal and click "Get Framework Suggestions." Recommended framework in the current category will be highlighted with a <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/20/solid/star.svg" width="14" height="14" style="filter: invert(93%) sepia(38%) saturate(2235%) hue-rotate(336deg) brightness(103%) contrast(101%);">.
 5.  **Choose a Specific Framework:** Click a framework from the grid. Read its description.
 6.  **Construct Your Prompt in "Prompt Studio":**
-    *   **Text Frameworks:** Fill in component fields. Use <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14"> for per-field AI suggestions (API Key Req.).
-    *   **Media & Music Frameworks (Interactive):** Follow the step-by-step "wizard-like" sections. Use dropdowns for single choices (select "Lainnya..." for custom input, with optional <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14"> AI suggestions for it - API Key Req.). Use collapsible checkbox groups for multiple choices.
-    *   Use "Additional Notes & Instructions" for standard frameworks if needed.
+    *   **Text Framework:** Fill in component fields. Use <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14"> for per-field AI suggestions (API Key Req.).
+    *   **Media & Music Framework (Interactive):** Follow the step-by-step "wizard-like" sections. Use dropdowns for single choices (select "Lainnya..." for custom input, with optional <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14"> AI suggestions for it - API Key Req.). Use collapsible checkbox groups for multiple choices.
+    *   Use "Additional Notes & Instructions" for standard framework if needed.
 7.  **Review "Prompt Preview":** Your prompt updates live. It will show instructions until you make significant input.
 8.  **Optional: Get Overall AI Feedback (API Key Req.):** Click "Get AI Suggestions" <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14"> for your entire prompt.
 9.  **Copy & Launch:** Click "Copy Prompt," then "Launch AI Tool" to go to the platform or your custom URL.
@@ -142,4 +142,3 @@ Developed by **Sigit Adi**
 *   Email: `si.sigitadi@gmail.com`
 *   GitHub: [https://github.com/sisigitadi](https://github.com/sisigitadi)
 *   Project Repository: [https://github.com/sisigitadi/promptmatrix](https://github.com/sisigitadi/promptmatrix)
----

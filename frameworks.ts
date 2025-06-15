@@ -1,7 +1,7 @@
 
 import { Framework, InteractiveQuestionDefinition, InteractiveSectionDefinition } from './types';
 
-// Standard tool links for TEXT frameworks, ordered by estimated popularity
+// Standard tool links for TEXT framework, ordered by estimated popularity
 const standardTextToolLinks = [
   { name: 'ChatGPT (OpenAI)', url: 'https://chat.openai.com/' },
   { name: 'Gemini (Google)', url: 'https://gemini.google.com/app' },
@@ -15,7 +15,7 @@ const standardTextToolLinks = [
   { name: 'Blackbox AI', url: 'https://www.blackbox.ai/' },
 ];
 
-// Helper function to merge tool links for TEXT frameworks
+// Helper function to merge tool links for TEXT framework
 const mergeAndSortTextToolLinks = (existingLinks: { name: string; url: string }[] = []) => {
   const finalLinks = [...standardTextToolLinks];
   const standardUrls = new Set(standardTextToolLinks.map(link => link.url));
@@ -25,7 +25,7 @@ const mergeAndSortTextToolLinks = (existingLinks: { name: string; url: string }[
   return [...finalLinks, ...uniqueExistingLinks];
 };
 
-// Standard alternative tools for IMAGE & VIDEO frameworks
+// Standard alternative tools for IMAGE & VIDEO framework
 const standardImageVideoAlternatives = [
   { name: 'Leonardo.Ai', url: 'https://app.leonardo.ai/' },
   { name: 'Playground AI', url: 'https://playgroundai.com/create' },
@@ -39,7 +39,7 @@ const standardImageVideoAlternatives = [
   { name: 'NightCafe Creator', url: 'https://creator.nightcafe.studio/' }
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-// Standard alternative tools for MUSIC frameworks
+// Standard alternative tools for MUSIC framework
 const standardMusicAlternatives = [
   { name: 'Udio AI', url: 'https://www.udio.com/' },
   { name: 'Stable Audio (Stability AI)', url: 'https://stableaudio.com/generate/' },
@@ -47,7 +47,7 @@ const standardMusicAlternatives = [
   { name: 'Google MusicFX (AI Test Kitchen)', url: 'https://aitestkitchen.withgoogle.com/tools/music-fx' }
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-// Helper function to create generic tool links for MEDIA and MUSIC frameworks
+// Helper function to create generic tool links for MEDIA and MUSIC framework
 const createMediaMusicToolLinks = (
   officialFrameworkName: string,
   officialFrameworkUrl: string | undefined,
@@ -625,7 +625,7 @@ const sunoAISectionsEn: InteractiveSectionDefinition[] = [
 export const sunoAITemplate = `{{genre}}, {{subgenre_modifiers}}, {{mood}}, {{main_instruments}}, {{vocal_style}}, {{tempo}}, {{rhythm_description}}. {{song_structure}}{{suno_lyrics_block}}`;
 
 
-// --- Detailed Interactive Definitions for other Media/Music Frameworks (Enhanced) ---
+// --- Detailed Interactive Definitions for other Media/Music Framework (Enhanced) ---
 // CLEANED TEMPLATE
 export const detailedImageVideoTemplate = `{{subject}}, {{action_details}}, {{art_style}}, {{art_medium}}, {{artist_influence}}, {{composition}}, {{lighting}}, {{color_palette}}, {{detail_level}}.{{other_tool_params}}{{detailed_image_negative_param_string}}{{detailed_image_aspect_ratio_param_string}}`;
 // CLEANED TEMPLATE
@@ -635,7 +635,7 @@ export const detailedMusicTemplate = `{{main_genre}}, {{subgenre_style}}, {{mood
 // Pastikan semua framework teks (RTF, TRACE, CTI, TAG, RISE, RODE, APE, COPE, CARE, SPARE, CoT, Zero-shot CoT, Self-Consistency, GenKnowledge, Least-to-Most, Self-Refine, ToT, Prompt Ensembling, Factive, EmotionPrompt, Prompt Chaining, Instruction Basics, RolePlay, Few-Shot, PACT)
 // memiliki `genericToolLinks: mergeAndSortTextToolLinks([])` atau toolLink spesifik jika ada.
 
-// Example of how a text framework might look (keep your existing text frameworks as they are)
+// Example of how a text framework might look (keep your existing text framework as they are)
 export const frameworks: Framework[] = [
   {
     id: 'rtf',
@@ -1326,7 +1326,7 @@ export const frameworks: Framework[] = [
       genericToolLinks: mergeAndSortTextToolLinks([])
     }
   },
-  // --- Image & Video Prompt Frameworks (Now all interactive and detailed) ---
+  // --- Image & Video Prompt Framework (Now all interactive and detailed) ---
   {
     id: 'midjourney',
     idLocale: {
@@ -1716,7 +1716,7 @@ export const frameworks: Framework[] = [
       interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
-  // --- Music Prompt Frameworks (Now all interactive) ---
+  // --- Music Prompt Framework (Now all interactive) ---
   {
     id: 'suno_ai',
     idLocale: {

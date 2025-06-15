@@ -19,9 +19,12 @@ import { MusicNoteIcon } from './components/icons/MusicNoteIcon';
 import { SparklesIcon } from './components/icons/SparklesIcon';
 import { InfoIcon } from './components/icons/InfoIcon';
 import { StarIcon } from './components/icons/StarIcon';
+import { GmailIcon } from './components/icons/GmailIcon';
+import { GithubIcon } from './components/icons/GithubIcon';
+import { MediumIcon } from './components/icons/MediumIcon'; // Added
 import {
   frameworks,
-  detailedImageVideoTemplate, 
+  detailedImageVideoTemplate,
   detailedMusicTemplate,
   midjourneyTemplate,
   dalle3Template,
@@ -1123,12 +1126,36 @@ const App: React.FC = () => {
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
           {t('footerOptimize')}
         </p>
-        <p className="text-xs text-slate-500 dark:text-slate-600 mt-0.5">
-          {t('footerContactMe')}{' '}
-          <a href="mailto:si.sigitadi@gmail.com" className="text-teal-600 hover:text-teal-500 dark:text-teal-500 dark:hover:text-teal-400 hover:underline">
-            si.sigitadi@gmail.com
-          </a>
-        </p>
+        <div className="flex justify-center items-center space-x-4 mt-2">
+            <a 
+              href="mailto:si.sigitadi@gmail.com" 
+              title="Email Sigit Adi" 
+              aria-label="Email Sigit Adi" 
+              className="text-slate-400 hover:text-teal-500 dark:text-slate-500 dark:hover:text-teal-400 transition-colors"
+            >
+              <GmailIcon className="w-5 h-5" />
+            </a>
+            <a 
+              href="https://github.com/sisigitadi" 
+              title="GitHub Profile Sigit Adi" 
+              aria-label="GitHub Profile Sigit Adi" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-slate-400 hover:text-teal-500 dark:text-slate-500 dark:hover:text-teal-400 transition-colors"
+            >
+              <GithubIcon className="w-5 h-5" />
+            </a>
+            <a 
+              href="https://medium.com/@si.sigitadi" 
+              title="Medium Profile Sigit Adi" 
+              aria-label="Medium Profile Sigit Adi" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-slate-400 hover:text-teal-500 dark:text-slate-500 dark:hover:text-teal-400 transition-colors"
+            >
+              <MediumIcon className="w-5 h-5" />
+            </a>
+        </div>
       </footer>
 
       <DisclaimerModal isOpen={showDisclaimer} onClose={handleDisclaimerAcknowledge} />
