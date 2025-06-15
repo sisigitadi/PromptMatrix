@@ -807,10 +807,9 @@ const App: React.FC = () => {
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-2 gap-x-4">
             
-            {/* Left part: Title and conditional subtitle */}
-            <div className="flex flex-col items-center sm:items-start w-full sm:w-auto"> {/* Takes full width on xs to center its content */}
-              <div className="flex items-center"> {/* Inner flex for title block and md+ subtitle */}
-                <div className="flex items-center header-glowing-frame p-2 rounded-lg shrink-0"> {/* Title Block */}
+            <div className="flex flex-col items-center sm:items-start w-full sm:w-auto">
+              <div className="flex items-center">
+                <div className="flex items-center header-glowing-frame p-2 rounded-lg shrink-0">
                   <AppLogoIcon className="w-8 h-8 sm:w-10 sm:h-10 mr-2 text-teal-600" />
                   <div className="flex items-center">
                     <span className="text-3xl sm:text-4xl font-bold text-teal-600 dark:text-teal-500">Prompt</span>
@@ -826,15 +825,19 @@ const App: React.FC = () => {
                     )}
                   </div>
                 </div>
-                {/* Subtitle for md+ screens, next to title block */}
-                <p className="ml-4 text-xs sm:text-sm text-slate-400 animate-subtitle-pulse hidden md:block">
+                {/* Subtitle for md+ screens */}
+                <div className="ml-4 hidden md:flex items-center"> 
+                  <p className="text-base font-semibold text-slate-300 subtitle-3d-effect">
+                    {t('appSubtitle')}
+                  </p>
+                </div>
+              </div>
+              {/* Subtitle for < md screens */}
+              <div className="mt-1 md:hidden text-center sm:text-left w-full flex justify-center items-center"> 
+                <p className="text-sm font-semibold text-slate-300 subtitle-3d-effect">
                   {t('appSubtitle')}
                 </p>
               </div>
-              {/* Subtitle for < md screens, below title block */}
-              <p className="text-xs text-slate-400 animate-subtitle-pulse mt-1 md:hidden text-center sm:text-left w-full"> {/* w-full for text-center to work on xs */}
-                {t('appSubtitle')}
-              </p>
             </div>
 
             {/* Right part: Action Buttons and Translation Status */}
@@ -1115,17 +1118,18 @@ const App: React.FC = () => {
 
       <footer className="text-center py-3 sm:py-4 border-t border-[var(--border-color)] dark:border-slate-700/50 bg-slate-900/80 backdrop-blur-sm">
         <p className="text-xs text-slate-400 dark:text-slate-500">
-          © {currentYear} <span className="animated-signature">PromptMatrix</span>. {t('footerOptimize')}
+          <span className="animated-signature">PromptMatrix</span>{'\u00A9'} V5.0 - {currentYear}
+        </p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+          {t('footerOptimize')}
         </p>
         <p className="text-xs text-slate-500 dark:text-slate-600 mt-0.5">
           {t('footerContactMe')}{' '}
-          <a href="mailto:si.sigitadi@gmail.com" className="hover:underline">
+          <a href="mailto:si.sigitadi@gmail.com" className="text-teal-600 hover:text-teal-500 dark:text-teal-500 dark:hover:text-teal-400 hover:underline">
             si.sigitadi@gmail.com
           </a>
         </p>
       </footer>
-
-      {/* FAB Container removed, buttons moved to header */}
 
       <DisclaimerModal isOpen={showDisclaimer} onClose={handleDisclaimerAcknowledge} />
       <HowToUseModal isOpen={showHowToUse} onClose={() => setShowHowToUse(false)} />
