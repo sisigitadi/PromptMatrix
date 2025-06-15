@@ -1,3 +1,4 @@
+
 export interface PromptComponent {
   id: string;
   value: string;
@@ -93,10 +94,13 @@ export interface Translations {
   disclaimerPoint1: string;
   disclaimerPoint2: string;
   disclaimerPoint3: string;
-  disclaimerPoint4: string;
+  // disclaimerPoint4: string; // Removed
   disclaimerContactPrompt: string;
   disclaimerModalAcknowledgeButton: string;
-  disclaimerAiFeatureNote: string; 
+  // disclaimerAiFeatureNote: string; // Removed
+  disclaimerAcknowledgeButtonDisabledText: (seconds: number) => string;
+  disclaimerSwitchToEnglish: string;
+  disclaimerSwitchToIndonesian: string;
 
   howToUseAppTitle: string;
   howToUseAppTitleShort: string; 
@@ -106,8 +110,11 @@ export interface Translations {
   howToUseStep4: string;
   howToUseStep5: string;
   howToUseStep6: string;
-  howToUseStep7: string;
-  howToUseStep8: string;
+  howToUseTip: string; 
+  howToUseSwitchToEnglish: string;
+  howToUseSwitchToIndonesian: string;
+  howToUseDiagramTitle: string;
+
   textFrameworksCategoryTooltip: string;
   mediaFrameworksCategoryTooltip: string;
   musicFrameworksCategoryTooltip: string;
@@ -164,9 +171,17 @@ export interface Translations {
   noFrameworkSuggestionsFound: string;
   frameworkSuggestionInstruction: string;
   frameworkSuggestionsTitle: string;
-  aiPoweredFeatureTooltip: string; // Tooltip umum untuk fitur AI
-  aiFeaturesActiveIndicator: string; // Tooltip/label untuk indikator fitur AI aktif karena API Key ada
+  aiPoweredFeatureTooltip: string; 
+  aiFeaturesActiveIndicator: string; 
   geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => string;
+
+  // Diagram steps
+  diagramStep1: string;
+  diagramStep2: string;
+  diagramStep3: string;
+  diagramStep4: string;
+  diagramStep5: string;
+  diagramStep6: string;
 
   // Labels for Interactive Prompt Assembly
   promptLabel_subject?: string;
@@ -206,7 +221,7 @@ export interface Translations {
   promptLabel_technical_aspects?: string;
   promptLabel_camera_shot?: string;
   promptLabel_lighting_style?: string;
-  promptLabel_negative_elements?: string;
+  // promptLabel_negative_elements?: string; // Duplicate, ensure consistency or remove if covered
   promptLabel_custom_negative_prompt?: string;
   promptLabel_param_info?: string;
   promptLabel_subjek?: string;
@@ -248,8 +263,10 @@ export interface Translations {
   // New keys for category button labels
   categoryLabelImage: string;
   categoryLabelVideo: string;
-  categoryLabelMusic: string; // Added in previous step
-  categoryLabelText: string; // Adding this now
+  categoryLabelMusic: string; 
+  categoryLabelText: string; 
+
+  frameworkWord: string; 
 }
 
 export type TranslationKey = keyof Translations;

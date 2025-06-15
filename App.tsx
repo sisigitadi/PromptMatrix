@@ -10,18 +10,19 @@ import { EraserIcon } from './components/icons/EraserIcon';
 import DisclaimerModal from './components/DisclaimerModal';
 import HowToUseModal from './components/HowToUseModal';
 import { AppLogoIcon } from './components/icons/AppLogoIcon';
-import { ControlsIcon } from './components/icons/ControlsIcon';
+import { SquaresPlusIcon } from './components/icons/SquaresPlusIcon'; 
+import { ViewColumnsIcon } from './components/icons/ViewColumnsIcon'; 
 import { ChevronDownIcon } from './components/icons/ChevronDownIcon';
 import { ChevronUpIcon } from './components/icons/ChevronUpIcon';
 import { PencilIcon } from './components/icons/PencilIcon';
 import { CameraIcon } from './components/icons/CameraIcon';
 import { MusicNoteIcon } from './components/icons/MusicNoteIcon';
-import { SparklesIcon } from './components/icons/SparklesIcon';
-import { InfoIcon } from './components/icons/InfoIcon';
+import { SparklesIcon } from './components/icons/SparklesIcon'; // Restored
+import { InfoIcon } from './components/icons/InfoIcon'; // Retained for DisclaimerModal
 import { StarIcon } from './components/icons/StarIcon';
 import { GmailIcon } from './components/icons/GmailIcon';
 import { GithubIcon } from './components/icons/GithubIcon';
-import { MediumIcon } from './components/icons/MediumIcon'; // Added
+import { MediumIcon } from './components/icons/MediumIcon'; 
 import {
   frameworks,
   detailedImageVideoTemplate,
@@ -67,7 +68,7 @@ const App: React.FC = () => {
   const [userDefinedInteraction, setUserDefinedInteraction] = useState<string>('');
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [promptToCopy, setPromptToCopy] = useState<string>('');
-  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(true);
+  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(true); // Disclaimer always shown initially
   const [showHowToUse, setShowHowToUse] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<'text' | 'media' | 'music'>('text');
 
@@ -98,16 +99,8 @@ const App: React.FC = () => {
   const apiKey = (typeof rawApiKeyFromEnv === 'string' && rawApiKeyFromEnv !== "undefined" && rawApiKeyFromEnv.trim() !== '') ? rawApiKeyFromEnv : null;
   const aiClient = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
-  useEffect(() => {
-    const disclaimerAcknowledged = localStorage.getItem('disclaimerAcknowledged');
-    if (disclaimerAcknowledged === 'true') {
-      setShowDisclaimer(false);
-    }
-  }, []);
-
   const handleDisclaimerAcknowledge = () => {
-    localStorage.setItem('disclaimerAcknowledged', 'true');
-    setShowDisclaimer(false);
+    setShowDisclaimer(false); 
   };
 
   const getTrueInitialFrameworkDefaultsInternal = useCallback((frameworkLocale: Framework['idLocale'] | Framework['enLocale']): Record<string, string | string[]> => {
@@ -167,7 +160,6 @@ const App: React.FC = () => {
         if (currentValue !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') { 
             defaultToCompare = questionOptions[0];
         } else {
-            // If "Other" is selected, the effective default to compare against an empty "Other" input is an empty string.
             defaultToCompare = ''; 
         }
     }
@@ -803,6 +795,20 @@ const App: React.FC = () => {
   const canEnhanceCurrentPrompt = !!apiKey && promptToCopy.trim().length > 0 && !isFetchingAiFeedback;
   const isInteractiveFrameworkSelected = selectedFramework && currentFrameworkLocale?.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0;
 
+  const baseTitleKey = `${selectedCategory}FrameworksTitle` as TranslationKey;
+  const baseTitle = t(baseTitleKey);
+  const frameworkWord = t('frameworkWord'); 
+  let frameworkListTitle = baseTitle;
+
+  if (selectedFramework && currentFrameworkLocale) {
+    const selectedFrameworkName = currentFrameworkLocale.name;
+    if (baseTitle.endsWith(frameworkWord)) {
+      frameworkListTitle = baseTitle.substring(0, baseTitle.length - frameworkWord.length).trimEnd() + " " + selectedFrameworkName;
+    } else {
+      frameworkListTitle = `${baseTitle} (${selectedFrameworkName})`;
+    }
+  }
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
@@ -818,24 +824,22 @@ const App: React.FC = () => {
                     <span className="text-3xl sm:text-4xl font-bold text-teal-600 dark:text-teal-500">Prompt</span>
                     <span className="text-3xl sm:text-4xl font-bold text-teal-400 dark:text-teal-300 ml-1.5">Matrix</span>
                     {apiKey && (
-                      <span
-                        className="ml-3 text-2xl font-bold text-purple-400 api-status-indicator shrink-0"
-                        aria-label={t('aiFeaturesActiveIndicator')}
-                        title={t('aiFeaturesActiveIndicator')}
-                      >
-                        AI
-                      </span>
+                       <span
+                          className="ml-3 text-2xl sm:text-3xl font-bold api-status-indicator text-purple-400 dark:text-purple-300"
+                          aria-label={t('aiFeaturesActiveIndicator')}
+                          title={t('aiFeaturesActiveIndicator')}
+                        >
+                          AI
+                        </span>
                     )}
                   </div>
                 </div>
-                {/* Subtitle for md+ screens */}
                 <div className="ml-4 hidden md:flex items-center"> 
                   <p className="text-base font-semibold text-slate-300 subtitle-3d-effect">
                     {t('appSubtitle')}
                   </p>
                 </div>
               </div>
-              {/* Subtitle for < md screens */}
               <div className="mt-1 md:hidden text-center sm:text-left w-full flex justify-center items-center"> 
                 <p className="text-sm font-semibold text-slate-300 subtitle-3d-effect">
                   {t('appSubtitle')}
@@ -843,7 +847,6 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Right part: Action Buttons and Translation Status */}
             <div className="flex items-center self-center sm:self-auto gap-x-2 sm:gap-x-3 mt-2 sm:mt-0 shrink-0">
               <div className="text-xs">
                   {isTranslating && ( <span className="text-slate-300 animate-pulse">{t('translationInProgress')}</span> )}
@@ -851,11 +854,11 @@ const App: React.FC = () => {
               </div>
               <button
                 onClick={() => setShowHowToUse(true)}
-                className="p-1.5 sm:p-2 text-slate-300 hover:text-teal-400 transition-colors rounded-full hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900"
-                title={t('howToUseAppTitleShort')}
-                aria-label={t('howToUseAppTitleShort')}
+                className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm"
+                title={t('howToUseAppTitle')}
+                aria-label={t('howToUseAppTitle')}
               >
-                <InfoIcon className="w-5 h-5" />
+                <span className="button-text-content">{t('howToUseAppTitleShort')}</span>
               </button>
               <button
                 onClick={handleLanguageToggle}
@@ -874,10 +877,9 @@ const App: React.FC = () => {
       <main className="flex-grow container mx-auto px-2 sm:px-4 py-4 sm:py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           <div className="md:col-span-1 space-y-4 sm:space-y-6">
-            {/* Category Selector */}
             <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-3 sm:p-4 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
               <h2 className="text-lg sm:text-xl font-semibold mb-3 text-teal-600 dark:text-teal-500 flex items-center">
-                <ControlsIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-teal-400" />
+                <SquaresPlusIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-teal-400" />
                 {t('selectCategoryTitle')}
               </h2>
               <div className="grid grid-cols-3 gap-2">
@@ -893,7 +895,7 @@ const App: React.FC = () => {
                     title={t(`${cat}FrameworksCategoryTooltip` as TranslationKey)}
                     aria-pressed={selectedCategory === cat}
                   >
-                    <div className="flex flex-col items-center justify-center space-y-0.5"> {/* Adjusted space-y */}
+                    <div className="flex flex-col items-center justify-center space-y-0.5">
                       {cat === 'text' && <PencilIcon className="w-5 h-5 sm:w-6 sm:h-6" />}
                       {cat === 'media' && <CameraIcon className="w-5 h-5 sm:w-6 sm:h-6" />}
                       {cat === 'music' && <MusicNoteIcon className="w-5 h-5 sm:w-6 sm:h-6" />}
@@ -903,7 +905,7 @@ const App: React.FC = () => {
                           <span className="text-xs sm:text-sm font-medium button-text-content">
                             {t('categoryLabelImage')}
                           </span>
-                          <span className="text-[0.7rem] sm:text-xs leading-tight font-medium button-text-content -mt-1"> {/* Adjusted for Video text */}
+                          <span className="text-[0.7rem] sm:text-xs leading-tight font-medium button-text-content -mt-1">
                             {t('categoryLabelVideo')}
                           </span>
                         </>
@@ -920,14 +922,13 @@ const App: React.FC = () => {
               {!selectedCategory && <p className="mt-3 text-xs text-center text-slate-400">{t('selectCategoryInstruction')}</p>}
             </div>
 
-            {/* Framework Selector */}
             {selectedCategory && (
               <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-3 sm:p-4 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
                 <h2 className="text-lg sm:text-xl font-semibold mb-2 text-teal-600 dark:text-teal-500 flex items-center">
                   {selectedCategory === 'text' && <PencilIcon className={categoryIconClass} />}
                   {selectedCategory === 'media' && <CameraIcon className={categoryIconClass} />}
                   {selectedCategory === 'music' && <MusicNoteIcon className={categoryIconClass} />}
-                  {t(`${selectedCategory}FrameworksTitle` as TranslationKey)}
+                  {frameworkListTitle}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 max-h-[60vh] sm:max-h-[calc(100vh-280px)] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)' }}>
                   {selectedFrameworksForCategory.map((framework) => {
@@ -965,15 +966,8 @@ const App: React.FC = () => {
             {apiKey && selectedCategory && (
                 <div className="bg-slate-700/40 dark:bg-slate-800/50 p-3 sm:p-4 rounded-lg border border-purple-600/50 shadow-sm">
                     <h4 className="text-md font-semibold text-purple-400 dark:text-purple-300 mb-2 flex items-center">
-                        <SparklesIcon className="w-5 h-5 mr-2" />
+                        <SparklesIcon className="w-5 h-5 mr-2 text-purple-400" /> {/* Reverted to SparklesIcon */}
                         {t('frameworkSuggestionsTitle')}
-                        <span
-                        className="ml-2 text-md font-bold text-purple-400 api-status-indicator shrink-0"
-                        aria-label={t('aiFeaturesActiveIndicator')}
-                        title={t('aiFeaturesActiveIndicator')}
-                        >
-                        AI
-                        </span>
                     </h4>
                     <p className="text-xs text-slate-400 mb-2">{t('frameworkSuggestionInstruction')}</p>
                     <textarea
@@ -993,7 +987,7 @@ const App: React.FC = () => {
                         disabled={!userGoalForFramework.trim() || isFetchingFrameworkSuggestions}
                         aria-label={t('getFrameworkSuggestionsButtonAria')}
                     >
-                        <SparklesIcon className="w-4 h-4" />
+                        <SparklesIcon className="w-4 h-4 text-purple-200" /> {/* Reverted to SparklesIcon */}
                         <span className="button-text-content">{isFetchingFrameworkSuggestions ? t('frameworkSuggestionsLoading') : t('getFrameworkSuggestionsButton')}</span>
                     </button>
                     {frameworkSuggestionError && <p className="text-xs text-rose-400 mt-1.5">{frameworkSuggestionError}</p>}
@@ -1011,7 +1005,7 @@ const App: React.FC = () => {
                 aria-controls="input-panel-content"
               >
                 <h3 className="text-lg sm:text-xl font-semibold text-teal-700 dark:text-teal-600 flex items-center">
-                  <ControlsIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-teal-400" />
+                  <ViewColumnsIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-teal-400" />
                   {t('inputComponentsTitle')}
                   {selectedFramework && (
                     <span className="ml-1.5 text-sm text-slate-400">

@@ -8,7 +8,7 @@ import { ClipboardIcon } from './icons/ClipboardIcon';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
 import { ChevronDownIcon } from './icons/ChevronDownIcon';
 import { ChevronUpIcon } from './icons/ChevronUpIcon';
-import { SparklesIcon } from './icons/SparklesIcon'; 
+import { SparklesIcon } from './icons/SparklesIcon'; // Restored
 
 interface PromptOutputProps {
   promptText: string;
@@ -51,7 +51,6 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
   const currentFrameworkLocale = selectedFramework ? selectedFramework[language === 'id' ? 'idLocale' : 'enLocale'] : null;
 
   useEffect(() => {
-    // Expand AI feedback section by default when new feedback is received successfully
     if (aiFeedbackReceived && !isFetchingAiFeedback && !aiError && aiFeedback) {
       setIsAiFeedbackExpanded(true);
     }
@@ -123,7 +122,6 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
     const parts: { header?: string; content: string }[] = [];
     let foundHeader = false;
 
-    // First, try to find an initial part if text doesn't start with a known header
     let firstKnownHeaderIndex = -1;
     for (const headerObj of headers) {
         const index = remainingText.indexOf(headerObj.title);
@@ -136,23 +134,21 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
         parts.push({ content: remainingText.substring(0, firstKnownHeaderIndex).trim() });
         remainingText = remainingText.substring(firstKnownHeaderIndex);
     } else if (firstKnownHeaderIndex === -1 && remainingText.trim() !== "") {
-        // If no known headers at all, treat the whole thing as one content block.
-        // This will lead to the fallback pre below.
+        // Fallback handled below
     }
 
 
     while (remainingText.trim()) {
       let currentHeader = null;
       let nextHeaderIndex = Infinity;
-      let nextHeaderTitleLength = 0;
+      // let nextHeaderTitleLength = 0; // Not used
 
       for (const headerObj of headers) {
         const index = remainingText.indexOf(headerObj.title);
-        if (index === 0) { // Header is at the beginning of remainingText
+        if (index === 0) { 
           currentHeader = headerObj.title;
           foundHeader = true;
           remainingText = remainingText.substring(currentHeader.length).trimStart();
-          // Find the start of the *next* header to delimit current content
           for (const nextH of headers) {
             const potentialNextIndex = remainingText.indexOf(nextH.title);
             if (potentialNextIndex !== -1 && potentialNextIndex < nextHeaderIndex) {
@@ -168,10 +164,10 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
         parts.push({ header: currentHeader || undefined, content });
       }
       remainingText = remainingText.substring(nextHeaderIndex !== Infinity ? nextHeaderIndex : remainingText.length).trimStart();
-      if (!currentHeader && nextHeaderIndex === Infinity && !foundHeader) break; // Avoid infinite loop if no headers are ever found
+      if (!currentHeader && nextHeaderIndex === Infinity && !foundHeader) break; 
     }
 
-    if (!foundHeader && aiFeedback.trim()) { // Fallback for unparseable or headerless feedback
+    if (!foundHeader && aiFeedback.trim()) { 
       return (
         <pre className="font-sans whitespace-pre-wrap break-words text-sm sm:text-base text-slate-100 leading-relaxed max-h-60 sm:max-h-72 overflow-y-auto" aria-live="polite">
           {aiFeedback}
@@ -244,15 +240,8 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
                 aria-controls="ai-feedback-content"
               >
                 <h4 className="text-sm sm:text-md font-semibold text-purple-400 dark:text-purple-300 flex items-center">
-                  <SparklesIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                  <SparklesIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 text-purple-400" /> {/* Reverted to SparklesIcon */}
                   <strong className="italic">{t('aiFeedbackTitleTextOnly')}</strong>
-                  <span
-                      className="ml-2 text-md font-bold text-purple-400 api-status-indicator shrink-0"
-                      aria-label={t('aiFeaturesActiveIndicator')}
-                      title={t('aiFeaturesActiveIndicator')}
-                  >
-                      AI
-                  </span>
                   {showAiFeedbackSuccessIndicator && (
                     <CheckCircleIcon className="w-4 h-4 text-green-500 dark:text-green-400 ml-1.5 shrink-0" title={t('aiFeedbackReceivedIndicatorTooltip')} />
                   )}
@@ -277,7 +266,6 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
             </div>
           )}
 
-          {/* Action Buttons Row */}
           <div className="mt-auto pt-2.5 px-4 sm:px-6 pb-3 sm:pb-4 space-y-2.5"> 
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-2.5"> 
                 <button
@@ -292,7 +280,7 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
                     aria-label={t('enhanceButtonAria')}
                     disabled={!canEnhance || isFetchingAiFeedback}
                 >
-                    <SparklesIcon className="w-4 h-4" />
+                    <SparklesIcon className="w-4 h-4 text-purple-200" /> {/* Reverted to SparklesIcon */}
                     <span className="button-text-content">{isFetchingAiFeedback ? t('enhanceButtonLoadingText') : t('enhanceButtonText')}</span>
                 </button>
 

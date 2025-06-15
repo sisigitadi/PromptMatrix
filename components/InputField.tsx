@@ -2,7 +2,7 @@
 import React, { useLayoutEffect, useRef, useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { XCircleIcon } from './icons/XCircleIcon';
-import { SparklesIcon } from './icons/SparklesIcon'; 
+import { SparklesIcon } from './icons/SparklesIcon'; // Restored
 
 interface InputFieldProps {
   id: string;
@@ -28,7 +28,7 @@ const InputField: React.FC<InputFieldProps> = ({
   onChange,
   placeholder,
   isTextarea = false,
-  rows: initialRows = 2, // Default rows reduced for slimmer look
+  rows: initialRows = 2, 
   description,
   predefinedOptions,
   isVisible,
@@ -38,7 +38,7 @@ const InputField: React.FC<InputFieldProps> = ({
   exampleText,
 }) => {
   const { t } = useLanguage();
-  const commonClasses = "w-full p-2.5 bg-[var(--bg-secondary)] dark:bg-slate-700/50 border border-[var(--border-color)] dark:border-slate-600 rounded-md focus:ring-1 focus:ring-[var(--ring-color)] focus:border-[var(--ring-color)] outline-none transition-all duration-150 text-sm text-[var(--text-primary)] dark:text-slate-100 placeholder-[var(--text-secondary)] dark:placeholder-slate-400/80 shadow-sm non-copyable-input-field"; // Adjusted padding and rounded-md
+  const commonClasses = "w-full p-2.5 bg-[var(--bg-secondary)] dark:bg-slate-700/50 border border-[var(--border-color)] dark:border-slate-600 rounded-md focus:ring-1 focus:ring-[var(--ring-color)] focus:border-[var(--ring-color)] outline-none transition-all duration-150 text-sm text-[var(--text-primary)] dark:text-slate-100 placeholder-[var(--text-secondary)] dark:placeholder-slate-400/80 shadow-sm non-copyable-input-field"; 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const previousIsVisibleRef = useRef<boolean | undefined>(isVisible);
@@ -285,7 +285,9 @@ const InputField: React.FC<InputFieldProps> = ({
                     aria-label={t('suggestButtonTitle')}
                     disabled={isFetchingSuggestions} 
                 >
-                    <SparklesIcon className={`w-4 h-4 ${isFetchingSuggestions ? 'animate-pulse text-purple-600' : ''}`} /> 
+                    <SparklesIcon 
+                        className={`w-4 h-4 text-purple-400 ${isFetchingSuggestions ? 'opacity-70 animate-pulse' : ''}`} 
+                    /> 
                 </button>
             )}
             {hasClearButton && (

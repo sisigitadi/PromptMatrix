@@ -1421,24 +1421,24 @@ export const frameworks: Framework[] = [
     idLocale: {
       name: 'Google Veo (Interaktif)',
       shortName: 'Google Veo',
-      description: 'Buat prompt video untuk Google Veo, dengan detail pada subjek, aksi, gaya visual, dan sinematografi.',
+      description: "Buat prompt video untuk Google Veo, dengan detail pada subjek, aksi, gaya visual, dan sinematografi. *Info lebih lanjut di situs resmi Google DeepMind.*",
       category: 'media',
       components: [],
-      toolLink: undefined, 
-      genericToolLinks: createMediaMusicToolLinks('Google Veo', undefined, standardImageVideoAlternatives),
+      toolLink: "https://deepmind.google/technologies/veo/", 
+      genericToolLinks: createMediaMusicToolLinks('Google Veo', "https://deepmind.google/technologies/veo/", standardImageVideoAlternatives),
       interactiveDefinition: veoInteractiveDefinitionId,
-      interactivePromptTemplate: veoInteractivePromptTemplate // For param placeholders reference
+      interactivePromptTemplate: veoInteractivePromptTemplate 
     },
     enLocale: {
       name: 'Google Veo (Interactive)',
       shortName: 'Google Veo',
-      description: 'Create video prompts for Google Veo, detailing subject, action, visual style, and cinematography.',
+      description: "Create video prompts for Google Veo, detailing subject, action, visual style, and cinematography. *More info on the official Google DeepMind website.*",
       category: 'media',
       components: [],
-      toolLink: undefined, 
-      genericToolLinks: createMediaMusicToolLinks('Google Veo', undefined, standardImageVideoAlternatives),
+      toolLink: "https://deepmind.google/technologies/veo/", 
+      genericToolLinks: createMediaMusicToolLinks('Google Veo', "https://deepmind.google/technologies/veo/", standardImageVideoAlternatives),
       interactiveDefinition: veoInteractiveDefinitionEn,
-      interactivePromptTemplate: veoInteractivePromptTemplate // For param placeholders reference
+      interactivePromptTemplate: veoInteractivePromptTemplate 
     }
   },
   {
@@ -1477,7 +1477,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://app.leonardo.ai/',
       genericToolLinks: createMediaMusicToolLinks('Leonardo.Ai', 'https://app.leonardo.ai/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Leonardo.Ai', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'Leonardo.Ai (Detailed Interactive)',
@@ -1488,7 +1488,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://app.leonardo.ai/',
       genericToolLinks: createMediaMusicToolLinks('Leonardo.Ai', 'https://app.leonardo.ai/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Leonardo.Ai', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   {
@@ -1502,7 +1502,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://firefly.adobe.com/generate/images',
       genericToolLinks: createMediaMusicToolLinks('Adobe Firefly', 'https://firefly.adobe.com/generate/images', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Adobe Firefly', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'Adobe Firefly (Detailed Interactive)',
@@ -1513,7 +1513,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://firefly.adobe.com/generate/images',
       genericToolLinks: createMediaMusicToolLinks('Adobe Firefly', 'https://firefly.adobe.com/generate/images', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Adobe Firefly', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   {
@@ -1527,7 +1527,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://ideogram.ai/create',
       genericToolLinks: createMediaMusicToolLinks('Ideogram', 'https://ideogram.ai/create', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Ideogram', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'Ideogram (Detailed Interactive)',
@@ -1538,7 +1538,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://ideogram.ai/create',
       genericToolLinks: createMediaMusicToolLinks('Ideogram', 'https://ideogram.ai/create', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Ideogram', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   {
@@ -1552,7 +1552,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://pika.art/',
       genericToolLinks: createMediaMusicToolLinks('Pika Labs', 'https://pika.art/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Pika Labs (Video)', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'Pika Labs (Detailed Interactive)',
@@ -1563,7 +1563,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://pika.art/',
       genericToolLinks: createMediaMusicToolLinks('Pika Labs', 'https://pika.art/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Pika Labs (Video)', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   {
@@ -1571,24 +1571,24 @@ export const frameworks: Framework[] = [
     idLocale: {
       name: 'OpenAI Sora (Interaktif Rinci)',
       shortName: 'OpenAI Sora',
-      description: 'Buat prompt video yang sangat deskriptif untuk OpenAI Sora, fokus pada detail sinematik dan naratif.',
+      description: "Buat prompt video yang sangat deskriptif untuk OpenAI Sora, model AI teks-ke-video dari OpenAI. *Info lebih lanjut di situs resmi OpenAI.*",
       category: 'media',
       components: [],
-      toolLink: undefined, 
-      genericToolLinks: createMediaMusicToolLinks('OpenAI Sora', undefined, standardImageVideoAlternatives),
+      toolLink: "https://openai.com/sora", 
+      genericToolLinks: createMediaMusicToolLinks('OpenAI Sora', "https://openai.com/sora", standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('OpenAI Sora (Video)', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'OpenAI Sora (Detailed Interactive)',
       shortName: 'OpenAI Sora',
-      description: 'Create highly descriptive video prompts for OpenAI Sora, focusing on cinematic and narrative details.',
+      description: "Create highly descriptive video prompts for OpenAI Sora, OpenAI's text-to-video AI model. *More info on the official OpenAI website.*",
       category: 'media',
       components: [],
-      toolLink: undefined, 
-      genericToolLinks: createMediaMusicToolLinks('OpenAI Sora', undefined, standardImageVideoAlternatives),
+      toolLink: "https://openai.com/sora", 
+      genericToolLinks: createMediaMusicToolLinks('OpenAI Sora', "https://openai.com/sora", standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('OpenAI Sora (Video)', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   {
@@ -1602,7 +1602,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://playgroundai.com/create',
       genericToolLinks: createMediaMusicToolLinks('Playground AI', 'https://playgroundai.com/create', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Playground AI', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'Playground AI (Detailed Interactive)',
@@ -1613,7 +1613,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://playgroundai.com/create',
       genericToolLinks: createMediaMusicToolLinks('Playground AI', 'https://playgroundai.com/create', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Playground AI', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   {
@@ -1627,7 +1627,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://www.canva.com/magic-media/',
       genericToolLinks: createMediaMusicToolLinks('Canva Magic Media', 'https://www.canva.com/magic-media/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Canva Magic Media', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'Canva Magic Media (Detailed Interactive)',
@@ -1638,7 +1638,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://www.canva.com/magic-media/',
       genericToolLinks: createMediaMusicToolLinks('Canva Magic Media', 'https://www.canva.com/magic-media/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Canva Magic Media', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   {
@@ -1652,7 +1652,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://kaiber.ai/',
       genericToolLinks: createMediaMusicToolLinks('Kaiber.ai', 'https://kaiber.ai/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Kaiber.ai (Video)', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'Kaiber.ai (Detailed Interactive)',
@@ -1663,7 +1663,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://kaiber.ai/',
       genericToolLinks: createMediaMusicToolLinks('Kaiber.ai', 'https://kaiber.ai/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Kaiber.ai (Video)', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   {
@@ -1677,7 +1677,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://creator.nightcafe.studio/',
       genericToolLinks: createMediaMusicToolLinks('NightCafe Creator', 'https://creator.nightcafe.studio/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('NightCafe Creator', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'NightCafe Creator (Detailed Interactive)',
@@ -1688,7 +1688,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://creator.nightcafe.studio/',
       genericToolLinks: createMediaMusicToolLinks('NightCafe Creator', 'https://creator.nightcafe.studio/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('NightCafe Creator', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   {
@@ -1702,7 +1702,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://clipdrop.co/tools',
       genericToolLinks: createMediaMusicToolLinks('Clipdrop by Stability', 'https://clipdrop.co/tools', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Clipdrop by Stability', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     },
     enLocale: {
       name: 'Clipdrop by Stability (Detailed Interactive)',
@@ -1713,7 +1713,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://clipdrop.co/tools',
       genericToolLinks: createMediaMusicToolLinks('Clipdrop by Stability', 'https://clipdrop.co/tools', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Clipdrop by Stability', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedImageVideoTemplate, 
     }
   },
   // --- Music Prompt Framework (Now all interactive) ---
@@ -1728,7 +1728,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://app.suno.ai/',
       genericToolLinks: createMediaMusicToolLinks('Suno AI', 'https://app.suno.ai/', standardMusicAlternatives),
       interactiveDefinition: sunoAISectionsId,
-      interactivePromptTemplate: sunoAITemplate, // For param placeholders reference
+      interactivePromptTemplate: sunoAITemplate, 
     },
     enLocale: {
       name: 'Suno AI (Interactive)',
@@ -1739,7 +1739,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://app.suno.ai/',
       genericToolLinks: createMediaMusicToolLinks('Suno AI', 'https://app.suno.ai/', standardMusicAlternatives),
       interactiveDefinition: sunoAISectionsEn,
-      interactivePromptTemplate: sunoAITemplate, // For param placeholders reference
+      interactivePromptTemplate: sunoAITemplate, 
     }
   },
   {
@@ -1753,7 +1753,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://www.udio.com/',
       genericToolLinks: createMediaMusicToolLinks('Udio AI', 'https://www.udio.com/', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Udio AI', 'id'),
-      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedMusicTemplate, 
     },
     enLocale: {
       name: 'Udio AI (Detailed Interactive)',
@@ -1764,7 +1764,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://www.udio.com/',
       genericToolLinks: createMediaMusicToolLinks('Udio AI', 'https://www.udio.com/', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Udio AI', 'en'),
-      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedMusicTemplate, 
     }
   },
   {
@@ -1775,10 +1775,10 @@ export const frameworks: Framework[] = [
       description: 'Bangun prompt audio/musik terperinci untuk Stable Audio dari Stability AI.',
       category: 'music',
       components: [],
-      toolLink: 'https://stableaudio.com/',
-      genericToolLinks: createMediaMusicToolLinks('Stable Audio', 'https://stableaudio.com/', standardMusicAlternatives),
+      toolLink: 'https://stableaudio.com/generate/',
+      genericToolLinks: createMediaMusicToolLinks('Stable Audio', 'https://stableaudio.com/generate/', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Stable Audio', 'id'),
-      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedMusicTemplate, 
     },
     enLocale: {
       name: 'Stable Audio (Detailed Interactive)',
@@ -1786,10 +1786,10 @@ export const frameworks: Framework[] = [
       description: 'Build detailed audio/music prompts for Stability AI\'s Stable Audio.',
       category: 'music',
       components: [],
-      toolLink: 'https://stableaudio.com/',
-      genericToolLinks: createMediaMusicToolLinks('Stable Audio', 'https://stableaudio.com/', standardMusicAlternatives),
+      toolLink: 'https://stableaudio.com/generate/',
+      genericToolLinks: createMediaMusicToolLinks('Stable Audio', 'https://stableaudio.com/generate/', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Stable Audio', 'en'),
-      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedMusicTemplate, 
     }
   },
   {
@@ -1803,7 +1803,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://aitestkitchen.withgoogle.com/tools/music-fx',
       genericToolLinks: createMediaMusicToolLinks('Google MusicFX', 'https://aitestkitchen.withgoogle.com/tools/music-fx', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Google MusicFX', 'id'),
-      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedMusicTemplate, 
     },
     enLocale: {
       name: 'Google MusicFX (Detailed Interactive)',
@@ -1814,7 +1814,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://aitestkitchen.withgoogle.com/tools/music-fx',
       genericToolLinks: createMediaMusicToolLinks('Google MusicFX', 'https://aitestkitchen.withgoogle.com/tools/music-fx', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Google MusicFX', 'en'),
-      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedMusicTemplate, 
     }
   },
   {
@@ -1828,7 +1828,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://mubert.com/render',
       genericToolLinks: createMediaMusicToolLinks('Mubert', 'https://mubert.com/render', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Mubert', 'id'),
-      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedMusicTemplate, 
     },
     enLocale: {
       name: 'Mubert (Detailed Interactive)',
@@ -1839,7 +1839,8 @@ export const frameworks: Framework[] = [
       toolLink: 'https://mubert.com/render',
       genericToolLinks: createMediaMusicToolLinks('Mubert', 'https://mubert.com/render', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Mubert', 'en'),
-      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
+      interactivePromptTemplate: detailedMusicTemplate, 
     }
   },
 ];
+    

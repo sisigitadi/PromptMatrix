@@ -4,7 +4,7 @@ import { InteractiveSectionDefinition, InteractiveQuestionDefinition, Language }
 import { useLanguage } from '../contexts/LanguageContext';
 import { ChevronDownIcon } from './icons/ChevronDownIcon';
 import { ChevronUpIcon } from './icons/ChevronUpIcon';
-import { SparklesIcon } from './icons/SparklesIcon';
+import { SparklesIcon } from './icons/SparklesIcon'; // Restored
 
 interface InteractivePromptBuilderProps {
   sections: InteractiveSectionDefinition[];
@@ -135,7 +135,7 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
   const handleInteractiveFieldSuggestionClick = (fieldId: string, suggestion: string, questionType: InteractiveQuestionDefinition['type']) => {
     if (questionType === 'manual') {
         handleManualInputChange(fieldId, suggestion);
-    } else if (questionType === 'single-choice') { // Specifically for "Other..."
+    } else if (questionType === 'single-choice') { 
         onOtherInputChange(fieldId, suggestion);
     }
     setShowInteractiveFieldSuggestions(false);
@@ -222,12 +222,13 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
                         aria-label={t('suggestButtonTitle')}
                         disabled={isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id}
                     >
-                        <SparklesIcon className={`w-4 h-4 ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'animate-pulse text-purple-600' : ''}`} />
+                        <SparklesIcon 
+                            className={`w-4 h-4 text-purple-400 ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''}`} 
+                        />
                     </button>
                 )}
                 {showInteractiveFieldSuggestions && activeSuggestionFieldId === question.id && (isFetchingInteractiveFieldSuggestions || interactiveFieldSuggestionError || interactiveFieldSuggestions.length > 0) && (
                     <div className="interactive-suggestion-list-container" id={`${question.id}-interactive-suggestions`} role="listbox">
-                       {/* Suggestion list rendering logic here - same as for 'single-choice' other input */}
                         {isFetchingInteractiveFieldSuggestions && (
                             <div className="px-2.5 py-1.5 text-xs text-slate-400 animate-pulse">{t('suggestionsLoading')}</div>
                         )}
@@ -304,7 +305,9 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
                         aria-label={t('suggestButtonTitle')}
                         disabled={isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id}
                     >
-                        <SparklesIcon className={`w-4 h-4 ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'animate-pulse text-purple-600' : ''}`} />
+                        <SparklesIcon 
+                            className={`w-4 h-4 text-purple-400 ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''}`} 
+                        />
                     </button>
                 )}
               </div>
@@ -431,7 +434,7 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
             aria-label={t('enhanceButtonAria')}
             disabled={!canEnhancePrompt || isFetchingEnhancement}
           >
-            <SparklesIcon className="w-5 h-5" />
+            <SparklesIcon className="w-5 h-5 text-purple-200" /> {/* Reverted to SparklesIcon */}
             <span className="button-text-content">
               {isFetchingEnhancement ? t('enhanceButtonLoadingText') : t('enhanceButtonText')}
             </span>

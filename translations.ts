@@ -8,12 +8,12 @@ export const translations: TranslationSet = {
     textFrameworksTitle: "Text Prompt Framework",
     mediaFrameworksTitle: "Image & Video Prompt Framework",
     musicFrameworksTitle: "Music Prompt Framework",
-    inputComponentsTitle: "Prompt Studio:", 
+    inputComponentsTitle: "Components:",
     clearInputsButton: "Clear Inputs",
     clearInputsButtonAria: "Clear all input fields for the current framework",
-    generatedPromptTitle: "Prompt Preview:", 
+    generatedPromptTitle: "Prompt Preview:",
     footerOptimize: "Made by engineer, not coder.",
-    footerContactMe: "", // Removed "Feedback:" text
+    footerContactMe: "",
     initialPromptAreaInstruction: "Start here: Choose a category, then a framework. Fill in components to build your prompt and learn how it works!",
     selectFrameworkPromptAreaInstruction: "Begin by selecting a framework category, then choose a specific framework to understand its structure and build your prompt.",
     nothingToCopyMessage: "Nothing to copy. Construct your prompt first!",
@@ -40,29 +40,42 @@ export const translations: TranslationSet = {
     customToolUrlInputPlaceholder: "e.g., https://your-ai-tool.com",
     customToolUrlButtonText: "Open Custom Link",
     customToolUrlButtonAria: "Open the custom URL entered in the input field",
-    disclaimerTitle: "Important: About This Tool",
-    disclaimerPoint1: "Learn to craft structured AI prompts using framework guides and input fields. This tool helps you build and understand prompt components.",
-    disclaimerPoint2: "This is a prompt-building and educational aid ONLY. It does NOT execute prompts or interact with AI models directly, except for the optional 'Get AI Suggestions' feature which uses Google Gemini for feedback if you have an API key configured (not provided by this tool), and the per-field AI suggestions (also using Gemini).",
-    disclaimerPoint3: "Free, 'as is', & respects privacy. No personal data collected.",
-    disclaimerPoint4: "Ad-free & promotion-free.",
-    disclaimerContactPrompt: "For feedback or questions:",
+    
+    disclaimerTitle: "About PromptMatrix",
+    disclaimerPoint1: "Learn to build & understand structured AI prompts with guided frameworks.",
+    disclaimerPoint2: "This is an educational aid. It does not execute prompts with external AI models. Optional AI-powered suggestion features require an AI API key (user-provided, not stored by this tool) to function.",
+    disclaimerPoint3: "Free, 'as is', & respects your privacy. No personal data collected. Ad-free & promotion-free.",
+    disclaimerContactPrompt: "Feedback & Questions:",
     disclaimerModalAcknowledgeButton: "Acknowledge & Continue",
-    disclaimerAiFeatureNote: "Note: The 'Get AI Suggestions' (for the whole prompt) and per-field AI suggestion features require a Google Gemini API key (not provided or stored by this tool) to be configured in the environment variables by the user/developer to function.",
+
+    disclaimerAcknowledgeButtonDisabledText: (seconds: number) => `Acknowledge & Continue (in ${seconds}s)`,
+    disclaimerSwitchToEnglish: "Switch to English",
+    disclaimerSwitchToIndonesian: "Switch to Indonesian",
 
     howToUseAppTitle: "How to Use PromptMatrix",
     howToUseAppTitleShort: "How To Use",
-    howToUseStep1: "Start by clicking a Framework Category (e.g., 'Text', 'Media', 'Music') to explore different types of prompt structures.",
-    howToUseStep2: "Select a specific Framework from the grid. This will load its components and guide you in building a structured prompt. Each component will show an example.",
-    howToUseStep3: "In the 'Prompt Studio' panel, input your details for each element, inspired by the examples. Use the 💡 button next to an input for AI suggestions (requires API key), 'x' to clear a field, or 'Clear Inputs' for all.", 
-    howToUseStep4: "Your 'Prompt Preview' updates live as you type. This shows how your inputs form a complete prompt, using the component names as labels.", 
-    howToUseStep5: "Optionally, click 'Get AI Suggestions 💡' (requires API key setup) to get suggestions from Google Gemini to improve your *entire* prompt. The AI's feedback will also include comments and suggestions regarding your 'Additional Notes & Instructions:' section, helping you refine it.",
-    howToUseStep6: "Once satisfied, click 'Copy Prompt'. Then, paste this structured prompt into your actual AI tool (ChatGPT, Midjourney, etc.). Use 'Launch AI Tool' for quick links.",
-    howToUseStep7: "Tip: Switch languages (ID/EN) using the button at the top-right. The tool is designed to help you understand prompt structures in both languages.",
-    howToUseStep8: "Tip: Click the question mark icon (top right) to see this guide again. Explore different framework to master the art of prompt engineering!",
+    howToUseStep1: "Choose a Category (Text, Media, Music) to explore prompt structures.",
+    howToUseStep2: "Select a specific Framework. Optionally, use the 'AI Framework Suggester' by describing your goal.",
+    howToUseStep3: "Fill in the 'Components'. Use 💡 for AI suggestions per field (API key needed).",
+    howToUseStep4: "Review your complete prompt in 'Prompt Preview' as it updates live.",
+    howToUseStep5: "Optionally, click 'Get AI Suggestions 💡' for overall prompt feedback from AI (API key needed).",
+    howToUseStep6: "Click 'Copy Prompt', then 'Launch AI Tool' to use it on your chosen AI platform.",
+    howToUseTip: "Explore different framework, switch languages (ID/EN) using the button in the header, and master prompt engineering!",
+    howToUseSwitchToEnglish: "View in English",
+    howToUseSwitchToIndonesian: "Lihat dalam Bahasa Indonesia",
+    howToUseDiagramTitle: "Application Workflow",
+
+    diagramStep1: "Select Category",
+    diagramStep2: "Select Framework\n(AI Suggestion Opt.)",
+    diagramStep3: "Fill Components",
+    diagramStep4: "Review Prompt\nPreview",
+    diagramStep5: "Get AI Feedback\n(Opt.)",
+    diagramStep6: "Copy & Launch\nTool",
+    
     textFrameworksCategoryTooltip: "Framework for understanding and crafting textual prompts (e.g., for chatbots, writing assistants).",
     mediaFrameworksCategoryTooltip: "Framework for understanding and building prompts for image and video generation AIs.",
     musicFrameworksCategoryTooltip: "Framework for understanding and constructing prompts for music and audio generation AIs.",
-    selectCategoryTitle: "Framework",
+    selectCategoryTitle: "Category",
     selectCategoryInstruction: "Select a framework category above to explore structures and start building your understanding of effective prompts.",
     selectSpecificFrameworkInputSummary: "Choose a framework from the grid to see its components and start building your prompt. Each component will provide an example.",
     selectSpecificFrameworkOutputSummary: "Your structured prompt will appear here, ready to be copied to your AI tool. You can also get AI feedback on it!",
@@ -72,13 +85,13 @@ export const translations: TranslationSet = {
 
     enhanceButtonText: "Get AI Suggestions",
     enhanceButtonLoadingText: "Getting Suggestions...",
-    enhanceButtonTitle: "Get AI-powered suggestions for your prompt (requires Gemini API key)",
+    enhanceButtonTitle: "Get AI-powered suggestions for your prompt (requires AI API key)",
     enhanceButtonAria: "Get AI suggestions for the prompt",
-    aiFeedbackTitle: "AI Feedback & Suggestions (Overall Prompt)",
-    aiFeedbackTitleTextOnly: "AI Feedback & Suggestions (Overall Prompt)",
+    aiFeedbackTitle: "AI Feedback & Suggestions (Overall Prompt)", 
+    aiFeedbackTitleTextOnly: "AI Feedback & Suggestions (Overall Prompt)", 
     aiFeedbackLoading: "Getting feedback from AI...",
     aiEnhancementError: "Sorry, an error occurred while fetching AI feedback. Please try again.",
-    apiKeyMissingError: "Google Gemini API Key not configured. This feature is unavailable.",
+    apiKeyMissingError: "AI API Key not configured. This feature is unavailable.",
     emptyPromptError: "Please construct a prompt before requesting AI suggestions.",
     geminiPromptInstruction: `Act as a highly experienced and somewhat strict prompt engineering instructor. Your goal is to make the user understand how to craft excellent prompts quickly.
 Analyze the user's prompt provided below (between the triple hyphens). This prompt may also contain an "Additional Notes & Instructions:" section.
@@ -89,15 +102,15 @@ Your feedback MUST include the following sections, clearly delineated:
 3.  Reasoning: Explain *why* these are strengths and weaknesses. Focus on the impact on potential AI output and clarity of instruction.
 4.  Actionable Suggestions: Provide specific, concrete advice on how to improve the prompt. Offer alternative phrasings or additions. As part of these suggestions, if the user has provided content in the "Additional Notes & Instructions:" section, offer specific improvements for it. If that section is empty but could be beneficial for this particular prompt, suggest what kind of information the user might consider adding there. Push for excellence and precision.
 
-Remember, your tone should be that of a demanding but fair teacher who wants their student to succeed and learn rapidly. Be critical but constructive.
-User's prompt:`,
-    aiFeedbackReceivedIndicatorTooltip: "AI feedback successfully loaded",
+Remember, your tone should be that of a demanding but fair teacher who wants their student to succeed and learn rapidly. Kritis namun konstruktif.
+Prompt pengguna:`, // User prompt will be appended here by the app
+    aiFeedbackReceivedIndicatorTooltip: "AI feedback successfully loaded", 
     promptHasBeenCopiedIndicatorTooltip: "This prompt has been copied.", 
-
+    
     aiFeedbackStrengthsTitle: "Strengths:",
     aiFeedbackWeaknessesTitle: "Weaknesses:",
     aiFeedbackReasoningTitle: "Reasoning:",
-    aiFeedbackActionableSuggestionsTitle: "Actionable Suggestions:",
+    aiFeedbackActionableSuggestionsTitle: "Actionable Suggestions:", 
 
     suggestButtonTitle: "Get AI suggestions for this field (requires API Key)",
     suggestionsLoading: "Getting suggestions...",
@@ -122,8 +135,8 @@ User's prompt:`,
     noFrameworkSuggestionsFound: "No specific framework suggestions found for your goal. Try rephrasing or explore the categories below.",
     frameworkSuggestionInstruction: "Describe what you want to achieve with your prompt. AI will suggest suitable framework.",
     frameworkSuggestionsTitle: "AI Framework Suggester",
-    aiPoweredFeatureTooltip: "AI Powered Feature (Requires API Key)",
-    aiFeaturesActiveIndicator: "AI features enabled (API Key detected)",
+    aiPoweredFeatureTooltip: "AI Powered Feature (Requires API Key)", 
+    aiFeaturesActiveIndicator: "AI features enabled (API Key detected)", 
     geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => `You are an AI assistant specialized in recommending prompt engineering framework. Based on the user's goal, you must suggest the most relevant framework IDs from the provided list. The list of available framework (including their ID, name, description, and category) is: ${frameworksInfoJson}. Respond ONLY with a JSON object containing a single key "suggestedFrameworkIds", which should be an array of strings (the IDs of the suggested framework). If no framework seem relevant, return an empty array for "suggestedFrameworkIds". Do not add any explanations or introductory text outside the JSON object.`,
 
     // Labels for Interactive Prompt Assembly (New section for clarity)
@@ -164,7 +177,6 @@ User's prompt:`,
     promptLabel_technical_aspects: "Technical Aspects", // Stable Diffusion
     promptLabel_camera_shot: "Camera Shot", // Stable Diffusion
     promptLabel_lighting_style: "Lighting Style", // Stable Diffusion (can reuse, context should be clear)
-    promptLabel_negative_elements: "Negative Elements", // Stable Diffusion (can reuse)
     promptLabel_custom_negative_prompt: "Custom Negative Prompt", // Stable Diffusion
     promptLabel_param_info: "Parameters Note", // Stable Diffusion
     promptLabel_subjek: "Subject", // Veo (ID specific, ensure EN matches)
@@ -207,6 +219,7 @@ User's prompt:`,
     categoryLabelVideo: "Video",
     categoryLabelMusic: "Music",
     categoryLabelText: "Text",
+    frameworkWord: "Framework",
   },
   id: {
     appTitle: "PromptMatrix",
@@ -214,12 +227,12 @@ User's prompt:`,
     textFrameworksTitle: "Kerangka Kerja Prompt Teks",
     mediaFrameworksTitle: "Kerangka Kerja Prompt Gambar & Video",
     musicFrameworksTitle: "Kerangka Kerja Prompt Musik",
-    inputComponentsTitle: "Studio Prompt:", 
+    inputComponentsTitle: "Komponen:",
     clearInputsButton: "Bersihkan Isian",
     clearInputsButtonAria: "Bersihkan semua kolom isian untuk kerangka kerja saat ini",
-    generatedPromptTitle: "Pratinjau Prompt:", 
+    generatedPromptTitle: "Pratinjau Prompt:",
     footerOptimize: "Dibuat oleh insinyur, bukan programmer.",
-    footerContactMe: "", // Removed "Masukan:" text
+    footerContactMe: "",
     initialPromptAreaInstruction: "Mulai di sini: Pilih kategori, lalu kerangka kerja. Isi komponen untuk membuat prompt dan pelajari cara kerjanya!",
     selectFrameworkPromptAreaInstruction: "Mulailah dengan memilih kategori kerangka kerja, lalu pilih kerangka kerja spesifik untuk memahami strukturnya dan membangun prompt Anda.",
     nothingToCopyMessage: "Belum ada yang disalin. Susun prompt Anda terlebih dahulu!",
@@ -246,29 +259,42 @@ User's prompt:`,
     customToolUrlInputPlaceholder: "cth: https://alat-ai-anda.com",
     customToolUrlButtonText: "Buka Link Kustom",
     customToolUrlButtonAria: "Buka URL kustom yang dimasukkan di kolom isian",
-    disclaimerTitle: "Penting: Tentang Alat Ini",
-    disclaimerPoint1: "Pelajari cara membuat prompt AI terstruktur menggunakan panduan kerangka kerja dan kolom isian. Alat ini membantu Anda membangun dan memahami komponen prompt.",
-    disclaimerPoint2: "Aplikasi ini HANYA alat bantu edukasi dan pembangunan prompt. Aplikasi ini TIDAK menjalankan prompt atau berinteraksi langsung dengan model AI, kecuali fitur opsional 'Minta Saran AI' yang menggunakan Google Gemini untuk masukan jika Anda memiliki kunci API yang terkonfigurasi (tidak disediakan oleh alat ini), dan fitur saran AI per isian (juga menggunakan Gemini).",
-    disclaimerPoint3: "Gratis, 'apa adanya', & menghargai privasi. Data pribadi tidak dikumpulkan.",
-    disclaimerPoint4: "Bebas iklan & promosi.",
-    disclaimerContactPrompt: "Untuk masukan atau pertanyaan:",
+    
+    disclaimerTitle: "Tentang PromptMatrix",
+    disclaimerPoint1: "Pelajari cara membuat & memahami prompt AI terstruktur dengan kerangka kerja terpandu.",
+    disclaimerPoint2: "Ini adalah alat bantu edukasi. Tidak menjalankan prompt dengan model AI eksternal. Fitur saran opsional bertenaga AI memerlukan kunci API AI (disediakan pengguna, tidak disimpan alat ini) agar berfungsi.",
+    disclaimerPoint3: "Gratis, 'apa adanya', & menghargai privasi Anda. Tidak ada data pribadi yang dikumpulkan. Bebas iklan & promosi.",
+    disclaimerContactPrompt: "Masukan & Pertanyaan:",
     disclaimerModalAcknowledgeButton: "Pahami & Lanjutkan",
-    disclaimerAiFeatureNote: "Catatan: Fitur 'Minta Saran AI' (untuk keseluruhan prompt) dan fitur saran AI per isian memerlukan kunci API Google Gemini (tidak disediakan atau disimpan oleh alat ini) yang perlu dikonfigurasi dalam variabel lingkungan oleh pengguna/pengembang untuk dapat berfungsi.",
+
+    disclaimerAcknowledgeButtonDisabledText: (seconds: number) => `Pahami & Lanjutkan (dalam ${seconds}d)`,
+    disclaimerSwitchToEnglish: "Ganti ke Bahasa Inggris",
+    disclaimerSwitchToIndonesian: "Ganti ke Bahasa Indonesia",
 
     howToUseAppTitle: "Cara Menggunakan PromptMatrix",
     howToUseAppTitleShort: "Cara Pakai",
-    howToUseStep1: "Mulai dengan mengeklik Kategori Kerangka Kerja (mis., 'Teks', 'Media', 'Musik') untuk menjelajahi berbagai jenis struktur prompt.",
-    howToUseStep2: "Pilih Kerangka Kerja spesifik dari petak. Ini akan memuat komponennya dan memandu Anda dalam membangun prompt terstruktur. Setiap komponen akan menampilkan contoh.",
-    howToUseStep3: "Di panel 'Studio Prompt', masukkan detail Anda untuk setiap elemen, terinspirasi oleh contoh. Gunakan tombol 💡 di sebelah isian untuk saran AI (memerlukan kunci API), 'x' untuk menghapus isian, atau 'Bersihkan Isian' untuk semua.", 
-    howToUseStep4: "'Pratinjau Prompt' Anda diperbarui langsung saat Anda mengetik. Ini menunjukkan bagaimana masukan Anda membentuk prompt lengkap, menggunakan nama komponen sebagai label.", 
-    howToUseStep5: "Opsional, klik 'Minta Saran AI 💡' (memerlukan pengaturan kunci API) untuk mendapatkan saran dari Google Gemini guna menyempurnakan *keseluruhan* prompt Anda. Masukan AI juga akan mencakup komentar dan saran mengenai bagian 'Catatan & Instruksi Tambahan:' Anda, membantu Anda menyempurnakannya.",
-    howToUseStep6: "Setelah puas, klik 'Salin Prompt'. Lalu, tempel prompt terstruktur ini ke alat AI Anda (ChatGPT, Midjourney, dll.). Gunakan 'Luncurkan Alat AI' untuk tautan cepat.",
-    howToUseStep7: "Kiat: Ganti bahasa (ID/EN) menggunakan tombol di kanan atas. Alat ini dirancang untuk membantu Anda memahami struktur prompt dalam kedua bahasa.",
-    howToUseStep8: "Kiat: Klik ikon tanda tanya (kanan atas) untuk melihat panduan ini lagi. Jelajahi berbagai kerangka kerja untuk menguasai seni rekayasa prompt!",
+    howToUseStep1: "Pilih Kategori (Teks, Media, Musik) untuk menjelajahi struktur prompt.",
+    howToUseStep2: "Pilih Kerangka Kerja spesifik. Opsional, gunakan 'Penyaran Kerangka Kerja AI' dengan menjelaskan tujuan Anda.",
+    howToUseStep3: "Isi 'Komponen'. Gunakan 💡 untuk saran AI per isian (perlu kunci API).",
+    howToUseStep4: "Tinjau 'Pratinjau Prompt' Anda yang diperbarui secara langsung saat Anda mengetik.",
+    howToUseStep5: "Opsional, klik 'Minta Saran AI 💡' untuk masukan prompt keseluruhan dari AI (perlu kunci API).",
+    howToUseStep6: "Klik 'Salin Prompt', lalu 'Luncurkan Alat AI' untuk digunakan di platform AI pilihan Anda.",
+    howToUseTip: "Jelajahi berbagai kerangka kerja, ganti bahasa (ID/EN) menggunakan tombol di header, dan kuasai rekayasa prompt!",
+    howToUseSwitchToEnglish: "Lihat dalam Bahasa Inggris",
+    howToUseSwitchToIndonesian: "Ganti ke Bahasa Indonesia",
+    howToUseDiagramTitle: "Alur Kerja Aplikasi",
+
+    diagramStep1: "Pilih Kategori",
+    diagramStep2: "Pilih Kerangka Kerja\n(Saran AI Ops.)",
+    diagramStep3: "Isi Komponen",
+    diagramStep4: "Tinjau Pratinjau\nPrompt",
+    diagramStep5: "Masukan AI\n(Ops.)",
+    diagramStep6: "Salin & Luncurkan\nAlat",
+    
     textFrameworksCategoryTooltip: "Kerangka kerja untuk memahami dan menyusun prompt tekstual (misalnya, untuk chatbot, asisten menulis).",
     mediaFrameworksCategoryTooltip: "Kerangka kerja untuk memahami dan membangun prompt untuk AI penghasil gambar dan video.",
     musicFrameworksCategoryTooltip: "Kerangka kerja untuk memahami dan menyusun prompt untuk AI penghasil musik dan audio.",
-    selectCategoryTitle: "Kerangka Kerja",
+    selectCategoryTitle: "Kategori",
     selectCategoryInstruction: "Pilih kategori kerangka kerja di atas untuk menjelajahi struktur dan mulai membangun pemahaman Anda tentang prompt yang efektif.",
     selectSpecificFrameworkInputSummary: "Pilih kerangka kerja dari petak untuk melihat komponennya dan mulai membangun prompt Anda. Setiap komponen akan memberikan contoh.",
     selectSpecificFrameworkOutputSummary: "Prompt terstruktur Anda akan muncul di sini, siap disalin ke alat AI Anda. Anda juga bisa mendapatkan masukan AI tentangnya!",
@@ -278,13 +304,13 @@ User's prompt:`,
 
     enhanceButtonText: "Minta Saran AI",
     enhanceButtonLoadingText: "Meminta Saran...",
-    enhanceButtonTitle: "Dapatkan saran dari AI untuk prompt Anda (membutuhkan kunci API Gemini)",
+    enhanceButtonTitle: "Dapatkan saran dari AI untuk prompt Anda (membutuhkan kunci API AI)",
     enhanceButtonAria: "Minta saran AI untuk prompt",
-    aiFeedbackTitle: "Masukan & Saran AI (Prompt Keseluruhan)",
-    aiFeedbackTitleTextOnly: "Masukan & Saran AI (Prompt Keseluruhan)",
+    aiFeedbackTitle: "Masukan & Saran AI (Prompt Keseluruhan)", 
+    aiFeedbackTitleTextOnly: "Masukan & Saran AI (Prompt Keseluruhan)", 
     aiFeedbackLoading: "Mendapatkan masukan dari AI...",
     aiEnhancementError: "Maaf, terjadi kesalahan saat mengambil masukan AI. Silakan coba lagi.",
-    apiKeyMissingError: "Kunci API Google Gemini tidak terkonfigurasi. Fitur ini tidak tersedia.",
+    apiKeyMissingError: "Kunci API AI tidak terkonfigurasi. Fitur ini tidak tersedia.",
     emptyPromptError: "Harap buat prompt terlebih dahulu sebelum meminta saran AI.",
     geminiPromptInstruction: `Bertindaklah sebagai instruktur rekayasa prompt yang sangat berpengalaman dan agak galak. Tujuan Anda adalah membuat pengguna memahami cara membuat prompt yang unggul dengan cepat.
 Analisis prompt pengguna yang disediakan di bawah ini (di antara tiga tanda hubung). Prompt ini mungkin juga berisi bagian "Catatan & Instruksi Tambahan:".
@@ -296,14 +322,14 @@ Masukan Anda HARUS mencakup bagian-bagian berikut, yang digambarkan dengan jelas
 4.  Saran Tindak Lanjut: Berikan saran spesifik dan konkret tentang cara meningkatkan prompt. Tawarkan frasa alternatif atau tambahan. Sebagai bagian dari saran ini, jika pengguna telah memberikan konten di bagian "Catatan & Instruksi Tambahan:", tawarkan perbaikan spesifik untuk itu. Jika bagian tersebut kosong tetapi bisa bermanfaat untuk prompt khusus ini, sarankan jenis informasi apa yang mungkin dipertimbangkan pengguna untuk ditambahkan di sana. Dorong untuk keunggulan dan presisi.
 
 Ingat, nada Anda harus seperti guru yang menuntut tetapi adil yang ingin muridnya berhasil dan belajar dengan cepat. Kritis namun konstruktif.
-Prompt pengguna:`,
-    aiFeedbackReceivedIndicatorTooltip: "Masukan AI berhasil dimuat",
-    promptHasBeenCopiedIndicatorTooltip: "Prompt ini telah disalin.",
-
+Prompt pengguna:`, // User prompt will be appended here by the app
+    aiFeedbackReceivedIndicatorTooltip: "Masukan AI berhasil dimuat", 
+    promptHasBeenCopiedIndicatorTooltip: "Prompt ini telah disalin.", 
+    
     aiFeedbackStrengthsTitle: "Kelebihan:",
     aiFeedbackWeaknessesTitle: "Kekurangan:",
     aiFeedbackReasoningTitle: "Alasan:",
-    aiFeedbackActionableSuggestionsTitle: "Saran Tindak Lanjut:",
+    aiFeedbackActionableSuggestionsTitle: "Saran Tindak Lanjut:", 
 
     suggestButtonTitle: "Dapatkan saran AI untuk isian ini (membutuhkan Kunci API)",
     suggestionsLoading: "Mendapatkan saran...",
@@ -328,8 +354,8 @@ Prompt pengguna:`,
     noFrameworkSuggestionsFound: "Tidak ada saran kerangka kerja spesifik yang ditemukan untuk tujuan Anda. Coba ubah frasa atau jelajahi kategori di bawah.",
     frameworkSuggestionInstruction: "Jelaskan apa yang ingin Anda capai dengan prompt Anda. AI akan menyarankan kerangka kerja yang sesuai.",
     frameworkSuggestionsTitle: "Penyaran Kerangka Kerja AI",
-    aiPoweredFeatureTooltip: "Fitur Ditenagai AI (Membutuhkan Kunci API)",
-    aiFeaturesActiveIndicator: "Fitur AI aktif (Kunci API terdeteksi)",
+    aiPoweredFeatureTooltip: "Fitur Ditenagai AI (Membutuhkan Kunci API)", 
+    aiFeaturesActiveIndicator: "Fitur AI aktif (Kunci API terdeteksi)", 
     geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => `Anda adalah asisten AI yang berspesialisasi dalam merekomendasikan kerangka kerja rekayasa prompt. Berdasarkan tujuan pengguna, Anda harus menyarankan ID kerangka kerja yang paling relevan dari daftar yang disediakan. Daftar kerangka kerja yang tersedia (termasuk ID, nama, deskripsi, dan kategori) adalah: ${frameworksInfoJson}. Balas HANYA dengan objek JSON yang berisi satu kunci "suggestedFrameworkIds", yang seharusnya berupa array string (ID dari kerangka kerja yang disarankan). Jika tidak ada kerangka kerja yang tampak relevan, kembalikan array kosong untuk "suggestedFrameworkIds". Jangan tambahkan penjelasan atau teks pengantar apa pun di luar objek JSON.`,
 
     // Labels for Interactive Prompt Assembly (New section for clarity)
@@ -370,7 +396,6 @@ Prompt pengguna:`,
     promptLabel_technical_aspects: "Aspek Teknis", // Stable Diffusion
     promptLabel_camera_shot: "Shot Kamera", // Stable Diffusion
     promptLabel_lighting_style: "Gaya Pencahayaan", // Stable Diffusion (can reuse, context should be clear)
-    promptLabel_negative_elements: "Elemen Negatif", // Stable Diffusion (can reuse)
     promptLabel_custom_negative_prompt: "Prompt Negatif Kustom", // Stable Diffusion
     promptLabel_param_info: "Catatan Parameter", // Stable Diffusion
     promptLabel_subjek: "Subjek", // Veo
@@ -413,5 +438,6 @@ Prompt pengguna:`,
     categoryLabelVideo: "Video",
     categoryLabelMusic: "Musik",
     categoryLabelText: "Teks",
+    frameworkWord: "Kerangka Kerja",
   }
 };
