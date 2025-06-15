@@ -17,12 +17,14 @@ import { ChevronUpIcon } from './components/icons/ChevronUpIcon';
 import { PencilIcon } from './components/icons/PencilIcon';
 import { CameraIcon } from './components/icons/CameraIcon';
 import { MusicNoteIcon } from './components/icons/MusicNoteIcon';
-import { SparklesIcon } from './components/icons/SparklesIcon'; // Restored
-import { InfoIcon } from './components/icons/InfoIcon'; // Retained for DisclaimerModal
+// SparklesIcon import removed as it's no longer used for titles in this file.
+// It's still used in InputField.tsx and InteractivePromptBuilder.tsx
+import { InfoIcon } from './components/icons/InfoIcon'; 
 import { StarIcon } from './components/icons/StarIcon';
 import { GmailIcon } from './components/icons/GmailIcon';
 import { GithubIcon } from './components/icons/GithubIcon';
 import { MediumIcon } from './components/icons/MediumIcon'; 
+import { SparklesIcon } from './components/icons/SparklesIcon'; // Still needed for other parts (e.g. suggester button)
 import {
   frameworks,
   detailedImageVideoTemplate,
@@ -68,7 +70,7 @@ const App: React.FC = () => {
   const [userDefinedInteraction, setUserDefinedInteraction] = useState<string>('');
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [promptToCopy, setPromptToCopy] = useState<string>('');
-  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(true); // Disclaimer always shown initially
+  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(true); 
   const [showHowToUse, setShowHowToUse] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<'text' | 'media' | 'music'>('text');
 
@@ -966,8 +968,8 @@ const App: React.FC = () => {
             {apiKey && selectedCategory && (
                 <div className="bg-slate-700/40 dark:bg-slate-800/50 p-3 sm:p-4 rounded-lg border border-purple-600/50 shadow-sm">
                     <h4 className="text-md font-semibold text-purple-400 dark:text-purple-300 mb-2 flex items-center">
-                        <SparklesIcon className="w-5 h-5 mr-2 text-purple-400" /> {/* Reverted to SparklesIcon */}
                         {t('frameworkSuggestionsTitle')}
+                        {apiKey && <AppLogoIcon animatedAsAiIndicator className="w-4 h-4 ml-2 api-status-indicator shrink-0" />}
                     </h4>
                     <p className="text-xs text-slate-400 mb-2">{t('frameworkSuggestionInstruction')}</p>
                     <textarea
@@ -987,7 +989,7 @@ const App: React.FC = () => {
                         disabled={!userGoalForFramework.trim() || isFetchingFrameworkSuggestions}
                         aria-label={t('getFrameworkSuggestionsButtonAria')}
                     >
-                        <SparklesIcon className="w-4 h-4 text-purple-200" /> {/* Reverted to SparklesIcon */}
+                        <SparklesIcon className="w-4 h-4 text-purple-200" />
                         <span className="button-text-content">{isFetchingFrameworkSuggestions ? t('frameworkSuggestionsLoading') : t('getFrameworkSuggestionsButton')}</span>
                     </button>
                     {frameworkSuggestionError && <p className="text-xs text-rose-400 mt-1.5">{frameworkSuggestionError}</p>}

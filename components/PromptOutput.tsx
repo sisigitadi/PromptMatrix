@@ -8,7 +8,10 @@ import { ClipboardIcon } from './icons/ClipboardIcon';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
 import { ChevronDownIcon } from './icons/ChevronDownIcon';
 import { ChevronUpIcon } from './icons/ChevronUpIcon';
-import { SparklesIcon } from './icons/SparklesIcon'; // Restored
+// SparklesIcon import removed as it's no longer used for titles in this file.
+// It's still used for buttons in this file.
+import { SparklesIcon } from './icons/SparklesIcon'; 
+import { AppLogoIcon } from './icons/AppLogoIcon'; // Added for AI indicator
 
 interface PromptOutputProps {
   promptText: string;
@@ -141,8 +144,7 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
     while (remainingText.trim()) {
       let currentHeader = null;
       let nextHeaderIndex = Infinity;
-      // let nextHeaderTitleLength = 0; // Not used
-
+      
       for (const headerObj of headers) {
         const index = remainingText.indexOf(headerObj.title);
         if (index === 0) { 
@@ -240,8 +242,8 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
                 aria-controls="ai-feedback-content"
               >
                 <h4 className="text-sm sm:text-md font-semibold text-purple-400 dark:text-purple-300 flex items-center">
-                  <SparklesIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 text-purple-400" /> {/* Reverted to SparklesIcon */}
                   <strong className="italic">{t('aiFeedbackTitleTextOnly')}</strong>
+                  {apiKeyAvailable && <AppLogoIcon animatedAsAiIndicator className="w-4 h-4 ml-1.5 api-status-indicator shrink-0" />}
                   {showAiFeedbackSuccessIndicator && (
                     <CheckCircleIcon className="w-4 h-4 text-green-500 dark:text-green-400 ml-1.5 shrink-0" title={t('aiFeedbackReceivedIndicatorTooltip')} />
                   )}
@@ -280,7 +282,7 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
                     aria-label={t('enhanceButtonAria')}
                     disabled={!canEnhance || isFetchingAiFeedback}
                 >
-                    <SparklesIcon className="w-4 h-4 text-purple-200" /> {/* Reverted to SparklesIcon */}
+                    <SparklesIcon className="w-4 h-4 text-purple-200" /> 
                     <span className="button-text-content">{isFetchingAiFeedback ? t('enhanceButtonLoadingText') : t('enhanceButtonText')}</span>
                 </button>
 

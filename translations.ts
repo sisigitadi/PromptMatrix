@@ -75,12 +75,12 @@ export const translations: TranslationSet = {
     textFrameworksCategoryTooltip: "Framework for understanding and crafting textual prompts (e.g., for chatbots, writing assistants).",
     mediaFrameworksCategoryTooltip: "Framework for understanding and building prompts for image and video generation AIs.",
     musicFrameworksCategoryTooltip: "Framework for understanding and constructing prompts for music and audio generation AIs.",
-    selectCategoryTitle: "Category",
+    selectCategoryTitle: "Kategori",
     selectCategoryInstruction: "Select a framework category above to explore structures and start building your understanding of effective prompts.",
     selectSpecificFrameworkInputSummary: "Choose a framework from the grid to see its components and start building your prompt. Each component will provide an example.",
     selectSpecificFrameworkOutputSummary: "Your structured prompt will appear here, ready to be copied to your AI tool. You can also get AI feedback on it!",
-    clickToExpandInputPanel: (frameworkName: string) => `Show '${frameworkName}' components & examples`,
-    clickToExpandOutputPanel: "Show prompt & actions",
+    clickToExpandInputPanel: (frameworkName: string) => `Tampilkan komponen '${frameworkName}' & contoh`,
+    clickToExpandOutputPanel: "Tampilkan prompt Anda dan tindakan",
     selectOptionTooltip: "Select option",
 
     enhanceButtonText: "Get AI Suggestions",
@@ -93,17 +93,15 @@ export const translations: TranslationSet = {
     aiEnhancementError: "Sorry, an error occurred while fetching AI feedback. Please try again.",
     apiKeyMissingError: "AI API Key not configured. This feature is unavailable.",
     emptyPromptError: "Please construct a prompt before requesting AI suggestions.",
-    geminiPromptInstruction: `Act as a highly experienced and somewhat strict prompt engineering instructor. Your goal is to make the user understand how to craft excellent prompts quickly.
-Analyze the user's prompt provided below (between the triple hyphens). This prompt may also contain an "Additional Notes & Instructions:" section.
-Provide your feedback in plain text, without any markdown formatting (no asterisks, no backticks, no hash symbols for headings). Use simple line breaks for paragraphs or lists.
+    geminiPromptInstruction: `Act as a friendly, cheerful, and highly experienced prompt engineering mentor. You're like an academic guide and a helpful friend combined, passionate about sharing your extensive experience to teach users prompt engineering from foundational basics to expert levels. Your dedication is to empower them to master this skill quickly through your point of view.
+Analyze the user's prompt provided below...
 Your feedback MUST include the following sections, clearly delineated:
-1.  Strengths: What the user did well. Be specific.
-2.  Weaknesses: Where the prompt falls short, is unclear, or could be misinterpreted by an AI. Be direct.
-3.  Reasoning: Explain *why* these are strengths and weaknesses. Focus on the impact on potential AI output and clarity of instruction.
-4.  Actionable Suggestions: Provide specific, concrete advice on how to improve the prompt. Offer alternative phrasings or additions. As part of these suggestions, if the user has provided content in the "Additional Notes & Instructions:" section, offer specific improvements for it. If that section is empty but could be beneficial for this particular prompt, suggest what kind of information the user might consider adding there. Push for excellence and precision.
-
-Remember, your tone should be that of a demanding but fair teacher who wants their student to succeed and learn rapidly. Kritis namun konstruktif.
-Prompt pengguna:`, // User prompt will be appended here by the app
+1.  Strengths: ...
+2.  Weaknesses: ...
+3.  Reasoning: ...
+4.  Actionable Suggestions: ...
+Maintain an encouraging, engaging, and deeply informative tone. Your goal is to make learning prompt engineering an enjoyable and enlightening journey.
+User's prompt:`,
     aiFeedbackReceivedIndicatorTooltip: "AI feedback successfully loaded", 
     promptHasBeenCopiedIndicatorTooltip: "This prompt has been copied.", 
     
@@ -215,6 +213,7 @@ Prompt pengguna:`, // User prompt will be appended here by the app
     promptLabel_duration_or_specifics: "Duration/Specifics", // Detailed Music
     promptLabel_lyrical_theme_or_custom: "Lyrics", // Detailed Music
 
+    // New keys for category button labels
     categoryLabelImage: "Image",
     categoryLabelVideo: "Video",
     categoryLabelMusic: "Music",
@@ -312,17 +311,15 @@ Prompt pengguna:`, // User prompt will be appended here by the app
     aiEnhancementError: "Maaf, terjadi kesalahan saat mengambil masukan AI. Silakan coba lagi.",
     apiKeyMissingError: "Kunci API AI tidak terkonfigurasi. Fitur ini tidak tersedia.",
     emptyPromptError: "Harap buat prompt terlebih dahulu sebelum meminta saran AI.",
-    geminiPromptInstruction: `Bertindaklah sebagai instruktur rekayasa prompt yang sangat berpengalaman dan agak galak. Tujuan Anda adalah membuat pengguna memahami cara membuat prompt yang unggul dengan cepat.
-Analisis prompt pengguna yang disediakan di bawah ini (di antara tiga tanda hubung). Prompt ini mungkin juga berisi bagian "Catatan & Instruksi Tambahan:".
-Berikan masukan Anda dalam bentuk teks biasa (plain text), tanpa format markdown apa pun (tanpa tanda bintang, tanpa tanda kutip terbalik, tanpa simbol tagar untuk judul). Gunakan baris baru sederhana untuk paragraf atau daftar.
+    geminiPromptInstruction: `Bertindaklah sebagai mentor rekayasa prompt yang ramah, ceria, dan sangat berpengalaman. Anda adalah gabungan antara pemandu akademis dan teman yang suportif, bersemangat membagikan pengalaman luas Anda untuk mengajarkan pengguna rekayasa prompt dari dasar hingga tingkat ahli. Dedikasi Anda adalah memberdayakan mereka agar cepat menguasai keahlian ini melalui sudut pandang Anda.
+Analisis prompt pengguna yang disediakan di bawah...
 Masukan Anda HARUS mencakup bagian-bagian berikut, yang digambarkan dengan jelas:
-1.  Kelebihan: Apa yang dilakukan pengguna dengan baik. Spesifik.
-2.  Kekurangan: Di mana prompt tersebut kurang, tidak jelas, atau dapat disalahartikan oleh AI. Langsung ke intinya.
-3.  Alasan: Jelaskan *mengapa* ini adalah kelebihan dan kekurangan. Fokus pada dampak terhadap potensi output AI dan kejelasan instruksi.
-4.  Saran Tindak Lanjut: Berikan saran spesifik dan konkret tentang cara meningkatkan prompt. Tawarkan frasa alternatif atau tambahan. Sebagai bagian dari saran ini, jika pengguna telah memberikan konten di bagian "Catatan & Instruksi Tambahan:", tawarkan perbaikan spesifik untuk itu. Jika bagian tersebut kosong tetapi bisa bermanfaat untuk prompt khusus ini, sarankan jenis informasi apa yang mungkin dipertimbangkan pengguna untuk ditambahkan di sana. Dorong untuk keunggulan dan presisi.
-
-Ingat, nada Anda harus seperti guru yang menuntut tetapi adil yang ingin muridnya berhasil dan belajar dengan cepat. Kritis namun konstruktif.
-Prompt pengguna:`, // User prompt will be appended here by the app
+1.  Kelebihan: ...
+2.  Kekurangan: ...
+3.  Alasan: ...
+4.  Saran Tindak Lanjut: ...
+Pertahankan nada yang memberi semangat, menarik, dan sangat informatif. Tujuan Anda adalah menjadikan pembelajaran rekayasa prompt sebagai perjalanan yang menyenangkan dan mencerahkan.
+Prompt pengguna:`,
     aiFeedbackReceivedIndicatorTooltip: "Masukan AI berhasil dimuat", 
     promptHasBeenCopiedIndicatorTooltip: "Prompt ini telah disalin.", 
     
