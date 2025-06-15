@@ -20,13 +20,13 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
 
   // S-flow layout coordinates
   const nodes = [
-    { id: 'step1', labelKey: 'diagramStep1' as TranslationKey, x: svgPadding, y: svgPadding, number: 1 },
-    { id: 'step2', labelKey: 'diagramStep2' as TranslationKey, x: svgPadding + boxWidth + horizontalSpacing, y: svgPadding, number: 2 },
-    { id: 'step3', labelKey: 'diagramStep3' as TranslationKey, x: svgPadding + 2 * (boxWidth + horizontalSpacing), y: svgPadding, number: 3 },
+    { id: 'step1', labelKey: 'diagramStep1' as TranslationKey, tooltipKey: 'howToUseStep1' as TranslationKey, x: svgPadding, y: svgPadding, number: 1 },
+    { id: 'step2', labelKey: 'diagramStep2' as TranslationKey, tooltipKey: 'howToUseStep2' as TranslationKey, x: svgPadding + boxWidth + horizontalSpacing, y: svgPadding, number: 2 },
+    { id: 'step3', labelKey: 'diagramStep3' as TranslationKey, tooltipKey: 'howToUseStep3' as TranslationKey, x: svgPadding + 2 * (boxWidth + horizontalSpacing), y: svgPadding, number: 3 },
     
-    { id: 'step4', labelKey: 'diagramStep4' as TranslationKey, x: svgPadding + 2 * (boxWidth + horizontalSpacing), y: svgPadding + boxHeight + verticalSpacing, number: 4 },
-    { id: 'step5', labelKey: 'diagramStep5' as TranslationKey, x: svgPadding + boxWidth + horizontalSpacing, y: svgPadding + boxHeight + verticalSpacing, number: 5 },
-    { id: 'step6', labelKey: 'diagramStep6' as TranslationKey, x: svgPadding, y: svgPadding + boxHeight + verticalSpacing, number: 6 },
+    { id: 'step4', labelKey: 'diagramStep4' as TranslationKey, tooltipKey: 'howToUseStep4' as TranslationKey, x: svgPadding + 2 * (boxWidth + horizontalSpacing), y: svgPadding + boxHeight + verticalSpacing, number: 4 },
+    { id: 'step5', labelKey: 'diagramStep5' as TranslationKey, tooltipKey: 'howToUseStep5' as TranslationKey, x: svgPadding + boxWidth + horizontalSpacing, y: svgPadding + boxHeight + verticalSpacing, number: 5 },
+    { id: 'step6', labelKey: 'diagramStep6' as TranslationKey, tooltipKey: 'howToUseStep6' as TranslationKey, x: svgPadding, y: svgPadding + boxHeight + verticalSpacing, number: 6 },
   ];
 
   const edges = [
@@ -57,7 +57,7 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
     >
       <title id="workflow-diagram-title">{t('howToUseDiagramTitle')}</title>
       <desc id="workflow-diagram-desc">
-        {`${t('diagramStep1')}, then ${t('diagramStep2')}, then ${t('diagramStep3')}, then ${t('diagramStep4')}, then ${t('diagramStep5')}, finally ${t('diagramStep6')}.`}
+        {`${t(nodes[0].tooltipKey)}, then ${t(nodes[1].tooltipKey)}, then ${t(nodes[2].tooltipKey)}, then ${t(nodes[3].tooltipKey)}, then ${t(nodes[4].tooltipKey)}, finally ${t(nodes[5].tooltipKey)}.`}
       </desc>
       <defs>
         <marker
@@ -110,7 +110,8 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
 
       {/* Nodes (Boxes and Text) */}
       {nodes.map((node) => (
-        <g key={node.id}>
+        <g key={node.id} role="group" aria-labelledby={`${node.id}-title`}>
+          <title id={`${node.id}-title`}>{t(node.tooltipKey).replace(/\n/g, ' ')}</title>
           <rect
             x={node.x}
             y={node.y}
@@ -139,11 +140,12 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
             fontSize={numberFontSize}
             fontFamily="sans-serif"
             fontWeight="bold"
+            aria-hidden="true"
           >
             {node.number}
           </text>
           
-          {/* Step Label */}
+          {/* Step Label (using the shorter diagramStepX for visual brevity) */}
           {t(node.labelKey).split('\n').map((line: string, i: number, arr: string[]) => {
             const lineHeight = labelFontSize + 3; // Estimated line height including some spacing
             const totalTextBlockHeight = arr.length * lineHeight - (arr.length > 1 ? 3 : 0); // Reduce spacing for last line
@@ -166,6 +168,7 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
                 fontSize={labelFontSize}
                 fontFamily="sans-serif"
                 fontWeight="medium"
+                aria-hidden="true"
               >
                 {line}
               </text>

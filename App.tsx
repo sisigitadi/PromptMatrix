@@ -10,20 +10,23 @@ import { EraserIcon } from './components/icons/EraserIcon';
 import DisclaimerModal from './components/DisclaimerModal';
 import HowToUseModal from './components/HowToUseModal';
 import { AppLogoIcon } from './components/icons/AppLogoIcon';
-import { SquaresPlusIcon } from './components/icons/SquaresPlusIcon'; 
-import { ViewColumnsIcon } from './components/icons/ViewColumnsIcon'; 
+// import { SquaresPlusIcon } from './components/icons/SquaresPlusIcon'; // Replaced
+// import { ViewColumnsIcon } from './components/icons/ViewColumnsIcon'; // Replaced
 import { ChevronDownIcon } from './components/icons/ChevronDownIcon';
 import { ChevronUpIcon } from './components/icons/ChevronUpIcon';
-import { PencilIcon } from './components/icons/PencilIcon';
-import { CameraIcon } from './components/icons/CameraIcon';
-import { MusicNoteIcon } from './components/icons/MusicNoteIcon';
-// SparklesIcon import removed from here for titles, but child components will manage their own.
+// import { PencilIcon } from './components/icons/PencilIcon'; // Replaced
+// import { CameraIcon } from './components/icons/CameraIcon'; // Replaced
+// import { MusicNoteIcon } from './components/icons/MusicNoteIcon'; // Replaced
 import { InfoIcon } from './components/icons/InfoIcon'; 
 import { StarIcon } from './components/icons/StarIcon';
 import { GmailIcon } from './components/icons/GmailIcon';
 import { GithubIcon } from './components/icons/GithubIcon';
 import { MediumIcon } from './components/icons/MediumIcon'; 
-// SparklesIcon is no longer needed directly in App.tsx as its usages are replaced or handled by children.
+import { PencilIcon } from './components/icons/PencilIcon'; // Still needed for category buttons
+import { CameraIcon } from './components/icons/CameraIcon'; // Still needed for category buttons
+import { MusicNoteIcon } from './components/icons/MusicNoteIcon'; // Still needed for category buttons
+// NumberIcon imports removed
+
 import {
   frameworks,
   detailedImageVideoTemplate,
@@ -69,8 +72,12 @@ const App: React.FC = () => {
   const [userDefinedInteraction, setUserDefinedInteraction] = useState<string>('');
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [promptToCopy, setPromptToCopy] = useState<string>('');
+  
   const [showDisclaimer, setShowDisclaimer] = useState<boolean>(true); 
   const [showHowToUse, setShowHowToUse] = useState<boolean>(false);
+  const [isHowToUseModalShownAutomatically, setIsHowToUseModalShownAutomatically] = useState<boolean>(false);
+  const [hasShownInitialModals, setHasShownInitialModals] = useState<boolean>(false);
+
   const [selectedCategory, setSelectedCategory] = useState<'text' | 'media' | 'music'>('text');
 
   const [isInputPanelExpanded, setIsInputPanelExpanded] = useState<boolean>(true);
@@ -101,7 +108,19 @@ const App: React.FC = () => {
   const aiClient = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
   const handleDisclaimerAcknowledge = () => {
-    setShowDisclaimer(false); 
+    setShowDisclaimer(false);
+    if (!hasShownInitialModals) {
+      setShowHowToUse(true);
+      setIsHowToUseModalShownAutomatically(true);
+    }
+  };
+
+  const handleHowToUseClose = () => {
+    setShowHowToUse(false);
+    if (isHowToUseModalShownAutomatically) {
+      setHasShownInitialModals(true);
+      setIsHowToUseModalShownAutomatically(false); 
+    }
   };
 
   const getTrueInitialFrameworkDefaultsInternal = useCallback((frameworkLocale: Framework['idLocale'] | Framework['enLocale']): Record<string, string | string[]> => {
@@ -786,7 +805,6 @@ const App: React.FC = () => {
   };
 
   const currentYear = new Date().getFullYear();
-  const categoryIconClass = "w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-teal-400";
   const selectedFrameworksForCategory = frameworks.filter(fw => fw.idLocale.category === selectedCategory);
   
   const langToggleAriaLabel = language === 'id' 
@@ -797,15 +815,18 @@ const App: React.FC = () => {
   const isInteractiveFrameworkSelected = selectedFramework && currentFrameworkLocale?.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0;
 
   const baseTitleKey = `${selectedCategory}FrameworksTitle` as TranslationKey;
-  const baseTitle = t(baseTitleKey);
+  const baseTitle = t(baseTitleKey); // This will now include "2. " or similar prefix
   const frameworkWord = t('frameworkWord'); 
   let frameworkListTitle = baseTitle;
 
   if (selectedFramework && currentFrameworkLocale) {
     const selectedFrameworkName = currentFrameworkLocale.name;
+    // If "2. Text Prompt Framework" ends with "Framework"
     if (baseTitle.endsWith(frameworkWord)) {
+      // frameworkListTitle becomes "2. Text Prompt " + "SelectedFrameworkName"
       frameworkListTitle = baseTitle.substring(0, baseTitle.length - frameworkWord.length).trimEnd() + " " + selectedFrameworkName;
     } else {
+      // Fallback, e.g., "2. Some Base Title (SelectedFrameworkName)"
       frameworkListTitle = `${baseTitle} (${selectedFrameworkName})`;
     }
   }
@@ -854,7 +875,10 @@ const App: React.FC = () => {
                   {translationError && !isTranslating && ( <span className="text-rose-400" title={translationError}>{t('translationGeneralError').split('.')[0]}</span> )}
               </div>
               <button
-                onClick={() => setShowHowToUse(true)}
+                onClick={() => {
+                  setShowHowToUse(true);
+                  setIsHowToUseModalShownAutomatically(false);
+                }}
                 className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm"
                 title={t('howToUseAppTitle')}
                 aria-label={t('howToUseAppTitle')}
@@ -880,7 +904,7 @@ const App: React.FC = () => {
           <div className="md:col-span-1 space-y-4 sm:space-y-6">
             <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-3 sm:p-4 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
               <h2 className="text-lg sm:text-xl font-semibold mb-3 text-teal-600 dark:text-teal-500 flex items-center">
-                <SquaresPlusIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-teal-400" />
+                {/* NumberOneIcon removed */}
                 {t('selectCategoryTitle')}
               </h2>
               <div className="grid grid-cols-3 gap-2">
@@ -926,9 +950,7 @@ const App: React.FC = () => {
             {selectedCategory && (
               <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-3 sm:p-4 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
                 <h2 className="text-lg sm:text-xl font-semibold mb-2 text-teal-600 dark:text-teal-500 flex items-center">
-                  {selectedCategory === 'text' && <PencilIcon className={categoryIconClass} />}
-                  {selectedCategory === 'media' && <CameraIcon className={categoryIconClass} />}
-                  {selectedCategory === 'music' && <MusicNoteIcon className={categoryIconClass} />}
+                  {/* NumberTwoIcon removed */}
                   {frameworkListTitle}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 max-h-[60vh] sm:max-h-[calc(100vh-280px)] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)' }}>
@@ -1006,7 +1028,7 @@ const App: React.FC = () => {
                 aria-controls="input-panel-content"
               >
                 <h3 className="text-lg sm:text-xl font-semibold text-teal-700 dark:text-teal-600 flex items-center">
-                  <ViewColumnsIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-teal-400" />
+                  {/* NumberThreeIcon removed */}
                   {t('inputComponentsTitle')}
                   {selectedFramework && (
                     <span className="ml-1.5 text-sm text-slate-400">
@@ -1154,7 +1176,11 @@ const App: React.FC = () => {
       </footer>
 
       <DisclaimerModal isOpen={showDisclaimer} onClose={handleDisclaimerAcknowledge} />
-      <HowToUseModal isOpen={showHowToUse} onClose={() => setShowHowToUse(false)} />
+      <HowToUseModal 
+        isOpen={showHowToUse} 
+        onClose={handleHowToUseClose}
+        isShownAutomatically={isHowToUseModalShownAutomatically}
+      />
     </div>
   );
 };

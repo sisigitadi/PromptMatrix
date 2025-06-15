@@ -1,36 +1,86 @@
-
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { WorkflowDiagramIcon } from './icons/WorkflowDiagramIcon'; // New import
+import { WorkflowDiagramIcon } from './icons/WorkflowDiagramIcon';
 
 interface HowToUseModalProps {
   isOpen: boolean;
   onClose: () => void;
+  isShownAutomatically?: boolean;
 }
 
-const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose }) => {
+const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownAutomatically = false }) => {
   const { t, language, setLanguage: setAppLanguage } = useLanguage();
   const modalRef = useRef<HTMLDivElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const acknowledgeButtonRef = useRef<HTMLButtonElement>(null); // Renamed from closeButtonRef for consistency
+
+  const [countdown, setCountdown] = useState(5);
+  const [isCountdownActive, setIsCountdownActive] = useState(isShownAutomatically); // Initialize based on prop
+  const intervalRef = useRef<number | null>(null);
+
+  const startCountdown = () => {
+    setIsCountdownActive(true);
+    setCountdown(5);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = window.setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          if (intervalRef.current) clearInterval(intervalRef.current);
+          setIsCountdownActive(false);
+          setTimeout(() => acknowledgeButtonRef.current?.focus(), 0);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  useEffect(() => {
+    if (isOpen && isShownAutomatically) {
+      startCountdown();
+    } else if (isOpen && !isShownAutomatically) {
+      setIsCountdownActive(false);
+      setCountdown(0);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      setTimeout(() => acknowledgeButtonRef.current?.focus(), 100);
+    } else { // When closed
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      // Reset for next potential automatic show, only if it *was* an automatic show
+      if(isShownAutomatically) {
+        setIsCountdownActive(true);
+        setCountdown(5);
+      }
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [isOpen, isShownAutomatically, language]);
+
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose();
+        if (!isShownAutomatically) { // If opened manually, allow Escape to close
+           onClose();
+        }
+        // If isShownAutomatically is true, Escape key does nothing.
+        // Modal must be closed by the Acknowledge button.
       }
     };
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscapeKey);
-      setTimeout(() => {
-        closeButtonRef.current?.focus(); 
-      }, 100);
+      // Initial focus if not counting down or if manually opened
+      if (!isCountdownActive || !isShownAutomatically) { 
+        setTimeout(() => {
+            acknowledgeButtonRef.current?.focus();
+        }, 100);
+      }
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, isCountdownActive, isShownAutomatically]);
 
   useEffect(() => {
     if (isOpen && modalRef.current) {
@@ -38,7 +88,7 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose }) => {
         modalRef.current.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         )
-      ).filter(el => el.offsetParent !== null);
+      ).filter(el => el.offsetParent !== null && !(el as HTMLButtonElement).disabled);
 
       if (focusableElements.length === 0) return;
 
@@ -68,7 +118,7 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose }) => {
         currentModalRef?.removeEventListener('keydown', handleTabKeyPress);
       };
     }
-  }, [isOpen]);
+  }, [isOpen, isCountdownActive]); // Re-evaluate focusable elements when countdown active state changes
 
   if (!isOpen) {
     return null;
@@ -77,7 +127,15 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose }) => {
   const handleLanguageToggleInModal = () => {
     const newLang = language === 'id' ? 'en' : 'id';
     setAppLanguage(newLang);
+    // If countdown was active, restart it for the new language content
+    if (isShownAutomatically) {
+        startCountdown();
+    }
   };
+
+  const acknowledgeButtonText = isCountdownActive && isShownAutomatically
+    ? t('disclaimerAcknowledgeButtonDisabledText', countdown) 
+    : t('disclaimerModalAcknowledgeButton');
 
   return (
     <div 
@@ -85,7 +143,7 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose }) => {
       role="dialog"
       aria-modal="true"
       aria-labelledby="how-to-use-title"
-      onClick={onClose}
+      onClick={!isShownAutomatically ? onClose : undefined} // Only allow overlay click to close if opened manually
     >
       <div
         ref={modalRef}
@@ -95,7 +153,7 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose }) => {
       >
         <div className="flex justify-between items-center pb-3 border-b border-[var(--border-color)]">
           <h2 id="how-to-use-title" className="text-lg sm:text-xl font-semibold text-teal-600 dark:text-teal-500">{t('howToUseAppTitle')}</h2>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center"> {/* Removed space-x-2 as only one button remains here */}
             <button
               onClick={handleLanguageToggleInModal}
               className="px-2 py-1 text-xs sm:text-sm font-semibold text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-500"
@@ -103,15 +161,7 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose }) => {
             >
               {language === 'id' ? 'EN' : 'ID'}
             </button>
-            <button
-              onClick={onClose}
-              className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors p-1 rounded-full hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
-              aria-label="Close how to use instructions"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            {/* "X" Close button removed from here */}
           </div>
         </div>
         
@@ -136,11 +186,16 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         <button
-          ref={closeButtonRef}
+          ref={acknowledgeButtonRef}
           onClick={onClose}
-          className="mt-5 w-full px-4 py-3 bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-colors duration-150 ease-in-out font-semibold text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)]"
+          disabled={isCountdownActive && isShownAutomatically}
+          className={`mt-5 w-full px-4 py-3 rounded-lg transition-all duration-150 ease-in-out font-semibold text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)]
+            ${isCountdownActive && isShownAutomatically
+              ? 'bg-slate-500 text-slate-400 cursor-not-allowed' 
+              : 'bg-teal-700 hover:bg-teal-600 text-white focus:ring-teal-500'
+            }`}
         >
-          <span className="button-text-content">{t('disclaimerModalAcknowledgeButton')}</span>
+          <span className="button-text-content">{acknowledgeButtonText}</span>
         </button>
       </div>
     </div>
