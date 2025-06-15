@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Framework } from '../types';
 import { ExternalLinkIcon } from './icons/ExternalLinkIcon';
@@ -42,13 +42,20 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
   onPromptSuccessfullyCopied,
 }) => {
   const { language, t } = useLanguage();
-  const [copied, setCopied] = useState<boolean>(false); // Local temporary state for "Copied!" button
+  const [copied, setCopied] = useState<boolean>(false); 
   const [copyAttemptedMessage, setCopyAttemptedMessage] = useState<string | null>(null);
   const [isToolSelectorModalOpen, setIsToolSelectorModalOpen] = useState<boolean>(false);
-  const [isAiFeedbackExpanded, setIsAiFeedbackExpanded] = useState<boolean>(true); // Default to expanded if section is shown
+  const [isAiFeedbackExpanded, setIsAiFeedbackExpanded] = useState<boolean>(true);
 
 
   const currentFrameworkLocale = selectedFramework ? selectedFramework[language === 'id' ? 'idLocale' : 'enLocale'] : null;
+
+  useEffect(() => {
+    // Expand AI feedback section by default when new feedback is received successfully
+    if (aiFeedbackReceived && !isFetchingAiFeedback && !aiError && aiFeedback) {
+      setIsAiFeedbackExpanded(true);
+    }
+  }, [aiFeedbackReceived, isFetchingAiFeedback, aiError, aiFeedback]);
 
   const handleCopy = useCallback(async () => {
     const trimmedPromptToCopy = promptToCopy.trim();
@@ -59,8 +66,8 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
     }
     try {
       await navigator.clipboard.writeText(trimmedPromptToCopy);
-      setCopied(true); // Temporary feedback
-      onPromptSuccessfullyCopied(); // Notify App.tsx for persistent state
+      setCopied(true); 
+      onPromptSuccessfullyCopied(); 
       setCopyAttemptedMessage(t('copySuccessMessage'));
       setTimeout(() => {
         setCopied(false);
@@ -101,6 +108,98 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
     : t('enhanceButtonTitle');
     
   const showAiFeedbackSuccessIndicator = aiFeedbackReceived && !isFetchingAiFeedback && !aiError && apiKeyAvailable;
+
+  const renderFormattedAiFeedback = () => {
+    if (!aiFeedback) return null;
+
+    const headers = [
+      { key: 'aiFeedbackStrengthsTitle', title: t('aiFeedbackStrengthsTitle') },
+      { key: 'aiFeedbackWeaknessesTitle', title: t('aiFeedbackWeaknessesTitle') },
+      { key: 'aiFeedbackReasoningTitle', title: t('aiFeedbackReasoningTitle') },
+      { key: 'aiFeedbackActionableSuggestionsTitle', title: t('aiFeedbackActionableSuggestionsTitle') },
+    ];
+
+    let remainingText = aiFeedback;
+    const parts: { header?: string; content: string }[] = [];
+    let foundHeader = false;
+
+    // First, try to find an initial part if text doesn't start with a known header
+    let firstKnownHeaderIndex = -1;
+    for (const headerObj of headers) {
+        const index = remainingText.indexOf(headerObj.title);
+        if (index !== -1 && (firstKnownHeaderIndex === -1 || index < firstKnownHeaderIndex)) {
+            firstKnownHeaderIndex = index;
+        }
+    }
+
+    if (firstKnownHeaderIndex > 0) {
+        parts.push({ content: remainingText.substring(0, firstKnownHeaderIndex).trim() });
+        remainingText = remainingText.substring(firstKnownHeaderIndex);
+    } else if (firstKnownHeaderIndex === -1 && remainingText.trim() !== "") {
+        // If no known headers at all, treat the whole thing as one content block.
+        // This will lead to the fallback pre below.
+    }
+
+
+    while (remainingText.trim()) {
+      let currentHeader = null;
+      let nextHeaderIndex = Infinity;
+      let nextHeaderTitleLength = 0;
+
+      for (const headerObj of headers) {
+        const index = remainingText.indexOf(headerObj.title);
+        if (index === 0) { // Header is at the beginning of remainingText
+          currentHeader = headerObj.title;
+          foundHeader = true;
+          remainingText = remainingText.substring(currentHeader.length).trimStart();
+          // Find the start of the *next* header to delimit current content
+          for (const nextH of headers) {
+            const potentialNextIndex = remainingText.indexOf(nextH.title);
+            if (potentialNextIndex !== -1 && potentialNextIndex < nextHeaderIndex) {
+              nextHeaderIndex = potentialNextIndex;
+            }
+          }
+          break; 
+        }
+      }
+      
+      const content = remainingText.substring(0, nextHeaderIndex !== Infinity ? nextHeaderIndex : undefined).trim();
+      if (currentHeader || content.trim()) {
+        parts.push({ header: currentHeader || undefined, content });
+      }
+      remainingText = remainingText.substring(nextHeaderIndex !== Infinity ? nextHeaderIndex : remainingText.length).trimStart();
+      if (!currentHeader && nextHeaderIndex === Infinity && !foundHeader) break; // Avoid infinite loop if no headers are ever found
+    }
+
+    if (!foundHeader && aiFeedback.trim()) { // Fallback for unparseable or headerless feedback
+      return (
+        <pre className="font-sans whitespace-pre-wrap break-words text-sm sm:text-base text-slate-100 leading-relaxed max-h-60 sm:max-h-72 overflow-y-auto" aria-live="polite">
+          {aiFeedback}
+        </pre>
+      );
+    }
+    
+    return (
+      <div className="font-sans text-sm sm:text-base text-slate-100 leading-relaxed max-h-60 sm:max-h-72 overflow-y-auto space-y-2.5" aria-live="polite">
+        {parts.map((part, index) => (
+          (part.header || part.content.trim()) && (
+            <div key={index} className={index > 0 && (part.header || parts[index-1].header) ? "pt-1.5" : ""}>
+              {part.header && (
+                <strong className="block font-semibold text-teal-400 dark:text-teal-300 mb-0.5">
+                  {part.header}
+                </strong>
+              )}
+              {part.content.trim() && (
+                <p className="whitespace-pre-wrap break-words">
+                  {part.content}
+                </p>
+              )}
+            </div>
+          )
+        ))}
+      </div>
+    );
+  };
 
 
   return (
@@ -171,16 +270,14 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
                 {aiError && (
                   <p className="text-xs sm:text-sm text-rose-400 dark:text-rose-400" role="alert">{aiError}</p>
                 )}
-                {aiFeedback && !isFetchingAiFeedback && (
-                  <pre className="font-sans whitespace-pre-wrap break-words text-xs sm:text-sm text-slate-200 dark:text-slate-200 leading-relaxed max-h-52 sm:max-h-60 overflow-y-auto"  aria-live="polite">
-                    {aiFeedback}
-                  </pre>
+                {!isFetchingAiFeedback && aiFeedback && (
+                   renderFormattedAiFeedback()
                 )}
               </div>
             </div>
           )}
 
-          {/* Action Buttons Row - this section will now always be rendered if its parent (collapsible-content open) is rendered */}
+          {/* Action Buttons Row */}
           <div className="mt-auto pt-2.5 px-4 sm:px-6 pb-3 sm:pb-4 space-y-2.5"> 
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-2.5"> 
                 <button
