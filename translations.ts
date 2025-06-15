@@ -204,6 +204,8 @@ User's prompt:`,
 
     categoryLabelImage: "Image",
     categoryLabelVideo: "Video",
+    categoryLabelMusic: "Music",
+    categoryLabelText: "Text",
   },
   id: {
     appTitle: "PromptMatrix",
@@ -408,5 +410,7 @@ Prompt pengguna:`,
 
     categoryLabelImage: "Gambar",
     categoryLabelVideo: "Video",
+    categoryLabelMusic: "Musik",
+    categoryLabelText: "Teks",
   }
 };

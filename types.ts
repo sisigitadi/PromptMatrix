@@ -248,6 +248,8 @@ export interface Translations {
   // New keys for category button labels
   categoryLabelImage: string;
   categoryLabelVideo: string;
+  categoryLabelMusic: string; // Added in previous step
+  categoryLabelText: string; // Adding this now
 }
 
 export type TranslationKey = keyof Translations;

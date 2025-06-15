@@ -903,8 +903,8 @@ const App: React.FC = () => {
                         </>
                       ) : (
                         <span className="text-xs sm:text-sm font-medium button-text-content">
-                          {cat === 'text' && t('textFrameworksTitle').split(' ')[0]}
-                          {cat === 'music' && t('musicFrameworksTitle').split(' ')[0]}
+                          {cat === 'text' && t('categoryLabelText')}
+                          {cat === 'music' && t('categoryLabelMusic')}
                         </span>
                       )}
                     </div>
