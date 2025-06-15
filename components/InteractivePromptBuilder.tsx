@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, ChangeEvent, useRef } from 'react';
 import { InteractiveSectionDefinition, InteractiveQuestionDefinition, Language } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -194,6 +195,8 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
         const options = question.options || [];
         const showOtherInput = question.includeOtherOption && questionValue === 'LAINNYA_INTERAKTIF_PLACEHOLDER';
         const effectiveSuggestButtonTitle = !apiKeyAvailable ? t('apiKeyMissingError') : t('suggestButtonTitle');
+        const showSuggestButtonForOther = !!apiKeyAvailable && !!fetchSuggestions && showOtherInput;
+
         return (
           <div className="space-y-1.5 relative" onBlur={(e) => handleOtherInputBlur(e, question.id)}>
             <select
@@ -223,19 +226,19 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
                   value={otherTextValueForThisQuestion}
                   onChange={(e) => handleLocalOtherInputChange(question.id, e.target.value)}
                   onKeyDown={(e) => handleOtherInputKeyDown(e, question.id)}
-                  className="flex-grow p-2 text-sm bg-slate-600 border-slate-500 rounded-md focus:ring-teal-500 focus:border-teal-500 non-copyable-input-field pr-8"
+                  className={`flex-grow p-2 text-sm bg-slate-600 border-slate-500 rounded-md focus:ring-teal-500 focus:border-teal-500 non-copyable-input-field ${showSuggestButtonForOther ? 'pr-8' : 'pr-2'}`}
                   aria-autocomplete="list"
                   aria-expanded={showCurrentSuggestions && activeSuggestionQuestionId === question.id && (currentSuggestions.length > 0 || isFetchingCurrentSuggestions || !!currentSuggestionError)}
                   aria-controls={`${question.id}-other-suggestions`}
                 />
-                {apiKeyAvailable && fetchSuggestions && (
+                {showSuggestButtonForOther && (
                     <button
                         type="button"
                         onClick={() => handleSuggestForOtherInput(question.id, question.promptText)}
                         className={`absolute right-1 top-1/2 -translate-y-1/2 p-1 text-purple-400 hover:text-purple-200 active:text-purple-500 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button-${question.id}`}
                         title={effectiveSuggestButtonTitle}
                         aria-label={t('suggestButtonTitle')}
-                        disabled={isFetchingCurrentSuggestions || !apiKeyAvailable}
+                        disabled={isFetchingCurrentSuggestions}
                     >
                         <SparklesIcon className={`w-4 h-4 ${isFetchingCurrentSuggestions && activeSuggestionQuestionId === question.id ? 'animate-pulse text-purple-600' : ''}`} />
                     </button>

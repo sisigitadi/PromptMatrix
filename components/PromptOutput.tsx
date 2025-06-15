@@ -45,7 +45,7 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
   const [copied, setCopied] = useState<boolean>(false); // Local temporary state for "Copied!" button
   const [copyAttemptedMessage, setCopyAttemptedMessage] = useState<string | null>(null);
   const [isToolSelectorModalOpen, setIsToolSelectorModalOpen] = useState<boolean>(false);
-  const [isAiFeedbackExpanded, setIsAiFeedbackExpanded] = useState<boolean>(false);
+  const [isAiFeedbackExpanded, setIsAiFeedbackExpanded] = useState<boolean>(true); // Default to expanded if section is shown
 
 
   const currentFrameworkLocale = selectedFramework ? selectedFramework[language === 'id' ? 'idLocale' : 'enLocale'] : null;
@@ -100,8 +100,7 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
     ? t('apiKeyMissingError') 
     : t('enhanceButtonTitle');
     
-  const showAiFeedbackSection = !!(aiFeedback || isFetchingAiFeedback || aiError);
-  const showAiFeedbackSuccessIndicator = aiFeedbackReceived && !isFetchingAiFeedback && !aiError;
+  const showAiFeedbackSuccessIndicator = aiFeedbackReceived && !isFetchingAiFeedback && !aiError && apiKeyAvailable;
 
 
   return (
@@ -134,8 +133,7 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
             </pre>
           </div>
 
-          {/* AI Feedback Section - this existing condition is fine, it relates to AI feedback state itself */}
-          {showAiFeedbackSection && isExpanded && (
+          {apiKeyAvailable && isExpanded && (
             <div className="mx-4 sm:mx-6 mt-2.5"> 
               <div 
                 className="flex justify-between items-center px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-700/30 dark:bg-slate-800/40 rounded-t-lg border border-b-0 border-[var(--border-color)] dark:border-slate-600/70 cursor-pointer hover:bg-slate-700/50"
@@ -149,6 +147,13 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
                 <h4 className="text-sm sm:text-md font-semibold text-purple-400 dark:text-purple-300 flex items-center">
                   <SparklesIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                   <strong className="italic">{t('aiFeedbackTitleTextOnly')}</strong>
+                  <span
+                      className="ml-2 text-md font-bold text-purple-400 api-status-indicator shrink-0"
+                      aria-label={t('aiFeaturesActiveIndicator')}
+                      title={t('aiFeaturesActiveIndicator')}
+                  >
+                      AI
+                  </span>
                   {showAiFeedbackSuccessIndicator && (
                     <CheckCircleIcon className="w-4 h-4 text-green-500 dark:text-green-400 ml-1.5 shrink-0" title={t('aiFeedbackReceivedIndicatorTooltip')} />
                   )}

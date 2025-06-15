@@ -101,16 +101,16 @@ const commonVocalStylesEn = ['Male Lead Vocals', 'Female Lead Vocals', 'Duet (Ma
 const commonTempoOptions = ['Sangat Lambat (<60 BPM)', 'Lambat (60-80 BPM)', 'Sedang (80-120 BPM)', 'Agak Cepat (120-140 BPM)', 'Cepat (140-180 BPM)', 'Sangat Cepat (>180 BPM)'];
 const commonTempoOptionsEn = ['Very Slow (<60 BPM)', 'Slow (60-80 BPM)', 'Medium (80-120 BPM)', 'Moderately Fast (120-140 BPM)', 'Fast (140-180 BPM)', 'Very Fast (>180 BPM)'];
 
-const midjourneyAspectRatioOptions = [
+export const midjourneyAspectRatioOptions = [
   "1:1 (Persegi Default)", "16:9 (Layar Lebar)", "9:16 (Vertikal)", "3:2 (Lanskap Foto)", "2:3 (Potret Foto)",
   "4:3 (TV Lama)", "3:4 (Potret Sedang)", "4:5 (Potret Sosial)", "5:4 (Lanskap Sedang)", "2:1 (Panorama)", "1:2 (Tinggi)"
 ];
-const midjourneyAspectRatioOptionsEn = [
+export const midjourneyAspectRatioOptionsEn = [
   "1:1 (Default Square)", "16:9 (Widescreen)", "9:16 (Vertical)", "3:2 (Photo Landscape)", "2:3 (Photo Portrait)",
   "4:3 (Old TV)", "3:4 (Medium Portrait)", "4:5 (Social Portrait)", "5:4 (Medium Landscape)", "2:1 (Panoramic)", "1:2 (Tall)"
 ];
-const midjourneyVersionOptions = ["6.0", "5.2", "5.1", "5.0", "4.0", "niji 6", "niji 5", "niji 4"];
-const midjourneyVersionOptionsEn = ["6.0", "5.2", "5.1", "5.0", "4.0", "niji 6", "niji 5", "niji 4"];
+export const midjourneyVersionOptions = ["6.0", "5.2", "5.1", "5.0", "4.0", "niji 6", "niji 5", "niji 4"];
+export const midjourneyVersionOptionsEn = ["6.0", "5.2", "5.1", "5.0", "4.0", "niji 6", "niji 5", "niji 4"];
 
 // --- Helper Functions for Interactive Definitions ---
 
@@ -129,7 +129,7 @@ const createDetailedImageVideoSections = (frameworkName: string, lang: 'id' | 'e
       questions: [
         { id: 'art_style', promptText: isId ? 'Gaya Seni' : 'Art Style', type: 'single-choice', options: isId ? commonArtStyles : commonArtStylesEn, defaultValue: isId ? 'Seni Fantasi Epik' : 'Epic Fantasy Art', includeOtherOption: true },
         { id: 'art_medium', promptText: isId ? 'Medium Seni (Opsional)' : 'Art Medium (Optional)', type: 'manual', defaultValue: isId ? 'lukisan digital, konsep seni' : 'digital painting, concept art' },
-        { id: 'artist_influence', promptText: isId ? 'Pengaruh Seniman (Opsional)' : 'Artist Influence (Optional)', type: 'manual', defaultValue: isId ? 'gaya Greg Rutkowski, sentuhan Alphonse Mucha' : 'style of Greg Rutkowski, a touch of Alphonse Mucha' },
+        { id: 'artist_influence', promptText: isId ? 'Pengaruh Seniman (Opsional)' : 'Artist Influence (Optional)', type: 'manual', defaultValue: isId ? 'Greg Rutkowski, Alphonse Mucha' : 'Greg Rutkowski, Alphonse Mucha' },
       ],
     },
     {
@@ -192,7 +192,7 @@ const createDetailedMusicSections = (frameworkName: string, lang: 'id' | 'en'): 
     {
       title: isId ? 'Lirik (Jika Ada)' : 'Lyrics (If Applicable)',
       questions: [
-        { id: 'lyrical_theme_or_custom', promptText: isId ? 'Tema Liris atau Lirik Kustom Penuh' : 'Lyrical Theme or Full Custom Lyrics', type: 'manual', defaultValue: isId ? 'Tema: perjalanan malam di kota neon.' : 'Theme: a nighttime drive through a neon city.' },
+        { id: 'lyrical_theme_or_custom', promptText: isId ? 'Tema Liris atau Lirik Kustom Penuh' : 'Lyrical Theme or Full Custom Lyrics', type: 'manual', defaultValue: isId ? 'perjalanan malam di kota neon.' : 'a nighttime drive through a neon city.' },
       ],
     },
   ];
@@ -270,13 +270,9 @@ const veoInteractiveDefinitionEn: InteractiveSectionDefinition[] = [
     ],
   },
 ];
-const veoInteractivePromptTemplate =
-  "{{gaya}}, {{shot}} of {{subjek}}, who is {{aksi}}. " +
-  "The scene is set in {{lokasi}}. " +
-  "The lighting is {{cahaya}}, creating a {{mood}} atmosphere with a {{warna}} color palette. " +
-  "The camera uses a {{movement}} from a {{angle}}. " +
-  "Emphasize {{kualitas}} quality and include specific details like {{elemen_spesifik}}." +
-  "{{veo_negative_parameter_string}}";
+// Template Veo Disederhanakan: Hanya placeholder, tanpa label atau afiks.
+export const veoInteractivePromptTemplate = `{{gaya}}, {{shot}}, {{subjek}}, {{aksi}}, {{lokasi}}, {{cahaya}}, {{mood}}, {{warna}}, {{movement}}, {{angle}}, {{kualitas}}, {{elemen_spesifik}}{{veo_negative_parameter_string}}`;
+
 
 // --- Midjourney Interactive (Enhanced) ---
 const midjourneySectionsId: InteractiveSectionDefinition[] = [
@@ -293,7 +289,7 @@ const midjourneySectionsId: InteractiveSectionDefinition[] = [
         questions: [
             { id: 'art_style', promptText: 'Gaya Seni', type: 'single-choice', options: commonArtStyles, defaultValue: 'Cyberpunk', includeOtherOption: true },
             { id: 'art_medium', promptText: 'Medium Seni (Opsional)', type: 'manual', defaultValue: 'lukisan digital, seni konsep sinematik' },
-            { id: 'artist_influence', promptText: 'Pengaruh Seniman (Opsional)', type: 'manual', defaultValue: 'gaya Syd Mead, sentuhan Josan Gonzalez' },
+            { id: 'artist_influence', promptText: 'Pengaruh Seniman (Opsional)', type: 'manual', defaultValue: 'Syd Mead, Josan Gonzalez' },
             { id: 'atmosphere', promptText: 'Atmosfer/Mood', type: 'manual', defaultValue: 'gelap, misterius, distopia, sedikit berbahaya' },
             { id: 'color_palette', promptText: 'Palet Warna Dominan', type: 'manual', defaultValue: 'biru elektrik, magenta, ungu, dengan kontras kuning neon' },
             { id: 'detail_level', promptText: 'Tingkat Detail', type: 'single-choice', options: commonQualityDescriptors, defaultValue: 'Sangat detail', includeOtherOption: true },
@@ -335,7 +331,7 @@ const midjourneySectionsEn: InteractiveSectionDefinition[] = [
         questions: [
             { id: 'art_style', promptText: 'Art Style', type: 'single-choice', options: commonArtStylesEn, defaultValue: 'Cyberpunk', includeOtherOption: true },
             { id: 'art_medium', promptText: 'Art Medium (Optional)', type: 'manual', defaultValue: 'digital painting, cinematic concept art' },
-            { id: 'artist_influence', promptText: 'Artist Influence (Optional)', type: 'manual', defaultValue: 'style of Syd Mead, a touch of Josan Gonzalez' },
+            { id: 'artist_influence', promptText: 'Artist Influence (Optional)', type: 'manual', defaultValue: 'Syd Mead, Josan Gonzalez' },
             { id: 'atmosphere', promptText: 'Atmosphere/Mood', type: 'manual', defaultValue: 'dark, mysterious, dystopian, slightly dangerous' },
             { id: 'color_palette', promptText: 'Dominant Color Palette', type: 'manual', defaultValue: 'electric blues, magentas, purples, with neon yellow contrasts' },
             { id: 'detail_level', promptText: 'Detail Level', type: 'single-choice', options: commonQualityDescriptorsEn, defaultValue: 'Highly detailed', includeOtherOption: true },
@@ -363,7 +359,9 @@ const midjourneySectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-const midjourneyTemplate = `{{subject}} {{action_details}} {{environment}}, {{art_style}}, {{art_medium}}, {{artist_influence}}, {{composition}}, {{lighting}}, {{atmosphere}}, {{color_palette}}, {{detail_level}} {{midjourney_aspect_ratio_param}} {{midjourney_version_param}} {{midjourney_stylize_param}} {{midjourney_chaos_param}} {{midjourney_weird_param}} {{midjourney_tile_param}} {{midjourney_iw_param}} {{midjourney_style_raw_param}} {{other_params}}`;
+// Template Midjourney Disederhanakan
+export const midjourneyTemplate = `{{subject}}, {{action_details}}, {{environment}}, {{art_style}}, {{art_medium}}, {{artist_influence}}, {{composition}}, {{lighting}}, {{atmosphere}}, {{color_palette}}, {{detail_level}}{{midjourney_aspect_ratio_param_string}}{{midjourney_version_param_string}}{{midjourney_stylize_param_string}}{{midjourney_chaos_param_string}}{{midjourney_weird_param_string}}{{midjourney_tile_param_string}}{{midjourney_iw_param_string}}{{midjourney_style_raw_param_string}} {{other_params}}`;
+
 
 // --- DALL-E 3 Interactive (Enhanced) ---
 const dalle3SectionsId: InteractiveSectionDefinition[] = [
@@ -377,7 +375,7 @@ const dalle3SectionsId: InteractiveSectionDefinition[] = [
         title: "Gaya Artistik & Detail",
         questions: [
             { id: 'artistic_style', promptText: 'Gaya Artistik', type: 'single-choice', options: commonArtStyles, defaultValue: 'Lukisan Digital', includeOtherOption: true },
-            { id: 'artist_influence', promptText: 'Pengaruh Seniman (Opsional)', type: 'manual', defaultValue: 'dalam gaya ilustrasi buku cerita klasik, mengingatkan pada Beatrix Potter' },
+            { id: 'artist_influence', promptText: 'Pengaruh Seniman (Opsional)', type: 'manual', defaultValue: 'Beatrix Potter' },
             { id: 'specific_details', promptText: 'Detail Spesifik untuk Dimasukkan', type: 'manual', defaultValue: 'detail bulu rubah, tekstur halaman buku, asap dari lilin' },
         ],
     },
@@ -402,7 +400,7 @@ const dalle3SectionsEn: InteractiveSectionDefinition[] = [
         title: "Artistic Style & Details",
         questions: [
             { id: 'artistic_style', promptText: 'Artistic Style', type: 'single-choice', options: commonArtStylesEn, defaultValue: 'Digital Painting', includeOtherOption: true },
-            { id: 'artist_influence', promptText: 'Artist Influence (Optional)', type: 'manual', defaultValue: 'in the style of a classic storybook illustration, reminiscent of Beatrix Potter' },
+            { id: 'artist_influence', promptText: 'Artist Influence (Optional)', type: 'manual', defaultValue: 'Beatrix Potter' },
             { id: 'specific_details', promptText: 'Specific Details to Include', type: 'manual', defaultValue: 'detailed fur on the fox, texture of book pages, wisps of smoke from candles' },
         ],
     },
@@ -416,7 +414,8 @@ const dalle3SectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-const dalle3Template = `{{scene_description}}. Style: {{artistic_style}}. Artist influence: {{artist_influence}}. Details: {{specific_details}}. Colors: {{color_focus}}. Lighting/Mood: {{lighting_mood}}. Composition: {{composition_angle}}. Aspect ratio: {{dalle_aspect_ratio_value}}.`;
+// Template DALL-E 3 Disederhanakan
+export const dalle3Template = `{{scene_description}}, {{artistic_style}}, {{artist_influence}}, {{specific_details}}, {{color_focus}}, {{lighting_mood}}, {{composition_angle}}, {{aspect_ratio_dalle}}.`;
 
 // --- Stable Diffusion Interactive (Enhanced) ---
 const stableDiffusionSectionsId: InteractiveSectionDefinition[] = [
@@ -432,7 +431,7 @@ const stableDiffusionSectionsId: InteractiveSectionDefinition[] = [
         title: "Gaya Artistik & Pengaruh",
         questions: [
             { id: 'art_style_medium', promptText: 'Gaya Seni & Medium', type: 'manual', defaultValue: 'seni konsep fiksi ilmiah, fotorealistis, sedikit surealis' },
-            { id: 'artist_influences', promptText: 'Pengaruh Seniman (Opsional)', type: 'manual', defaultValue: 'gaya Sparth, Moebius' },
+            { id: 'artist_influences', promptText: 'Pengaruh Seniman (Opsional)', type: 'manual', defaultValue: 'Sparth, Moebius' },
         ],
     },
     {
@@ -465,7 +464,7 @@ const stableDiffusionSectionsEn: InteractiveSectionDefinition[] = [
         title: "Artistic Style & Influences",
         questions: [
             { id: 'art_style_medium', promptText: 'Art Style & Medium', type: 'manual', defaultValue: 'sci-fi concept art, photorealistic, slightly surreal' },
-            { id: 'artist_influences', promptText: 'Artist Influences (Optional)', type: 'manual', defaultValue: 'style of Sparth, Moebius' },
+            { id: 'artist_influences', promptText: 'Artist Influences (Optional)', type: 'manual', defaultValue: 'Sparth, Moebius' },
         ],
     },
     {
@@ -485,7 +484,8 @@ const stableDiffusionSectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-const stableDiffusionTemplate = `{{main_subject}}, {{key_details}}, {{quality_descriptors}}, {{art_style_medium}}, {{artist_influences}}, {{technical_aspects}}, {{camera_shot}}, {{lighting_style}} {{sd_negative_param_string}} {{sd_params_note_string}}`;
+// Template Stable Diffusion Disederhanakan
+export const stableDiffusionTemplate = `{{main_subject}}, {{key_details}}, {{quality_descriptors}}, {{art_style_medium}}, {{artist_influences}}, {{technical_aspects}}, {{camera_shot}}, {{lighting_style}}{{sd_negative_param_string}}{{sd_params_note_string}}`;
 
 // --- Runway Gen-2 Interactive (Enhanced) ---
 const runwayGen2SectionsId: InteractiveSectionDefinition[] = [
@@ -550,7 +550,8 @@ const runwayGen2SectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-const runwayGen2Template = `{{scene_subject}}. Camera: {{camera_movement}}. Subject action: {{subject_action}}. Environment: {{environment_action}}. Style: {{visual_style}}, {{lighting_atmosphere}}. Colors: {{color_palette}}. Sound: {{sound_design_note}}. {{duration_note}}.`;
+// Template Runway Gen-2 Disederhanakan
+export const runwayGen2Template = `{{scene_subject}}. {{camera_movement}}. {{subject_action}}. {{environment_action}}. {{visual_style}}, {{lighting_atmosphere}}. {{color_palette}}. {{sound_design_note}}. {{duration_note}}.`;
 
 // --- Suno AI Interactive (Enhanced) ---
 const sunoAISectionsId: InteractiveSectionDefinition[] = [
@@ -617,11 +618,14 @@ const sunoAISectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-const sunoAITemplate = `{{genre}}, {{subgenre_modifiers}}, {{mood}} mood. Key instruments: {{main_instruments}}. Vocals: {{vocal_style}}. Tempo: {{tempo}}, {{rhythm_description}}. {{song_structure}} {{suno_lyrics_block}}`;
+// Template Suno AI Disederhanakan
+export const sunoAITemplate = `{{genre}}, {{subgenre_modifiers}}, {{mood}}, {{main_instruments}}, {{vocal_style}}, {{tempo}}, {{rhythm_description}}. {{song_structure}}{{suno_lyrics_block}}`;
 
 // --- Detailed Interactive Definitions for other Media/Music Frameworks (Enhanced) ---
-export const detailedImageVideoTemplate = `{{subject}}, {{action_details}}, {{art_style}}, {{art_medium}}, {{artist_influence}}, {{composition}}, {{lighting}} lighting, {{color_palette}}, {{detail_level}}. {{other_tool_params}} {{detailed_image_negative_param_string}} {{detailed_image_aspect_ratio_param_string}}`;
-export const detailedMusicTemplate = `{{main_genre}}, {{subgenre_style}}. Mood: {{mood}}. Tempo: {{tempo}}. Key instruments: {{main_instruments}}. Vocals: {{vocal_style}}. Structure: {{song_structure_desc}}. {{duration_or_specifics}}. {{detailed_music_lyrics_block}}`;
+// Template Umum Gambar/Video Disederhanakan
+export const detailedImageVideoTemplate = `{{subject}}, {{action_details}}, {{art_style}}, {{art_medium}}, {{artist_influence}}, {{composition}}, {{lighting}}, {{color_palette}}, {{detail_level}}.{{other_tool_params}}{{detailed_image_negative_param_string}}{{detailed_image_aspect_ratio_param_string}}`;
+// Template Umum Musik Disederhanakan
+export const detailedMusicTemplate = `{{main_genre}}, {{subgenre_style}}, {{mood}}, {{tempo}}, {{main_instruments}}, {{vocal_style}}, {{song_structure_desc}}, {{duration_or_specifics}}.{{detailed_music_lyrics_block}}`;
 
 
 export const frameworks: Framework[] = [
@@ -1235,7 +1239,7 @@ export const frameworks: Framework[] = [
       shortName: 'RolePlay',
       description: 'Menetapkan peran atau persona tertentu untuk AI (misalnya, "Anda adalah seorang sejarawan ahli").',
       components: [
-        { id: 'Persona AI', example: 'Anda adalah seorang koki pastry pemenang penghargaan dari Prancis.' },
+        { id: 'Persona AI', example: 'Seorang koki pastry pemenang penghargaan dari Prancis.' },
         { id: 'Tugas', example: 'Berikan resep detail untuk membuat croissant klasik Prancis yang sempurna, termasuk tips dan trik untuk pemula.' },
         { id: 'Gaya Respons yang Diharapkan', example: 'Gunakan bahasa yang antusias dan berpengetahuan, seolah-olah berbagi rahasia dagang. Sertakan detail tentang pentingnya kualitas bahan dan teknik.' }
       ],
@@ -1380,7 +1384,7 @@ export const frameworks: Framework[] = [
       description: 'Bangun prompt komprehensif untuk Stable Diffusion, termasuk prompt positif & negatif, dan parameter teknis.',
       components: [],
       category: 'media',
-      toolLink: 'https://stablediffusion.com/', // General site, many UIs exist
+      toolLink: 'https://stablediffusion.com/', 
       genericToolLinks: createMediaMusicToolLinks('Stable Diffusion (General)', 'https://stablediffusion.com/', [
         { name: 'DreamStudio (Stability AI)', url: 'https://dreamstudio.ai/' },
         { name: 'Automatic1111 (Self-hosted)', url: 'https://github.com/AUTOMATIC1111/stable-diffusion-webui' },
@@ -1395,7 +1399,7 @@ export const frameworks: Framework[] = [
       description: 'Construct comprehensive prompts for Stable Diffusion, including positive & negative prompts, and technical parameters.',
       components: [],
       category: 'media',
-      toolLink: 'https://stablediffusion.com/', // General site, many UIs exist
+      toolLink: 'https://stablediffusion.com/', 
       genericToolLinks: createMediaMusicToolLinks('Stable Diffusion (General)', 'https://stablediffusion.com/', [
         { name: 'DreamStudio (Stability AI)', url: 'https://dreamstudio.ai/' },
         { name: 'Automatic1111 (Self-hosted)', url: 'https://github.com/AUTOMATIC1111/stable-diffusion-webui' },
@@ -1413,7 +1417,7 @@ export const frameworks: Framework[] = [
       description: 'Buat prompt video untuk Google Veo, dengan detail pada subjek, aksi, gaya visual, dan sinematografi.',
       category: 'media',
       components: [],
-      toolLink: undefined, // Veo might be API-only or through specific Google products initially
+      toolLink: undefined, 
       genericToolLinks: createMediaMusicToolLinks('Google Veo', undefined, standardImageVideoAlternatives),
       interactiveDefinition: veoInteractiveDefinitionId,
       interactivePromptTemplate: veoInteractivePromptTemplate
@@ -1424,7 +1428,7 @@ export const frameworks: Framework[] = [
       description: 'Create video prompts for Google Veo, detailing subject, action, visual style, and cinematography.',
       category: 'media',
       components: [],
-      toolLink: undefined, // Veo might be API-only or through specific Google products initially
+      toolLink: undefined, 
       genericToolLinks: createMediaMusicToolLinks('Google Veo', undefined, standardImageVideoAlternatives),
       interactiveDefinition: veoInteractiveDefinitionEn,
       interactivePromptTemplate: veoInteractivePromptTemplate
@@ -1477,6 +1481,231 @@ export const frameworks: Framework[] = [
       toolLink: 'https://app.leonardo.ai/',
       genericToolLinks: createMediaMusicToolLinks('Leonardo.Ai', 'https://app.leonardo.ai/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Leonardo.Ai', 'en'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    }
+  },
+  {
+    id: 'adobe_firefly',
+    idLocale: {
+      name: 'Adobe Firefly (Interaktif Rinci)',
+      shortName: 'Adobe Firefly',
+      description: 'Buat prompt gambar/video yang sangat rinci untuk Adobe Firefly, menggunakan pendekatan terstruktur untuk hasil optimal.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://firefly.adobe.com/generate/images',
+      genericToolLinks: createMediaMusicToolLinks('Adobe Firefly', 'https://firefly.adobe.com/generate/images', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Adobe Firefly', 'id'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    },
+    enLocale: {
+      name: 'Adobe Firefly (Detailed Interactive)',
+      shortName: 'Adobe Firefly',
+      description: 'Create highly detailed image/video prompts for Adobe Firefly, using a structured approach for optimal results.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://firefly.adobe.com/generate/images',
+      genericToolLinks: createMediaMusicToolLinks('Adobe Firefly', 'https://firefly.adobe.com/generate/images', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Adobe Firefly', 'en'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    }
+  },
+  {
+    id: 'ideogram_ai',
+    idLocale: {
+      name: 'Ideogram (Interaktif Rinci)',
+      shortName: 'Ideogram',
+      description: 'Susun prompt gambar/video terperinci untuk Ideogram AI, dengan fokus pada elemen visual dan tekstual.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://ideogram.ai/create',
+      genericToolLinks: createMediaMusicToolLinks('Ideogram', 'https://ideogram.ai/create', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Ideogram', 'id'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    },
+    enLocale: {
+      name: 'Ideogram (Detailed Interactive)',
+      shortName: 'Ideogram',
+      description: 'Craft detailed image/video prompts for Ideogram AI, focusing on visual and textual elements.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://ideogram.ai/create',
+      genericToolLinks: createMediaMusicToolLinks('Ideogram', 'https://ideogram.ai/create', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Ideogram', 'en'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    }
+  },
+  {
+    id: 'pika_labs',
+    idLocale: {
+      name: 'Pika Labs (Interaktif Rinci)',
+      shortName: 'Pika Labs',
+      description: 'Desain prompt video yang komprehensif untuk Pika Labs, mencakup aspek visual, gerakan, dan narasi.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://pika.art/',
+      genericToolLinks: createMediaMusicToolLinks('Pika Labs', 'https://pika.art/', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Pika Labs (Video)', 'id'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    },
+    enLocale: {
+      name: 'Pika Labs (Detailed Interactive)',
+      shortName: 'Pika Labs',
+      description: 'Design comprehensive video prompts for Pika Labs, covering visual aspects, motion, and narrative.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://pika.art/',
+      genericToolLinks: createMediaMusicToolLinks('Pika Labs', 'https://pika.art/', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Pika Labs (Video)', 'en'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    }
+  },
+  {
+    id: 'openai_sora',
+    idLocale: {
+      name: 'OpenAI Sora (Interaktif Rinci)',
+      shortName: 'OpenAI Sora',
+      description: 'Buat prompt video yang sangat deskriptif untuk OpenAI Sora, fokus pada detail sinematik dan naratif.',
+      category: 'media',
+      components: [],
+      toolLink: undefined, // Sora is not publicly available with a direct tool link yet
+      genericToolLinks: createMediaMusicToolLinks('OpenAI Sora', undefined, standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('OpenAI Sora (Video)', 'id'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    },
+    enLocale: {
+      name: 'OpenAI Sora (Detailed Interactive)',
+      shortName: 'OpenAI Sora',
+      description: 'Create highly descriptive video prompts for OpenAI Sora, focusing on cinematic and narrative details.',
+      category: 'media',
+      components: [],
+      toolLink: undefined, // Sora is not publicly available with a direct tool link yet
+      genericToolLinks: createMediaMusicToolLinks('OpenAI Sora', undefined, standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('OpenAI Sora (Video)', 'en'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    }
+  },
+  {
+    id: 'playground_ai',
+    idLocale: {
+      name: 'Playground AI (Interaktif Rinci)',
+      shortName: 'Playground AI',
+      description: 'Bangun prompt gambar/video terstruktur untuk Playground AI, dengan penekanan pada gaya dan detail.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://playgroundai.com/create',
+      genericToolLinks: createMediaMusicToolLinks('Playground AI', 'https://playgroundai.com/create', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Playground AI', 'id'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    },
+    enLocale: {
+      name: 'Playground AI (Detailed Interactive)',
+      shortName: 'Playground AI',
+      description: 'Build structured image/video prompts for Playground AI, with an emphasis on style and detail.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://playgroundai.com/create',
+      genericToolLinks: createMediaMusicToolLinks('Playground AI', 'https://playgroundai.com/create', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Playground AI', 'en'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    }
+  },
+  {
+    id: 'canva_magic_media',
+    idLocale: {
+      name: 'Canva Magic Media (Interaktif Rinci)',
+      shortName: 'Canva Magic Media',
+      description: 'Buat prompt gambar/video yang efektif untuk Canva Magic Media, cocok untuk kebutuhan desain grafis.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://www.canva.com/magic-media/',
+      genericToolLinks: createMediaMusicToolLinks('Canva Magic Media', 'https://www.canva.com/magic-media/', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Canva Magic Media', 'id'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    },
+    enLocale: {
+      name: 'Canva Magic Media (Detailed Interactive)',
+      shortName: 'Canva Magic Media',
+      description: 'Create effective image/video prompts for Canva Magic Media, suitable for graphic design needs.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://www.canva.com/magic-media/',
+      genericToolLinks: createMediaMusicToolLinks('Canva Magic Media', 'https://www.canva.com/magic-media/', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Canva Magic Media', 'en'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    }
+  },
+  {
+    id: 'kaiber_ai',
+    idLocale: {
+      name: 'Kaiber.ai (Interaktif Rinci)',
+      shortName: 'Kaiber.ai',
+      description: 'Desain prompt video yang mendalam untuk Kaiber.ai, fokus pada transformasi visual dan gaya artistik.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://kaiber.ai/',
+      genericToolLinks: createMediaMusicToolLinks('Kaiber.ai', 'https://kaiber.ai/', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Kaiber.ai (Video)', 'id'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    },
+    enLocale: {
+      name: 'Kaiber.ai (Detailed Interactive)',
+      shortName: 'Kaiber.ai',
+      description: 'Design in-depth video prompts for Kaiber.ai, focusing on visual transformations and artistic styles.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://kaiber.ai/',
+      genericToolLinks: createMediaMusicToolLinks('Kaiber.ai', 'https://kaiber.ai/', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Kaiber.ai (Video)', 'en'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    }
+  },
+  {
+    id: 'nightcafe_creator',
+    idLocale: {
+      name: 'NightCafe Creator (Interaktif Rinci)',
+      shortName: 'NightCafe Creator',
+      description: 'Buat prompt gambar/video terperinci untuk NightCafe Creator, jelajahi berbagai gaya dan preset.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://creator.nightcafe.studio/',
+      genericToolLinks: createMediaMusicToolLinks('NightCafe Creator', 'https://creator.nightcafe.studio/', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('NightCafe Creator', 'id'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    },
+    enLocale: {
+      name: 'NightCafe Creator (Detailed Interactive)',
+      shortName: 'NightCafe Creator',
+      description: 'Create detailed image/video prompts for NightCafe Creator, exploring various styles and presets.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://creator.nightcafe.studio/',
+      genericToolLinks: createMediaMusicToolLinks('NightCafe Creator', 'https://creator.nightcafe.studio/', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('NightCafe Creator', 'en'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    }
+  },
+  {
+    id: 'clipdrop_stability',
+    idLocale: {
+      name: 'Clipdrop by Stability (Interaktif Rinci)',
+      shortName: 'Clipdrop',
+      description: 'Susun prompt gambar/video untuk berbagai alat Stability AI melalui Clipdrop, dengan pendekatan terstruktur.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://clipdrop.co/tools',
+      genericToolLinks: createMediaMusicToolLinks('Clipdrop by Stability', 'https://clipdrop.co/tools', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Clipdrop by Stability', 'id'),
+      interactivePromptTemplate: detailedImageVideoTemplate,
+    },
+    enLocale: {
+      name: 'Clipdrop by Stability (Detailed Interactive)',
+      shortName: 'Clipdrop',
+      description: 'Craft image/video prompts for various Stability AI tools via Clipdrop, using a structured approach.',
+      category: 'media',
+      components: [],
+      toolLink: 'https://clipdrop.co/tools',
+      genericToolLinks: createMediaMusicToolLinks('Clipdrop by Stability', 'https://clipdrop.co/tools', standardImageVideoAlternatives),
+      interactiveDefinition: createDetailedImageVideoSections('Clipdrop by Stability', 'en'),
       interactivePromptTemplate: detailedImageVideoTemplate,
     }
   },
@@ -1553,6 +1782,56 @@ export const frameworks: Framework[] = [
       toolLink: 'https://stableaudio.com/',
       genericToolLinks: createMediaMusicToolLinks('Stable Audio', 'https://stableaudio.com/', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Stable Audio', 'en'),
+      interactivePromptTemplate: detailedMusicTemplate,
+    }
+  },
+  {
+    id: 'google_musicfx',
+    idLocale: {
+      name: 'Google MusicFX (Interaktif Rinci)',
+      shortName: 'Google MusicFX',
+      description: 'Susun prompt musik yang mendalam untuk Google MusicFX, jelajahi berbagai aspek komposisi.',
+      category: 'music',
+      components: [],
+      toolLink: 'https://aitestkitchen.withgoogle.com/tools/music-fx',
+      genericToolLinks: createMediaMusicToolLinks('Google MusicFX', 'https://aitestkitchen.withgoogle.com/tools/music-fx', standardMusicAlternatives),
+      interactiveDefinition: createDetailedMusicSections('Google MusicFX', 'id'),
+      interactivePromptTemplate: detailedMusicTemplate,
+    },
+    enLocale: {
+      name: 'Google MusicFX (Detailed Interactive)',
+      shortName: 'Google MusicFX',
+      description: 'Craft in-depth music prompts for Google MusicFX, exploring various compositional aspects.',
+      category: 'music',
+      components: [],
+      toolLink: 'https://aitestkitchen.withgoogle.com/tools/music-fx',
+      genericToolLinks: createMediaMusicToolLinks('Google MusicFX', 'https://aitestkitchen.withgoogle.com/tools/music-fx', standardMusicAlternatives),
+      interactiveDefinition: createDetailedMusicSections('Google MusicFX', 'en'),
+      interactivePromptTemplate: detailedMusicTemplate,
+    }
+  },
+  {
+    id: 'mubert_ai',
+    idLocale: {
+      name: 'Mubert (Interaktif Rinci)',
+      shortName: 'Mubert',
+      description: 'Desain prompt musik generatif untuk Mubert, fokus pada genre, mood, dan elemen musik spesifik.',
+      category: 'music',
+      components: [],
+      toolLink: 'https://mubert.com/render',
+      genericToolLinks: createMediaMusicToolLinks('Mubert', 'https://mubert.com/render', standardMusicAlternatives),
+      interactiveDefinition: createDetailedMusicSections('Mubert', 'id'),
+      interactivePromptTemplate: detailedMusicTemplate,
+    },
+    enLocale: {
+      name: 'Mubert (Detailed Interactive)',
+      shortName: 'Mubert',
+      description: 'Design generative music prompts for Mubert, focusing on genre, mood, and specific musical elements.',
+      category: 'music',
+      components: [],
+      toolLink: 'https://mubert.com/render',
+      genericToolLinks: createMediaMusicToolLinks('Mubert', 'https://mubert.com/render', standardMusicAlternatives),
+      interactiveDefinition: createDetailedMusicSections('Mubert', 'en'),
       interactivePromptTemplate: detailedMusicTemplate,
     }
   },

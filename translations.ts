@@ -122,6 +122,7 @@ User's prompt:`,
     frameworkSuggestionInstruction: "Describe what you want to achieve with your prompt. AI will suggest suitable frameworks.",
     frameworkSuggestionsTitle: "AI Framework Suggester",
     aiPoweredFeatureTooltip: "AI Powered Feature (Requires API Key)",
+    aiFeaturesActiveIndicator: "AI features enabled (API Key detected)",
     geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => `You are an AI assistant specialized in recommending prompt engineering frameworks. Based on the user's goal, you must suggest the most relevant framework IDs from the provided list. The list of available frameworks (including their ID, name, description, and category) is: ${frameworksInfoJson}. Respond ONLY with a JSON object containing a single key "suggestedFrameworkIds", which should be an array of strings (the IDs of the suggested frameworks). If no frameworks seem relevant, return an empty array for "suggestedFrameworkIds". Do not add any explanations or introductory text outside the JSON object.`,
   },
   id: {
@@ -245,6 +246,7 @@ Prompt pengguna:`,
     frameworkSuggestionInstruction: "Jelaskan apa yang ingin Anda capai dengan prompt Anda. AI akan menyarankan kerangka kerja yang sesuai.",
     frameworkSuggestionsTitle: "Penyaran Kerangka Kerja AI",
     aiPoweredFeatureTooltip: "Fitur Ditenagai AI (Membutuhkan Kunci API)",
+    aiFeaturesActiveIndicator: "Fitur AI aktif (Kunci API terdeteksi)",
     geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => `Anda adalah asisten AI yang berspesialisasi dalam merekomendasikan kerangka kerja rekayasa prompt. Berdasarkan tujuan pengguna, Anda harus menyarankan ID kerangka kerja yang paling relevan dari daftar yang disediakan. Daftar kerangka kerja yang tersedia (termasuk ID, nama, deskripsi, dan kategori) adalah: ${frameworksInfoJson}. Balas HANYA dengan objek JSON yang berisi satu kunci "suggestedFrameworkIds", yang seharusnya berupa array string (ID dari kerangka kerja yang disarankan). Jika tidak ada kerangka kerja yang tampak relevan, kembalikan array kosong untuk "suggestedFrameworkIds". Jangan tambahkan penjelasan atau teks pengantar apa pun di luar objek JSON.`,
   }
 };

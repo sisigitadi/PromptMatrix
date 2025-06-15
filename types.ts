@@ -165,6 +165,7 @@ export interface Translations {
   frameworkSuggestionInstruction: string;
   frameworkSuggestionsTitle: string;
   aiPoweredFeatureTooltip: string; // Tooltip umum untuk fitur AI
+  aiFeaturesActiveIndicator: string; // Tooltip/label untuk indikator fitur AI aktif karena API Key ada
   geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => string;
 }
 

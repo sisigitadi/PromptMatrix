@@ -30,15 +30,21 @@
       --text-anim-accent-bg-hover: #F0FDFA; /* teal-50 */
       --text-anim-accent-bg-active: #CCFBF1; /* teal-100 */
       --text-disconnected: #F43F5E; /* rose-500 */
+      --text-teal-400: #2dd4bf; /* Tailwind teal-400 for JS access if needed */
+
+      /* Purple colors for API status indicator (from Tailwind) */
+      --text-purple-400: #a855f7;
+      --text-purple-300: #c084fc;
+      --text-purple-200: #d8b4fe;
     }
 
     body {
       background-color: var(--bg-primary);
       color: var(--text-primary);
-      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); 
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
       scrollbar-width: thin;
     }
-    
+
     ::selection {
       background-color: var(--selection-bg);
       color: var(--selection-text);
@@ -78,19 +84,19 @@
       display: inline-block;
       animation: click-text-effect 0.8s ease-in-out;
     }
-    
-     @keyframes footer-sig-blink { 
-      0%, 100% { opacity: 1; } 
-      50% { opacity: 0.7; } 
+
+     @keyframes footer-sig-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
     }
     .animated-signature {
       animation: footer-sig-blink 2.2s infinite ease-in-out;
       font-weight: bold;
       color: color-mix(in srgb, var(--text-accent) 80%, var(--text-primary) 20%);
     }
-    
+
     footer a[href^="mailto:si.sigitadi@gmail.com"] {
-      color: var(--text-accent-hover); 
+      color: var(--text-accent-hover);
       text-decoration: none;
     }
     footer a[href^="mailto:si.sigitadi@gmail.com"]:hover {
@@ -116,62 +122,24 @@
       animation: header-frame-glow-animation 3.5s infinite ease-in-out;
     }
 
-
-    @keyframes word-up-down-animation {
+    @keyframes word-up-down-animation { 
       0%, 100% { transform: translateY(0); }
-      25% { transform: translateY(-1px); } 
-      75% { transform: translateY(1px); }  
+      25% { transform: translateY(-1px); }
+      75% { transform: translateY(1px); }
     }
-
-    .animate-word-up-down-1, .animate-word-up-down-2 {
-      display: inline-block;
-      animation-name: word-up-down-animation;
-      animation-duration: 2.2s; 
-      animation-iteration-count: infinite;
-      animation-timing-function: ease-in-out;
-      
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-      letter-spacing: 0.08em; 
-      font-weight: 300; 
-      
-      color: color-mix(in srgb, var(--text-secondary) 70%, var(--bg-primary) 30%); 
-      opacity: 0.65; 
-      text-shadow: none; 
-    }
-    .animate-word-up-down-2 {
-      animation-delay: 0.4s; 
-    }
-    
-    .animate-word-up-down-disconnected-1, .animate-word-up-down-disconnected-2 {
-      display: inline-block;
-      animation-name: word-up-down-animation;
-      animation-duration: 2.0s; /* Slightly faster for attention */
-      animation-iteration-count: infinite;
-      animation-timing-function: ease-in-out;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-      letter-spacing: 0.05em;
-      font-weight: 400;
-      color: var(--text-disconnected);
-      opacity: 0.85;
-      text-shadow: 0 0 3px color-mix(in srgb, var(--text-disconnected) 30%, transparent);
-    }
-    .animate-word-up-down-disconnected-2 {
-      animation-delay: 0.3s;
-    }
-
 
     @keyframes subtitle-pulse {
       0%, 100% {
-        opacity: 0.7; 
+        opacity: 0.7;
         color: var(--text-secondary);
       }
       50% {
         opacity: 1;
-        color: color-mix(in srgb, var(--text-accent) 50%, var(--text-primary) 50%); 
+        color: color-mix(in srgb, var(--text-accent) 50%, var(--text-primary) 50%);
       }
     }
     .animate-subtitle-pulse {
-      animation: subtitle-pulse 2.0s infinite ease-in-out; 
+      animation: subtitle-pulse 2.0s infinite ease-in-out;
     }
 
     /* General collapsible styles for main panels */
@@ -188,7 +156,7 @@
       visibility: visible;
       transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
     }
-    
+
     /* Collapsible styles for multiple choice in InteractivePromptBuilder */
     .collapsible-mc-content {
       max-height: 0;
@@ -215,7 +183,7 @@
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-      font-style: italic; 
+      font-style: italic;
       /* Color is handled by Tailwind: placeholder-[var(--text-secondary)] dark:placeholder-slate-400/80 */
     }
 
@@ -241,14 +209,14 @@
     }
 
     /* Default buttons (teal based text animations for buttons that turn teal on hover) */
-    button:hover .button-text-content { 
-      color: var(--text-anim-default-hover); 
+    button:hover .button-text-content {
+      color: var(--text-anim-default-hover);
     }
-    button:active .button-text-content { 
-      color: var(--text-anim-default-active); 
+    button:active .button-text-content {
+      color: var(--text-anim-default-active);
       transform: translateY(1px); /* Press down effect */
     }
-    
+
     /* Specifically target slate buttons that get teal BG on hover */
     button.bg-slate-600:hover .button-text-content,
     button.bg-slate-700:hover .button-text-content {
@@ -259,7 +227,7 @@
         color: var(--text-anim-accent-bg-active);
         transform: translateY(1px);
     }
-    
+
     /* Override for buttons with explicit TEAL background and white text */
     button.bg-teal-700 > .button-text-content,
     button.bg-teal-600 > .button-text-content {
@@ -298,7 +266,7 @@
       color: #F0FDF4; /* Even lighter green for active */
       transform: translateY(1px);
     }
-    
+
     /* Ensure framework selection buttons' text also animate correctly */
     /* Selected state has a strong teal background */
     button.bg-teal-600.border-teal-500.text-white:hover > .button-text-content,
@@ -312,7 +280,7 @@
     }
     /* Non-selected state for framework buttons (slate bg, hover to teal) */
     button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700 > .button-text-content,
-    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-slate-600 > .button-text-content { 
+    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-slate-600 > .button-text-content {
         color: #E2E8F0; /* Initial slate-200 like color */
     }
     /* This rule needs to specifically target the case where the BG turns teal */
@@ -322,10 +290,10 @@
     }
     button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content,
     button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content {
-        color: var(--text-anim-accent-bg-active); 
+        color: var(--text-anim-accent-bg-active);
         transform: translateY(1px);
     }
-    
+
     /* Enhance with AI button specific styles */
     button.bg-purple-600 > .button-text-content {
        color: #FFFFFF;
@@ -429,8 +397,8 @@
     .interactive-suggestion-list-container {
       margin-top: 0.125rem; /* Equivalent to mt-0.5 */
       position: absolute;
-      z-index: 20; 
-      width: 100%; 
+      z-index: 20;
+      width: 100%;
     }
     /* Styling for multiple-choice collapsible header (chevron) */
     .mc-collapsible-header button svg {
@@ -440,22 +408,52 @@
       transform: rotate(180deg);
     }
 
+    /* API Status Indicator Animations */
+    @keyframes api-glow {
+      0%, 100% {
+        text-shadow: 0 0 3px var(--text-purple-400), 
+                     0 0 5px var(--text-purple-400), 
+                     0 0 8px var(--text-purple-300);
+        opacity: 0.8;
+      }
+      50% {
+        text-shadow: 0 0 5px var(--text-purple-300), 
+                     0 0 10px var(--text-purple-300), 
+                     0 0 15px var(--text-purple-200),
+                     0 0 20px var(--text-purple-200);
+        opacity: 1;
+      }
+    }
+
+    @keyframes api-sway {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-1px) rotate(-2deg); }
+      75% { transform: translateY(1px) rotate(2deg); }
+    }
+
+    .api-status-indicator {
+      display: inline-block; /* Essential for transform to work */
+      animation: api-glow 2s infinite ease-in-out, 
+                 api-sway 3s infinite ease-in-out alternate;
+      animation-delay: 0s, 0.3s; /* Stagger animations for a more organic feel */
+    }
+
   </style>
 <script type="importmap">
 {
   "imports": {
+    "react/": "https://esm.sh/react@^19.1.0/",
     "react": "https://esm.sh/react@^19.1.0",
     "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "react/": "https://esm.sh/react@^19.1.0/",
     "@google/genai": "https://esm.sh/@google/genai@^1.5.1",
-    "vite": "https://esm.sh/vite@^6.3.5",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2"
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2",
+    "vite": "https://esm.sh/vite@^6.3.5"
   }
 }
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-<body class="antialiased theme-dark"> 
+<body class="antialiased theme-dark">
   <div id="root"></div>
   <script type="module" src="./index.tsx"></script>
 <script type="module" src="/index.tsx"></script>

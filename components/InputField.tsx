@@ -51,12 +51,12 @@ const InputField: React.FC<InputFieldProps> = ({
   const [focusedSuggestionIndex, setFocusedSuggestionIndex] = useState(-1);
   
   const hasClearButton = !!value;
-  const hasSuggestButton = !!fetchSuggestions && !!frameworkName && apiKeyAvailable !== undefined;
-  let prClass = 'pr-2.5'; // Adjusted default padding
-  if (hasClearButton && hasSuggestButton) {
-    prClass = 'pr-16 sm:pr-16'; // Adjusted padding for two buttons
-  } else if (hasClearButton || hasSuggestButton) {
-    prClass = 'pr-8 sm:pr-8'; // Adjusted padding for one button
+  const showSuggestButton = !!fetchSuggestions && !!frameworkName && !!apiKeyAvailable;
+  let prClass = 'pr-2.5'; 
+  if (hasClearButton && showSuggestButton) {
+    prClass = 'pr-16 sm:pr-16'; 
+  } else if (hasClearButton || showSuggestButton) {
+    prClass = 'pr-8 sm:pr-8'; 
   }
 
   const actualPlaceholder = exampleText || placeholder || t('inputFieldPlaceholder', label);
@@ -80,7 +80,7 @@ const InputField: React.FC<InputFieldProps> = ({
       if (newScrollHeight > 0) {
         textarea.style.height = `${newScrollHeight}px`;
       } else {
-        const minHeightFromRows = `${initialRows * 1.5}rem`; // Adjusted line height assumption
+        const minHeightFromRows = `${initialRows * 1.5}rem`; 
         textarea.style.height = minHeightFromRows; 
       }
     };
@@ -219,20 +219,20 @@ const InputField: React.FC<InputFieldProps> = ({
 
 
   return (
-    <div className="space-y-1 relative" onBlur={handleBlur}> {/* Reduced space-y */}
-      <label htmlFor={id} className="block text-sm font-medium text-teal-600 dark:text-teal-500"> {/* Label kept as text-sm */}
+    <div className="space-y-1 relative" onBlur={handleBlur}> 
+      <label htmlFor={id} className="block text-sm font-medium text-teal-600 dark:text-teal-500"> 
         {label}
       </label>
-      {description && <p className="text-xs text-[var(--text-secondary)] dark:text-slate-400 mb-0.5">{description}</p>} {/* Description text-xs, reduced mb */}
+      {description && <p className="text-xs text-[var(--text-secondary)] dark:text-slate-400 mb-0.5">{description}</p>} 
       
       {predefinedOptions && predefinedOptions.length > 0 && (
-        <div className="flex flex-wrap gap-1 sm:gap-1.5 mb-1.5 sm:mb-2"> {/* Reduced gap and mb */}
+        <div className="flex flex-wrap gap-1 sm:gap-1.5 mb-1.5 sm:mb-2"> 
           {predefinedOptions.map((option) => (
             <button
               key={option}
               type="button"
               onClick={() => handleOptionClick(option)}
-              className="px-1.5 py-0.5 sm:px-2 text-xs bg-slate-500 dark:bg-slate-600 hover:bg-teal-600 dark:hover:bg-teal-700 text-slate-100 hover:text-white rounded-sm transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800 whitespace-normal text-left shadow-sm" // More compact buttons
+              className="px-1.5 py-0.5 sm:px-2 text-xs bg-slate-500 dark:bg-slate-600 hover:bg-teal-600 dark:hover:bg-teal-700 text-slate-100 hover:text-white rounded-sm transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800 whitespace-normal text-left shadow-sm" 
               title={`${t('selectOptionTooltip')}: ${option}`}
             >
               <span className="button-text-content">{option}</span>
@@ -253,7 +253,7 @@ const InputField: React.FC<InputFieldProps> = ({
             placeholder={actualPlaceholder} 
             rows={initialRows} 
             className={`${commonClasses} resize-none overflow-y-hidden ${prClass}`}
-            style={{ minHeight: `${initialRows * 1.5}rem` }} // Adjusted line height assumption
+            style={{ minHeight: `${initialRows * 1.5}rem` }} 
             aria-autocomplete="list"
             aria-expanded={showSuggestions && (suggestions.length > 0 || isFetchingSuggestions || !!suggestionError)}
             aria-controls={`${id}-suggestions`}
@@ -269,39 +269,39 @@ const InputField: React.FC<InputFieldProps> = ({
             onKeyDown={handleInputKeyDown}
             placeholder={actualPlaceholder} 
             className={`${commonClasses} ${prClass}`}
-            style={{ minHeight: `calc(1.5rem * ${initialRows > 1 ? initialRows * 0.7 : 1} + 1.25rem)` }} // Adjusted for input height consistency
+            style={{ minHeight: `calc(1.5rem * ${initialRows > 1 ? initialRows * 0.7 : 1} + 1.25rem)` }} 
             aria-autocomplete="list"
             aria-expanded={showSuggestions && (suggestions.length > 0 || isFetchingSuggestions || !!suggestionError)}
             aria-controls={`${id}-suggestions`}
           />
         )}
-        <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-0"> {/* Reduced right padding and space-x */}
-            {hasSuggestButton && (
+        <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-0"> 
+            {showSuggestButton && (
                  <button
                     type="button"
                     onClick={handleSuggest}
-                    className="p-1 text-purple-400 hover:text-purple-200 active:text-purple-500 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button" // Reduced padding
+                    className="p-1 text-purple-400 hover:text-purple-200 active:text-purple-500 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button" 
                     title={effectiveSuggestButtonTitle}
                     aria-label={t('suggestButtonTitle')}
-                    disabled={isFetchingSuggestions || !apiKeyAvailable}
+                    disabled={isFetchingSuggestions} 
                 >
-                    <SparklesIcon className={`w-4 h-4 ${isFetchingSuggestions ? 'animate-pulse text-purple-600' : ''}`} /> {/* Smaller icon */}
+                    <SparklesIcon className={`w-4 h-4 ${isFetchingSuggestions ? 'animate-pulse text-purple-600' : ''}`} /> 
                 </button>
             )}
             {hasClearButton && (
             <button
                 type="button"
                 onClick={handleClear}
-                className="p-1 text-slate-400 hover:text-slate-100 active:text-slate-300 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-teal-500 rounded-full" // Reduced padding
+                className="p-1 text-slate-400 hover:text-slate-100 active:text-slate-300 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-teal-500 rounded-full" 
                 aria-label={`Clear input for ${label}`}
             >
-                <XCircleIcon className="w-4 h-4" /> {/* Smaller icon */}
+                <XCircleIcon className="w-4 h-4" /> 
             </button>
             )}
         </div>
       </div>
       {showSuggestions && (isFetchingSuggestions || suggestionError || suggestions.length > 0) && (
-        <div className="absolute z-10 w-full mt-0.5 bg-[var(--bg-tertiary)] dark:bg-slate-700 border border-[var(--border-color)] dark:border-slate-600 rounded-md shadow-lg max-h-52 overflow-y-auto" id={`${id}-suggestions`} role="listbox"> {/* Reduced max-h */}
+        <div className="absolute z-10 w-full mt-0.5 bg-[var(--bg-tertiary)] dark:bg-slate-700 border border-[var(--border-color)] dark:border-slate-600 rounded-md shadow-lg max-h-52 overflow-y-auto" id={`${id}-suggestions`} role="listbox"> 
           {isFetchingSuggestions && (
             <div className="px-2.5 py-1.5 text-xs text-slate-400 animate-pulse">{t('suggestionsLoading')}</div>
           )}
