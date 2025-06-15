@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, ReactNode } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Framework } from '../types';
 import { ExternalLinkIcon } from './icons/ExternalLinkIcon';
@@ -8,10 +8,9 @@ import { ClipboardIcon } from './icons/ClipboardIcon';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
 import { ChevronDownIcon } from './icons/ChevronDownIcon';
 import { ChevronUpIcon } from './icons/ChevronUpIcon';
-// SparklesIcon import removed as it's no longer used for titles in this file.
-// It's still used for buttons in this file.
-import { SparklesIcon } from './icons/SparklesIcon'; 
-import { AppLogoIcon } from './icons/AppLogoIcon'; // Added for AI indicator
+// SparklesIcon import removed as it's no longer used for titles.
+// AppLogoIcon will replace its use on the button.
+import { AppLogoIcon } from './icons/AppLogoIcon'; 
 
 interface PromptOutputProps {
   promptText: string;
@@ -28,6 +27,94 @@ interface PromptOutputProps {
   hasCurrentPromptBeenCopied: boolean;
   onPromptSuccessfullyCopied: () => void;
 }
+
+// Helper function to parse markdown-like content
+const parseMarkdownContent = (text: string): ReactNode[] => {
+  const output: ReactNode[] = [];
+  let currentListType: 'ul' | 'ol' | null = null;
+  let listItems: ReactNode[] = [];
+
+  const flushList = () => {
+    if (currentListType && listItems.length > 0) {
+      if (currentListType === 'ul') {
+        output.push(<ul key={`ul-${output.length}`} className="list-disc list-inside ml-4 mb-1">{listItems}</ul>);
+      } else {
+        output.push(<ol key={`ol-${output.length}`} className="list-decimal list-inside ml-4 mb-1">{listItems}</ol>);
+      }
+    }
+    listItems = [];
+    currentListType = null;
+  };
+
+  const parseInlineFormatting = (line: string): ReactNode[] => {
+    const parts: ReactNode[] = [];
+    let remainingLine = line;
+    let keyIndex = 0;
+
+    while (remainingLine.length > 0) {
+      const boldMatch = remainingLine.match(/^(\*\*|__)(.*?)\1/);
+      const italicMatch = remainingLine.match(/^(\*|_)(.*?)\1/);
+
+      if (boldMatch) {
+        parts.push(<strong key={`bold-${keyIndex++}`}>{boldMatch[2]}</strong>);
+        remainingLine = remainingLine.substring(boldMatch[0].length);
+      } else if (italicMatch) {
+        parts.push(<em key={`italic-${keyIndex++}`}>{italicMatch[2]}</em>);
+        remainingLine = remainingLine.substring(italicMatch[0].length);
+      } else {
+        const nextMatchIndex = Math.min(
+          remainingLine.indexOf('**') > -1 ? remainingLine.indexOf('**') : Infinity,
+          remainingLine.indexOf('__') > -1 ? remainingLine.indexOf('__') : Infinity,
+          remainingLine.indexOf('*') > -1 ? remainingLine.indexOf('*') : Infinity,
+          remainingLine.indexOf('_') > -1 ? remainingLine.indexOf('_') : Infinity
+        );
+        if (nextMatchIndex === Infinity) {
+          parts.push(remainingLine);
+          remainingLine = "";
+        } else {
+          parts.push(remainingLine.substring(0, nextMatchIndex));
+          remainingLine = remainingLine.substring(nextMatchIndex);
+        }
+      }
+    }
+    return parts;
+  };
+
+
+  text.split('\n').forEach((line, index) => {
+    if (line.startsWith('## ')) {
+      flushList();
+      output.push(<h5 key={`h5-${index}`} className="text-base font-semibold text-slate-200 mt-1 mb-0.5">{parseInlineFormatting(line.substring(3))}</h5>);
+    } else if (line.startsWith('# ')) {
+      flushList();
+      output.push(<h4 key={`h4-${index}`} className="text-lg font-semibold text-slate-100 mt-1.5 mb-0.5">{parseInlineFormatting(line.substring(2))}</h4>);
+    } else if (line.match(/^(\*|-|\+) /)) { // Unordered list
+      if (currentListType !== 'ul') {
+        flushList();
+        currentListType = 'ul';
+      }
+      listItems.push(<li key={`li-${index}`}>{parseInlineFormatting(line.substring(2))}</li>);
+    } else if (line.match(/^\d+\. /)) { // Ordered list
+      if (currentListType !== 'ol') {
+        flushList();
+        currentListType = 'ol';
+      }
+      listItems.push(<li key={`li-${index}`}>{parseInlineFormatting(line.substring(line.indexOf(' ') + 1))}</li>);
+    } else {
+      flushList();
+      if (line.trim() !== "") {
+        output.push(<p key={`p-${index}`} className="mb-1">{parseInlineFormatting(line)}</p>);
+      } else if (output.length > 0 && typeof output[output.length -1] === 'object' && (output[output.length-1] as any)?.type === 'p') {
+        // Add extra margin for consecutive empty lines creating paragraph breaks if needed,
+        // or simply ensure single empty lines are ignored if that's preferred.
+        // Current: empty lines are mostly ignored unless between text blocks.
+      }
+    }
+  });
+  flushList(); // Ensure any trailing list is flushed
+  return output;
+};
+
 
 const PromptOutput: React.FC<PromptOutputProps> = ({ 
   promptText, 
@@ -99,7 +186,7 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
       !!currentFrameworkLocale.toolLink
     );
   
-  const canEnhance = apiKeyAvailable && promptToCopy.trim().length > 0 && !isFetchingAiFeedback;
+  const canEnhanceInternal = !!apiKeyAvailable && promptToCopy.trim().length > 0 && !isFetchingAiFeedback;
   const canCopy = promptToCopy.trim().length > 0;
 
   const isActuallyShowingPrompt = selectedFramework && promptText !== t('initialPromptAreaInstruction') && promptText !== t('selectFrameworkPromptAreaInstruction') && promptToCopy.trim() !== '';
@@ -113,84 +200,91 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
 
   const renderFormattedAiFeedback = () => {
     if (!aiFeedback) return null;
-
+  
     const headers = [
       { key: 'aiFeedbackStrengthsTitle', title: t('aiFeedbackStrengthsTitle') },
       { key: 'aiFeedbackWeaknessesTitle', title: t('aiFeedbackWeaknessesTitle') },
       { key: 'aiFeedbackReasoningTitle', title: t('aiFeedbackReasoningTitle') },
       { key: 'aiFeedbackActionableSuggestionsTitle', title: t('aiFeedbackActionableSuggestionsTitle') },
     ];
-
+  
     let remainingText = aiFeedback;
     const parts: { header?: string; content: string }[] = [];
-    let foundHeader = false;
-
-    let firstKnownHeaderIndex = -1;
+    let foundAnyHeader = false;
+  
+    // Try to preserve text before the first known header
+    let firstKnownHeaderPosition = -1;
     for (const headerObj of headers) {
         const index = remainingText.indexOf(headerObj.title);
-        if (index !== -1 && (firstKnownHeaderIndex === -1 || index < firstKnownHeaderIndex)) {
-            firstKnownHeaderIndex = index;
-        }
-    }
-
-    if (firstKnownHeaderIndex > 0) {
-        parts.push({ content: remainingText.substring(0, firstKnownHeaderIndex).trim() });
-        remainingText = remainingText.substring(firstKnownHeaderIndex);
-    } else if (firstKnownHeaderIndex === -1 && remainingText.trim() !== "") {
-        // Fallback handled below
-    }
-
-
-    while (remainingText.trim()) {
-      let currentHeader = null;
-      let nextHeaderIndex = Infinity;
-      
-      for (const headerObj of headers) {
-        const index = remainingText.indexOf(headerObj.title);
-        if (index === 0) { 
-          currentHeader = headerObj.title;
-          foundHeader = true;
-          remainingText = remainingText.substring(currentHeader.length).trimStart();
-          for (const nextH of headers) {
-            const potentialNextIndex = remainingText.indexOf(nextH.title);
-            if (potentialNextIndex !== -1 && potentialNextIndex < nextHeaderIndex) {
-              nextHeaderIndex = potentialNextIndex;
+        if (index !== -1) {
+            if (firstKnownHeaderPosition === -1 || index < firstKnownHeaderPosition) {
+                firstKnownHeaderPosition = index;
             }
-          }
-          break; 
         }
-      }
-      
-      const content = remainingText.substring(0, nextHeaderIndex !== Infinity ? nextHeaderIndex : undefined).trim();
-      if (currentHeader || content.trim()) {
-        parts.push({ header: currentHeader || undefined, content });
-      }
-      remainingText = remainingText.substring(nextHeaderIndex !== Infinity ? nextHeaderIndex : remainingText.length).trimStart();
-      if (!currentHeader && nextHeaderIndex === Infinity && !foundHeader) break; 
     }
-
-    if (!foundHeader && aiFeedback.trim()) { 
+  
+    if (firstKnownHeaderPosition > 0) {
+        parts.push({ content: remainingText.substring(0, firstKnownHeaderPosition).trim() });
+        remainingText = remainingText.substring(firstKnownHeaderPosition);
+    }
+  
+    while (remainingText.trim()) {
+        let currentHeader: string | undefined = undefined;
+        let currentHeaderKey: string | undefined = undefined;
+        let nextHeaderStartIndex = Infinity;
+        let contentEndIndex = remainingText.length;
+    
+        // Find the first header at the beginning of the remainingText
+        for (const headerObj of headers) {
+            if (remainingText.startsWith(headerObj.title)) {
+                currentHeader = headerObj.title;
+                currentHeaderKey = headerObj.key;
+                remainingText = remainingText.substring(currentHeader.length).trimStart();
+                foundAnyHeader = true;
+                break;
+            }
+        }
+    
+        // Find the start of the next header to determine current content boundary
+        for (const headerObj of headers) {
+            const index = remainingText.indexOf(headerObj.title);
+            if (index !== -1 && index < nextHeaderStartIndex) {
+                nextHeaderStartIndex = index;
+            }
+        }
+        contentEndIndex = nextHeaderStartIndex;
+    
+        const content = remainingText.substring(0, contentEndIndex).trim();
+        
+        if (currentHeader || content) {
+             parts.push({ header: currentHeader, content });
+        }
+        
+        remainingText = remainingText.substring(contentEndIndex).trimStart();
+        if (!foundAnyHeader && !currentHeader && parts.length > 0) break; // Avoid infinite loop if no headers left
+    }
+  
+    if (!foundAnyHeader && aiFeedback.trim()) {
+      // If no known headers were found at all, render everything with Markdown parsing
       return (
-        <pre className="font-sans whitespace-pre-wrap break-words text-sm sm:text-base text-slate-100 leading-relaxed max-h-60 sm:max-h-72 overflow-y-auto" aria-live="polite">
-          {aiFeedback}
-        </pre>
+        <div className="font-sans text-sm sm:text-base text-slate-100 leading-relaxed max-h-60 sm:max-h-72 overflow-y-auto space-y-1" aria-live="polite">
+          {parseMarkdownContent(aiFeedback)}
+        </div>
       );
     }
-    
+  
     return (
-      <div className="font-sans text-sm sm:text-base text-slate-100 leading-relaxed max-h-60 sm:max-h-72 overflow-y-auto space-y-2.5" aria-live="polite">
+      <div className="font-sans text-sm sm:text-base text-slate-100 leading-relaxed max-h-60 sm:max-h-72 overflow-y-auto space-y-1" aria-live="polite">
         {parts.map((part, index) => (
           (part.header || part.content.trim()) && (
-            <div key={index} className={index > 0 && (part.header || parts[index-1].header) ? "pt-1.5" : ""}>
+            <div key={index} className={part.header && index > 0 && parts[index-1].content.trim() ? "pt-2" : ""}>
               {part.header && (
                 <strong className="block font-semibold text-teal-400 dark:text-teal-300 mb-0.5">
                   {part.header}
                 </strong>
               )}
               {part.content.trim() && (
-                <p className="whitespace-pre-wrap break-words">
-                  {part.content}
-                </p>
+                <div>{parseMarkdownContent(part.content)}</div>
               )}
             </div>
           )
@@ -270,21 +364,23 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
 
           <div className="mt-auto pt-2.5 px-4 sm:px-6 pb-3 sm:pb-4 space-y-2.5"> 
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-2.5"> 
-                <button
-                    onClick={onEnhanceWithAI}
-                    title={enhanceButtonCurrentTitle}
-                    className={`w-full sm:w-auto flex-grow py-2 px-2.5 text-xs font-semibold rounded-md transition-all duration-200 ease-in-out flex items-center justify-center space-x-1.5
-                                transform active:scale-95 shadow-md
-                                ${canEnhance
-                                    ? 'bg-purple-600 hover:bg-purple-500 text-white focus:ring-1 focus:ring-purple-400 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800'
-                                    : 'bg-slate-600 text-slate-400 cursor-not-allowed focus:ring-slate-500 opacity-70'
-                                }`}
-                    aria-label={t('enhanceButtonAria')}
-                    disabled={!canEnhance || isFetchingAiFeedback}
-                >
-                    <SparklesIcon className="w-4 h-4 text-purple-200" /> 
-                    <span className="button-text-content">{isFetchingAiFeedback ? t('enhanceButtonLoadingText') : t('enhanceButtonText')}</span>
-                </button>
+                {apiKeyAvailable && (
+                  <button
+                      onClick={onEnhanceWithAI}
+                      title={enhanceButtonCurrentTitle}
+                      className={`w-full sm:w-auto flex-grow py-2 px-2.5 text-xs font-semibold rounded-md transition-all duration-200 ease-in-out flex items-center justify-center space-x-1.5
+                                  transform active:scale-95 shadow-md
+                                  ${canEnhanceInternal
+                                      ? 'bg-purple-600 hover:bg-purple-500 text-white focus:ring-1 focus:ring-purple-400 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800'
+                                      : 'bg-slate-600 text-slate-400 cursor-not-allowed focus:ring-slate-500 opacity-70'
+                                  }`}
+                      aria-label={t('enhanceButtonAria')}
+                      disabled={!canEnhanceInternal || isFetchingAiFeedback}
+                  >
+                      <span className="button-text-content">{isFetchingAiFeedback ? t('enhanceButtonLoadingText') : t('enhanceButtonText')}</span>
+                      <AppLogoIcon animatedAsAiIndicator className={`w-4 h-4 api-status-indicator ml-1.5 ${isFetchingAiFeedback ? 'opacity-70 animate-pulse' : ''}`} /> 
+                  </button>
+                )}
 
                 <button
                 onClick={handleCopy}

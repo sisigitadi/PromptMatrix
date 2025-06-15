@@ -2,7 +2,7 @@
 import React, { useLayoutEffect, useRef, useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { XCircleIcon } from './icons/XCircleIcon';
-import { SparklesIcon } from './icons/SparklesIcon'; // Restored
+import { AppLogoIcon } from './icons/AppLogoIcon'; // Changed from SparklesIcon
 
 interface InputFieldProps {
   id: string;
@@ -285,8 +285,9 @@ const InputField: React.FC<InputFieldProps> = ({
                     aria-label={t('suggestButtonTitle')}
                     disabled={isFetchingSuggestions} 
                 >
-                    <SparklesIcon 
-                        className={`w-4 h-4 text-purple-400 ${isFetchingSuggestions ? 'opacity-70 animate-pulse' : ''}`} 
+                    <AppLogoIcon 
+                        animatedAsAiIndicator
+                        className={`w-4 h-4 api-status-indicator ${isFetchingSuggestions ? 'opacity-70 animate-pulse' : ''}`} 
                     /> 
                 </button>
             )}

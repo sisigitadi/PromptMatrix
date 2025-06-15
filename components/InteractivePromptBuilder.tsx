@@ -4,7 +4,7 @@ import { InteractiveSectionDefinition, InteractiveQuestionDefinition, Language }
 import { useLanguage } from '../contexts/LanguageContext';
 import { ChevronDownIcon } from './icons/ChevronDownIcon';
 import { ChevronUpIcon } from './icons/ChevronUpIcon';
-import { SparklesIcon } from './icons/SparklesIcon'; // Restored
+import { AppLogoIcon } from './icons/AppLogoIcon'; // Changed from SparklesIcon
 
 interface InteractivePromptBuilderProps {
   sections: InteractiveSectionDefinition[];
@@ -222,8 +222,9 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
                         aria-label={t('suggestButtonTitle')}
                         disabled={isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id}
                     >
-                        <SparklesIcon 
-                            className={`w-4 h-4 text-purple-400 ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''}`} 
+                        <AppLogoIcon 
+                            animatedAsAiIndicator
+                            className={`w-4 h-4 api-status-indicator ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''}`} 
                         />
                     </button>
                 )}
@@ -305,8 +306,9 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
                         aria-label={t('suggestButtonTitle')}
                         disabled={isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id}
                     >
-                        <SparklesIcon 
-                            className={`w-4 h-4 text-purple-400 ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''}`} 
+                        <AppLogoIcon
+                            animatedAsAiIndicator
+                            className={`w-4 h-4 api-status-indicator ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''}`} 
                         />
                     </button>
                 )}
@@ -434,10 +436,10 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
             aria-label={t('enhanceButtonAria')}
             disabled={!canEnhancePrompt || isFetchingEnhancement}
           >
-            <SparklesIcon className="w-5 h-5 text-purple-200" /> {/* Reverted to SparklesIcon */}
             <span className="button-text-content">
               {isFetchingEnhancement ? t('enhanceButtonLoadingText') : t('enhanceButtonText')}
             </span>
+            <AppLogoIcon animatedAsAiIndicator className={`w-5 h-5 api-status-indicator ml-2 ${isFetchingEnhancement ? 'opacity-70 animate-pulse' : '' }`} />
           </button>
         </div>
       )}

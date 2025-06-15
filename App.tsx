@@ -17,14 +17,13 @@ import { ChevronUpIcon } from './components/icons/ChevronUpIcon';
 import { PencilIcon } from './components/icons/PencilIcon';
 import { CameraIcon } from './components/icons/CameraIcon';
 import { MusicNoteIcon } from './components/icons/MusicNoteIcon';
-// SparklesIcon import removed as it's no longer used for titles in this file.
-// It's still used in InputField.tsx and InteractivePromptBuilder.tsx
+// SparklesIcon import removed from here for titles, but child components will manage their own.
 import { InfoIcon } from './components/icons/InfoIcon'; 
 import { StarIcon } from './components/icons/StarIcon';
 import { GmailIcon } from './components/icons/GmailIcon';
 import { GithubIcon } from './components/icons/GithubIcon';
 import { MediumIcon } from './components/icons/MediumIcon'; 
-import { SparklesIcon } from './components/icons/SparklesIcon'; // Still needed for other parts (e.g. suggester button)
+// SparklesIcon is no longer needed directly in App.tsx as its usages are replaced or handled by children.
 import {
   frameworks,
   detailedImageVideoTemplate,
@@ -989,8 +988,8 @@ const App: React.FC = () => {
                         disabled={!userGoalForFramework.trim() || isFetchingFrameworkSuggestions}
                         aria-label={t('getFrameworkSuggestionsButtonAria')}
                     >
-                        <SparklesIcon className="w-4 h-4 text-purple-200" />
                         <span className="button-text-content">{isFetchingFrameworkSuggestions ? t('frameworkSuggestionsLoading') : t('getFrameworkSuggestionsButton')}</span>
+                        <AppLogoIcon animatedAsAiIndicator className={`w-4 h-4 api-status-indicator ml-1.5 ${isFetchingFrameworkSuggestions ? 'opacity-70 animate-pulse' : ''}`} />
                     </button>
                     {frameworkSuggestionError && <p className="text-xs text-rose-400 mt-1.5">{frameworkSuggestionError}</p>}
                 </div>
@@ -1032,7 +1031,7 @@ const App: React.FC = () => {
                       fetchSuggestions={apiKey ? fetchSuggestionsForField : undefined}
                       apiKeyAvailable={!!apiKey}
                       frameworkName={currentFrameworkLocale.name}
-                      onEnhancePrompt={fetchAiFeedback}
+                      onEnhancePrompt={apiKey ? fetchAiFeedback : undefined}
                       canEnhancePrompt={canEnhanceCurrentPrompt}
                       isFetchingEnhancement={isFetchingAiFeedback}
                     />
