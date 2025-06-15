@@ -270,7 +270,7 @@ const veoInteractiveDefinitionEn: InteractiveSectionDefinition[] = [
     ],
   },
 ];
-// Template Veo Disederhanakan: Hanya placeholder, tanpa label atau afiks.
+// CLEANED TEMPLATE: Only placeholders and universal separators (if any). App.tsx will handle labels.
 export const veoInteractivePromptTemplate = `{{gaya}}, {{shot}}, {{subjek}}, {{aksi}}, {{lokasi}}, {{cahaya}}, {{mood}}, {{warna}}, {{movement}}, {{angle}}, {{kualitas}}, {{elemen_spesifik}}{{veo_negative_parameter_string}}`;
 
 
@@ -359,7 +359,8 @@ const midjourneySectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-// Template Midjourney Disederhanakan
+// CLEANED TEMPLATE: Only placeholders and universal separators (if any). App.tsx will handle labels.
+// This template might primarily be for parameter placeholders if the descriptive part is fully built in App.tsx.
 export const midjourneyTemplate = `{{subject}}, {{action_details}}, {{environment}}, {{art_style}}, {{art_medium}}, {{artist_influence}}, {{composition}}, {{lighting}}, {{atmosphere}}, {{color_palette}}, {{detail_level}}{{midjourney_aspect_ratio_param_string}}{{midjourney_version_param_string}}{{midjourney_stylize_param_string}}{{midjourney_chaos_param_string}}{{midjourney_weird_param_string}}{{midjourney_tile_param_string}}{{midjourney_iw_param_string}}{{midjourney_style_raw_param_string}} {{other_params}}`;
 
 
@@ -374,7 +375,7 @@ const dalle3SectionsId: InteractiveSectionDefinition[] = [
     {
         title: "Gaya Artistik & Detail",
         questions: [
-            { id: 'artistic_style', promptText: 'Gaya Artistik', type: 'single-choice', options: commonArtStyles, defaultValue: 'Lukisan Digital', includeOtherOption: true },
+            { id: 'art_style', promptText: 'Gaya Artistik', type: 'single-choice', options: commonArtStyles, defaultValue: 'Lukisan Digital', includeOtherOption: true }, // Changed from 'artistic_style' to 'art_style' for consistency
             { id: 'artist_influence', promptText: 'Pengaruh Seniman (Opsional)', type: 'manual', defaultValue: 'Beatrix Potter' },
             { id: 'specific_details', promptText: 'Detail Spesifik untuk Dimasukkan', type: 'manual', defaultValue: 'detail bulu rubah, tekstur halaman buku, asap dari lilin' },
         ],
@@ -399,7 +400,7 @@ const dalle3SectionsEn: InteractiveSectionDefinition[] = [
     {
         title: "Artistic Style & Details",
         questions: [
-            { id: 'artistic_style', promptText: 'Artistic Style', type: 'single-choice', options: commonArtStylesEn, defaultValue: 'Digital Painting', includeOtherOption: true },
+            { id: 'art_style', promptText: 'Artistic Style', type: 'single-choice', options: commonArtStylesEn, defaultValue: 'Digital Painting', includeOtherOption: true }, // Changed from 'artistic_style' to 'art_style'
             { id: 'artist_influence', promptText: 'Artist Influence (Optional)', type: 'manual', defaultValue: 'Beatrix Potter' },
             { id: 'specific_details', promptText: 'Specific Details to Include', type: 'manual', defaultValue: 'detailed fur on the fox, texture of book pages, wisps of smoke from candles' },
         ],
@@ -414,8 +415,9 @@ const dalle3SectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-// Template DALL-E 3 Disederhanakan
-export const dalle3Template = `{{scene_description}}, {{artistic_style}}, {{artist_influence}}, {{specific_details}}, {{color_focus}}, {{lighting_mood}}, {{composition_angle}}, {{aspect_ratio_dalle}}.`;
+// CLEANED TEMPLATE
+export const dalle3Template = `{{scene_description}}, {{art_style}}, {{artist_influence}}, {{specific_details}}, {{color_focus}}, {{lighting_mood}}, {{composition_angle}}. {{dalle_aspect_ratio_value}}.`;
+
 
 // --- Stable Diffusion Interactive (Enhanced) ---
 const stableDiffusionSectionsId: InteractiveSectionDefinition[] = [
@@ -431,7 +433,7 @@ const stableDiffusionSectionsId: InteractiveSectionDefinition[] = [
         title: "Gaya Artistik & Pengaruh",
         questions: [
             { id: 'art_style_medium', promptText: 'Gaya Seni & Medium', type: 'manual', defaultValue: 'seni konsep fiksi ilmiah, fotorealistis, sedikit surealis' },
-            { id: 'artist_influences', promptText: 'Pengaruh Seniman (Opsional)', type: 'manual', defaultValue: 'Sparth, Moebius' },
+            { id: 'artist_influences', promptText: 'Pengaruh Seniman (Opsional)', type: 'manual', defaultValue: 'Sparth, Moebius' }, // Corrected ID
         ],
     },
     {
@@ -464,7 +466,7 @@ const stableDiffusionSectionsEn: InteractiveSectionDefinition[] = [
         title: "Artistic Style & Influences",
         questions: [
             { id: 'art_style_medium', promptText: 'Art Style & Medium', type: 'manual', defaultValue: 'sci-fi concept art, photorealistic, slightly surreal' },
-            { id: 'artist_influences', promptText: 'Artist Influences (Optional)', type: 'manual', defaultValue: 'Sparth, Moebius' },
+            { id: 'artist_influences', promptText: 'Artist Influences (Optional)', type: 'manual', defaultValue: 'Sparth, Moebius' }, // Corrected ID
         ],
     },
     {
@@ -484,8 +486,9 @@ const stableDiffusionSectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-// Template Stable Diffusion Disederhanakan
+// CLEANED TEMPLATE
 export const stableDiffusionTemplate = `{{main_subject}}, {{key_details}}, {{quality_descriptors}}, {{art_style_medium}}, {{artist_influences}}, {{technical_aspects}}, {{camera_shot}}, {{lighting_style}}{{sd_negative_param_string}}{{sd_params_note_string}}`;
+
 
 // --- Runway Gen-2 Interactive (Enhanced) ---
 const runwayGen2SectionsId: InteractiveSectionDefinition[] = [
@@ -507,7 +510,7 @@ const runwayGen2SectionsId: InteractiveSectionDefinition[] = [
         questions: [
             { id: 'visual_style', promptText: 'Gaya Visual', type: 'single-choice', options: ['Sinematik', 'Realistis', 'Anime', 'Retro VHS', ...commonArtStyles], defaultValue: 'Sinematik', includeOtherOption: true },
             { id: 'lighting_atmosphere', promptText: 'Pencahayaan & Atmosfer', type: 'manual', defaultValue: 'pencahayaan neon dari gedung-gedung, jalanan basah memantulkan cahaya, suasana penuh energi' },
-            { id: 'color_palette', promptText: 'Palet Warna Dominan', type: 'manual', defaultValue: 'merah menyala, biru tua, ungu, dengan kilatan putih dan kuning' },
+            { id: 'color_palette', promptText: 'Palet Warna Dominan', type: 'manual', defaultValue: 'merah menyala, biru tua, ungu, dengan kilatan putih dan kuning' }, // ID changed for consistency
         ],
     },
     {
@@ -538,7 +541,7 @@ const runwayGen2SectionsEn: InteractiveSectionDefinition[] = [
         questions: [
             { id: 'visual_style', promptText: 'Visual Style', type: 'single-choice', options: ['Cinematic', 'Realistic', 'Anime', 'Retro VHS', ...commonArtStylesEn], defaultValue: 'Cinematic', includeOtherOption: true },
             { id: 'lighting_atmosphere', promptText: 'Lighting & Atmosphere', type: 'manual', defaultValue: 'neon lighting from buildings, wet streets reflecting light, energetic atmosphere' },
-            { id: 'color_palette', promptText: 'Dominant Color Palette', type: 'manual', defaultValue: 'vibrant reds, deep blues, purples, with flashes of white and yellow' },
+            { id: 'color_palette', promptText: 'Dominant Color Palette', type: 'manual', defaultValue: 'vibrant reds, deep blues, purples, with flashes of white and yellow' }, // ID changed for consistency
         ],
     },
     {
@@ -550,8 +553,8 @@ const runwayGen2SectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-// Template Runway Gen-2 Disederhanakan
-export const runwayGen2Template = `{{scene_subject}}. {{camera_movement}}. {{subject_action}}. {{environment_action}}. {{visual_style}}, {{lighting_atmosphere}}. {{color_palette}}. {{sound_design_note}}. {{duration_note}}.`;
+// CLEANED TEMPLATE
+export const runwayGen2Template = `{{scene_subject}}, {{camera_movement}}, {{subject_action}}, {{environment_action}}, {{visual_style}}, {{lighting_atmosphere}}, {{color_palette}}, {{sound_design_note}}, {{duration_note}}.`;
 
 // --- Suno AI Interactive (Enhanced) ---
 const sunoAISectionsId: InteractiveSectionDefinition[] = [
@@ -618,18 +621,22 @@ const sunoAISectionsEn: InteractiveSectionDefinition[] = [
         ],
     },
 ];
-// Template Suno AI Disederhanakan
+// CLEANED TEMPLATE
 export const sunoAITemplate = `{{genre}}, {{subgenre_modifiers}}, {{mood}}, {{main_instruments}}, {{vocal_style}}, {{tempo}}, {{rhythm_description}}. {{song_structure}}{{suno_lyrics_block}}`;
 
+
 // --- Detailed Interactive Definitions for other Media/Music Frameworks (Enhanced) ---
-// Template Umum Gambar/Video Disederhanakan
+// CLEANED TEMPLATE
 export const detailedImageVideoTemplate = `{{subject}}, {{action_details}}, {{art_style}}, {{art_medium}}, {{artist_influence}}, {{composition}}, {{lighting}}, {{color_palette}}, {{detail_level}}.{{other_tool_params}}{{detailed_image_negative_param_string}}{{detailed_image_aspect_ratio_param_string}}`;
-// Template Umum Musik Disederhanakan
+// CLEANED TEMPLATE
 export const detailedMusicTemplate = `{{main_genre}}, {{subgenre_style}}, {{mood}}, {{tempo}}, {{main_instruments}}, {{vocal_style}}, {{song_structure_desc}}, {{duration_or_specifics}}.{{detailed_music_lyrics_block}}`;
 
+// ... (Sisa definisi framework teks standar tetap sama seperti sebelumnya) ...
+// Pastikan semua framework teks (RTF, TRACE, CTI, TAG, RISE, RODE, APE, COPE, CARE, SPARE, CoT, Zero-shot CoT, Self-Consistency, GenKnowledge, Least-to-Most, Self-Refine, ToT, Prompt Ensembling, Factive, EmotionPrompt, Prompt Chaining, Instruction Basics, RolePlay, Few-Shot, PACT)
+// memiliki `genericToolLinks: mergeAndSortTextToolLinks([])` atau toolLink spesifik jika ada.
 
+// Example of how a text framework might look (keep your existing text frameworks as they are)
 export const frameworks: Framework[] = [
-  // --- Text Prompt Frameworks (Example: RTF, PACT - Keep all 25 as they are) ---
   {
     id: 'rtf',
     idLocale: {
@@ -1334,7 +1341,7 @@ export const frameworks: Framework[] = [
           ...standardImageVideoAlternatives
       ]),
       interactiveDefinition: midjourneySectionsId,
-      interactivePromptTemplate: midjourneyTemplate,
+      interactivePromptTemplate: midjourneyTemplate, // This template is now primarily for param placeholders
     },
     enLocale: {
       name: 'Midjourney (Interactive)',
@@ -1348,7 +1355,7 @@ export const frameworks: Framework[] = [
           ...standardImageVideoAlternatives
       ]),
       interactiveDefinition: midjourneySectionsEn,
-      interactivePromptTemplate: midjourneyTemplate,
+      interactivePromptTemplate: midjourneyTemplate, // This template is now primarily for param placeholders
     }
   },
   {
@@ -1362,7 +1369,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://labs.openai.com/',
       genericToolLinks: createMediaMusicToolLinks('DALL-E 3 (OpenAI)', 'https://labs.openai.com/', standardImageVideoAlternatives),
       interactiveDefinition: dalle3SectionsId,
-      interactivePromptTemplate: dalle3Template,
+      interactivePromptTemplate: dalle3Template, // This template structure is for App.tsx to reference
     },
     enLocale: {
       name: 'DALL-E 3 (Interactive)',
@@ -1373,7 +1380,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://labs.openai.com/',
       genericToolLinks: createMediaMusicToolLinks('DALL-E 3 (OpenAI)', 'https://labs.openai.com/', standardImageVideoAlternatives),
       interactiveDefinition: dalle3SectionsEn,
-      interactivePromptTemplate: dalle3Template,
+      interactivePromptTemplate: dalle3Template, // This template structure is for App.tsx to reference
     }
   },
   {
@@ -1391,7 +1398,7 @@ export const frameworks: Framework[] = [
         ...standardImageVideoAlternatives
       ]),
       interactiveDefinition: stableDiffusionSectionsId,
-      interactivePromptTemplate: stableDiffusionTemplate,
+      interactivePromptTemplate: stableDiffusionTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Stable Diffusion (Interactive)',
@@ -1406,7 +1413,7 @@ export const frameworks: Framework[] = [
         ...standardImageVideoAlternatives
       ]),
       interactiveDefinition: stableDiffusionSectionsEn,
-      interactivePromptTemplate: stableDiffusionTemplate,
+      interactivePromptTemplate: stableDiffusionTemplate, // For param placeholders reference
     }
   },
   {
@@ -1420,7 +1427,7 @@ export const frameworks: Framework[] = [
       toolLink: undefined, 
       genericToolLinks: createMediaMusicToolLinks('Google Veo', undefined, standardImageVideoAlternatives),
       interactiveDefinition: veoInteractiveDefinitionId,
-      interactivePromptTemplate: veoInteractivePromptTemplate
+      interactivePromptTemplate: veoInteractivePromptTemplate // For param placeholders reference
     },
     enLocale: {
       name: 'Google Veo (Interactive)',
@@ -1431,7 +1438,7 @@ export const frameworks: Framework[] = [
       toolLink: undefined, 
       genericToolLinks: createMediaMusicToolLinks('Google Veo', undefined, standardImageVideoAlternatives),
       interactiveDefinition: veoInteractiveDefinitionEn,
-      interactivePromptTemplate: veoInteractivePromptTemplate
+      interactivePromptTemplate: veoInteractivePromptTemplate // For param placeholders reference
     }
   },
   {
@@ -1470,7 +1477,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://app.leonardo.ai/',
       genericToolLinks: createMediaMusicToolLinks('Leonardo.Ai', 'https://app.leonardo.ai/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Leonardo.Ai', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Leonardo.Ai (Detailed Interactive)',
@@ -1481,7 +1488,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://app.leonardo.ai/',
       genericToolLinks: createMediaMusicToolLinks('Leonardo.Ai', 'https://app.leonardo.ai/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Leonardo.Ai', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   {
@@ -1495,7 +1502,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://firefly.adobe.com/generate/images',
       genericToolLinks: createMediaMusicToolLinks('Adobe Firefly', 'https://firefly.adobe.com/generate/images', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Adobe Firefly', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Adobe Firefly (Detailed Interactive)',
@@ -1506,7 +1513,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://firefly.adobe.com/generate/images',
       genericToolLinks: createMediaMusicToolLinks('Adobe Firefly', 'https://firefly.adobe.com/generate/images', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Adobe Firefly', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   {
@@ -1520,7 +1527,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://ideogram.ai/create',
       genericToolLinks: createMediaMusicToolLinks('Ideogram', 'https://ideogram.ai/create', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Ideogram', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Ideogram (Detailed Interactive)',
@@ -1531,7 +1538,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://ideogram.ai/create',
       genericToolLinks: createMediaMusicToolLinks('Ideogram', 'https://ideogram.ai/create', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Ideogram', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   {
@@ -1545,7 +1552,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://pika.art/',
       genericToolLinks: createMediaMusicToolLinks('Pika Labs', 'https://pika.art/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Pika Labs (Video)', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Pika Labs (Detailed Interactive)',
@@ -1556,7 +1563,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://pika.art/',
       genericToolLinks: createMediaMusicToolLinks('Pika Labs', 'https://pika.art/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Pika Labs (Video)', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   {
@@ -1567,10 +1574,10 @@ export const frameworks: Framework[] = [
       description: 'Buat prompt video yang sangat deskriptif untuk OpenAI Sora, fokus pada detail sinematik dan naratif.',
       category: 'media',
       components: [],
-      toolLink: undefined, // Sora is not publicly available with a direct tool link yet
+      toolLink: undefined, 
       genericToolLinks: createMediaMusicToolLinks('OpenAI Sora', undefined, standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('OpenAI Sora (Video)', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'OpenAI Sora (Detailed Interactive)',
@@ -1578,10 +1585,10 @@ export const frameworks: Framework[] = [
       description: 'Create highly descriptive video prompts for OpenAI Sora, focusing on cinematic and narrative details.',
       category: 'media',
       components: [],
-      toolLink: undefined, // Sora is not publicly available with a direct tool link yet
+      toolLink: undefined, 
       genericToolLinks: createMediaMusicToolLinks('OpenAI Sora', undefined, standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('OpenAI Sora (Video)', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   {
@@ -1595,7 +1602,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://playgroundai.com/create',
       genericToolLinks: createMediaMusicToolLinks('Playground AI', 'https://playgroundai.com/create', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Playground AI', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Playground AI (Detailed Interactive)',
@@ -1606,7 +1613,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://playgroundai.com/create',
       genericToolLinks: createMediaMusicToolLinks('Playground AI', 'https://playgroundai.com/create', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Playground AI', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   {
@@ -1620,7 +1627,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://www.canva.com/magic-media/',
       genericToolLinks: createMediaMusicToolLinks('Canva Magic Media', 'https://www.canva.com/magic-media/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Canva Magic Media', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Canva Magic Media (Detailed Interactive)',
@@ -1631,7 +1638,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://www.canva.com/magic-media/',
       genericToolLinks: createMediaMusicToolLinks('Canva Magic Media', 'https://www.canva.com/magic-media/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Canva Magic Media', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   {
@@ -1645,7 +1652,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://kaiber.ai/',
       genericToolLinks: createMediaMusicToolLinks('Kaiber.ai', 'https://kaiber.ai/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Kaiber.ai (Video)', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Kaiber.ai (Detailed Interactive)',
@@ -1656,7 +1663,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://kaiber.ai/',
       genericToolLinks: createMediaMusicToolLinks('Kaiber.ai', 'https://kaiber.ai/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Kaiber.ai (Video)', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   {
@@ -1670,7 +1677,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://creator.nightcafe.studio/',
       genericToolLinks: createMediaMusicToolLinks('NightCafe Creator', 'https://creator.nightcafe.studio/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('NightCafe Creator', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'NightCafe Creator (Detailed Interactive)',
@@ -1681,7 +1688,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://creator.nightcafe.studio/',
       genericToolLinks: createMediaMusicToolLinks('NightCafe Creator', 'https://creator.nightcafe.studio/', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('NightCafe Creator', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   {
@@ -1695,7 +1702,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://clipdrop.co/tools',
       genericToolLinks: createMediaMusicToolLinks('Clipdrop by Stability', 'https://clipdrop.co/tools', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Clipdrop by Stability', 'id'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Clipdrop by Stability (Detailed Interactive)',
@@ -1706,7 +1713,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://clipdrop.co/tools',
       genericToolLinks: createMediaMusicToolLinks('Clipdrop by Stability', 'https://clipdrop.co/tools', standardImageVideoAlternatives),
       interactiveDefinition: createDetailedImageVideoSections('Clipdrop by Stability', 'en'),
-      interactivePromptTemplate: detailedImageVideoTemplate,
+      interactivePromptTemplate: detailedImageVideoTemplate, // For param placeholders reference
     }
   },
   // --- Music Prompt Frameworks (Now all interactive) ---
@@ -1721,7 +1728,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://app.suno.ai/',
       genericToolLinks: createMediaMusicToolLinks('Suno AI', 'https://app.suno.ai/', standardMusicAlternatives),
       interactiveDefinition: sunoAISectionsId,
-      interactivePromptTemplate: sunoAITemplate,
+      interactivePromptTemplate: sunoAITemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Suno AI (Interactive)',
@@ -1732,7 +1739,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://app.suno.ai/',
       genericToolLinks: createMediaMusicToolLinks('Suno AI', 'https://app.suno.ai/', standardMusicAlternatives),
       interactiveDefinition: sunoAISectionsEn,
-      interactivePromptTemplate: sunoAITemplate,
+      interactivePromptTemplate: sunoAITemplate, // For param placeholders reference
     }
   },
   {
@@ -1746,7 +1753,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://www.udio.com/',
       genericToolLinks: createMediaMusicToolLinks('Udio AI', 'https://www.udio.com/', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Udio AI', 'id'),
-      interactivePromptTemplate: detailedMusicTemplate,
+      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Udio AI (Detailed Interactive)',
@@ -1757,7 +1764,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://www.udio.com/',
       genericToolLinks: createMediaMusicToolLinks('Udio AI', 'https://www.udio.com/', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Udio AI', 'en'),
-      interactivePromptTemplate: detailedMusicTemplate,
+      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
     }
   },
   {
@@ -1771,7 +1778,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://stableaudio.com/',
       genericToolLinks: createMediaMusicToolLinks('Stable Audio', 'https://stableaudio.com/', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Stable Audio', 'id'),
-      interactivePromptTemplate: detailedMusicTemplate,
+      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Stable Audio (Detailed Interactive)',
@@ -1782,7 +1789,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://stableaudio.com/',
       genericToolLinks: createMediaMusicToolLinks('Stable Audio', 'https://stableaudio.com/', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Stable Audio', 'en'),
-      interactivePromptTemplate: detailedMusicTemplate,
+      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
     }
   },
   {
@@ -1796,7 +1803,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://aitestkitchen.withgoogle.com/tools/music-fx',
       genericToolLinks: createMediaMusicToolLinks('Google MusicFX', 'https://aitestkitchen.withgoogle.com/tools/music-fx', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Google MusicFX', 'id'),
-      interactivePromptTemplate: detailedMusicTemplate,
+      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Google MusicFX (Detailed Interactive)',
@@ -1807,7 +1814,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://aitestkitchen.withgoogle.com/tools/music-fx',
       genericToolLinks: createMediaMusicToolLinks('Google MusicFX', 'https://aitestkitchen.withgoogle.com/tools/music-fx', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Google MusicFX', 'en'),
-      interactivePromptTemplate: detailedMusicTemplate,
+      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
     }
   },
   {
@@ -1821,7 +1828,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://mubert.com/render',
       genericToolLinks: createMediaMusicToolLinks('Mubert', 'https://mubert.com/render', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Mubert', 'id'),
-      interactivePromptTemplate: detailedMusicTemplate,
+      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
     },
     enLocale: {
       name: 'Mubert (Detailed Interactive)',
@@ -1832,7 +1839,7 @@ export const frameworks: Framework[] = [
       toolLink: 'https://mubert.com/render',
       genericToolLinks: createMediaMusicToolLinks('Mubert', 'https://mubert.com/render', standardMusicAlternatives),
       interactiveDefinition: createDetailedMusicSections('Mubert', 'en'),
-      interactivePromptTemplate: detailedMusicTemplate,
+      interactivePromptTemplate: detailedMusicTemplate, // For param placeholders reference
     }
   },
 ];

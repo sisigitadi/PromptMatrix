@@ -4,7 +4,7 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import InputField from './components/InputField';
 import PromptOutput from './components/PromptOutput';
 import InteractivePromptBuilder from './components/InteractivePromptBuilder';
-import { Framework, Language, PromptComponent, FrameworkComponentDetail, InteractiveQuestionDefinition, InteractiveQuestionType } from './types';
+import { Framework, Language, PromptComponent, FrameworkComponentDetail, InteractiveQuestionDefinition, InteractiveQuestionType, TranslationKey } from './types';
 import { useLanguage } from './contexts/LanguageContext';
 import { EraserIcon } from './components/icons/EraserIcon';
 import DisclaimerModal from './components/DisclaimerModal';
@@ -21,7 +21,7 @@ import { InfoIcon } from './components/icons/InfoIcon';
 import { StarIcon } from './components/icons/StarIcon';
 import {
   frameworks,
-  detailedImageVideoTemplate,
+  detailedImageVideoTemplate, 
   detailedMusicTemplate,
   midjourneyTemplate,
   dalle3Template,
@@ -126,7 +126,7 @@ const App: React.FC = () => {
     }
     return defaults;
   }, []);
-
+  
   const computeInitialDisplayFormState = useCallback((frameworkLocale: Framework['idLocale'] | Framework['enLocale'], currentTrueDefaults: Record<string, string | string[]>): Record<string, string | string[]> => {
     const formInitialDisplayState: Record<string, string | string[]> = {};
     if (frameworkLocale.interactiveDefinition) {
@@ -134,10 +134,8 @@ const App: React.FC = () => {
         section.questions.forEach(question => {
           const key = question.id;
           const trueDefaultValue = currentTrueDefaults[key];
-          // For manual fields that have a non-empty true default, display them as empty initially
-          // This encourages user input and makes the "formIsDirty" logic more intuitive.
           if (question.type === 'manual' && typeof trueDefaultValue === 'string' && trueDefaultValue.trim() !== '') {
-            formInitialDisplayState[key] = '';
+            formInitialDisplayState[key] = ''; 
           } else {
             formInitialDisplayState[key] = trueDefaultValue;
           }
@@ -160,20 +158,16 @@ const App: React.FC = () => {
     }
 
     let defaultToCompare = trueDefaultValue;
-    // If it's a single-choice, no explicit trueDefaultValue, and "Other" is NOT selected,
-    // the effective default is the first option (what's visually selected by the browser).
-    // If "Other" IS selected, then the effective default for comparison becomes an empty string,
-    // so any text in "Other" makes it non-default.
     if (questionType === 'single-choice' && 
         (trueDefaultValue === undefined || (typeof trueDefaultValue === 'string' && trueDefaultValue.trim() === '')) && 
         questionOptions && questionOptions.length > 0) {
         if (currentValue !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') { 
             defaultToCompare = questionOptions[0];
         } else {
+            // If "Other" is selected, the effective default to compare against an empty "Other" input is an empty string.
             defaultToCompare = ''; 
         }
     }
-
 
     if (Array.isArray(currentValForCompare) && Array.isArray(defaultToCompare)) {
         return areArraysEqual(currentValForCompare, defaultToCompare);
@@ -181,31 +175,29 @@ const App: React.FC = () => {
     if (typeof currentValForCompare === 'string' && typeof defaultToCompare === 'string') {
         return currentValForCompare.trim() === defaultToCompare.trim();
     }
-    // Handle undefined cases more robustly
     if (currentValForCompare === undefined) return (defaultToCompare === undefined || (typeof defaultToCompare === 'string' && defaultToCompare.trim() === '') || (Array.isArray(defaultToCompare) && defaultToCompare.length === 0));
     if (defaultToCompare === undefined) return ((typeof currentValForCompare === 'string' && currentValForCompare.trim() === '') || (Array.isArray(currentValForCompare) && currentValForCompare.length === 0));
     
-    return false; // Fallback if types don't match or other conditions
+    return false; 
   }, []);
-
 
   const handleFrameworkSelect = (framework: Framework) => {
     setSelectedFramework(framework);
     const currentLocale = language === 'id' ? framework.idLocale : framework.enLocale;
     const calculatedTrueDefaults = getTrueInitialFrameworkDefaultsInternal(currentLocale);
     setTrueInitialDefaults(calculatedTrueDefaults);
-    setOtherInputValues({});
+    setOtherInputValues({}); 
 
     if (currentLocale.interactiveDefinition && currentLocale.interactiveDefinition.length > 0) {
-        setPromptComponents([]);
+        setPromptComponents([]); 
         setInteractiveFormValues(computeInitialDisplayFormState(currentLocale, calculatedTrueDefaults));
     } else if (currentLocale.components) {
-        setInteractiveFormValues({});
+        setInteractiveFormValues({}); 
         const initialComponents = currentLocale.components.map((componentDetail: FrameworkComponentDetail) => ({
           id: componentDetail.id,
-          value: '',
-          label: componentDetail.id,
-          example: componentDetail.example,
+          value: '', 
+          label: componentDetail.id, 
+          example: componentDetail.example, 
         }));
         setPromptComponents(initialComponents);
     } else {
@@ -218,7 +210,7 @@ const App: React.FC = () => {
     setAiError(null);
     setAiFeedbackReceived(false);
     setHasCurrentPromptBeenCopied(false);
-    if (window.innerWidth < 768) { // Auto-expand panels on smaller screens
+    if (window.innerWidth < 768) { 
       setIsInputPanelExpanded(true);
       setIsOutputPanelExpanded(true);
     }
@@ -234,7 +226,7 @@ const App: React.FC = () => {
   const handleCategorySelect = (category: 'text' | 'media' | 'music') => {
     if (selectedCategory !== category) {
       setSelectedCategory(category);
-      setSelectedFramework(null);
+      setSelectedFramework(null); 
       setPromptComponents([]);
       setUserDefinedInteraction('');
       setInteractiveFormValues({});
@@ -244,7 +236,7 @@ const App: React.FC = () => {
       setAiError(null);
       setAiFeedbackReceived(false);
       setHasCurrentPromptBeenCopied(false);
-      resetFrameworkSuggestionStates();
+      resetFrameworkSuggestionStates(); 
     }
   };
 
@@ -276,15 +268,15 @@ const App: React.FC = () => {
       prevComponents.map(comp => ({ ...comp, value: '' }))
     );
     setUserDefinedInteraction('');
-    setOtherInputValues({});
+    setOtherInputValues({}); 
 
     if (selectedFramework && currentFrameworkLocale) {
-        const calculatedTrueDefaults = getTrueInitialFrameworkDefaultsInternal(currentFrameworkLocale);
-        setTrueInitialDefaults(calculatedTrueDefaults);
+        const calculatedTrueDefaults = getTrueInitialFrameworkDefaultsInternal(currentFrameworkLocale); 
+        setTrueInitialDefaults(calculatedTrueDefaults); 
         if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
             setInteractiveFormValues(computeInitialDisplayFormState(currentFrameworkLocale, calculatedTrueDefaults));
         } else {
-            setInteractiveFormValues({});
+            setInteractiveFormValues({}); 
         }
     } else {
         setInteractiveFormValues({});
@@ -314,7 +306,7 @@ const App: React.FC = () => {
           const locale = language === 'id' ? fw.idLocale : fw.enLocale;
           return { id: fw.id, name: locale.name, description: locale.description, category: locale.category };
         })
-        .filter(fwInfo => fwInfo.category === selectedCategory);
+        .filter(fwInfo => fwInfo.category === selectedCategory); 
 
       const systemPrompt = t('geminiInstructionForFrameworkSuggestion', JSON.stringify(allFrameworksInfo));
       const userPrompt = `User goal: "${userGoalForFramework}". Suggest relevant framework IDs from the provided list that match the user's goal and the currently selected category: ${selectedCategory}.`;
@@ -354,255 +346,222 @@ const App: React.FC = () => {
   };
   
   useEffect(() => {
-    if (!selectedFramework || !currentFrameworkLocale || Object.keys(trueInitialDefaults).length === 0) {
+    let assembledPrompt = "";
+    let assembledPromptForCopy = "";
+    let formIsDirty = false; 
+    let standardFormIsPristine = true; 
+
+    if (!selectedFramework || !currentFrameworkLocale) {
       setGeneratedPrompt(selectedCategory ? t('selectSpecificFrameworkOutputSummary') : t('selectFrameworkPromptAreaInstruction'));
       setPromptToCopy('');
       return;
     }
-
-    if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0 && currentFrameworkLocale.interactivePromptTemplate) {
-      let formIsDirty = false;
-      currentFrameworkLocale.interactiveDefinition.forEach(section => {
-        section.questions.forEach(question => {
-          if (formIsDirty) return;
-          const key = question.id;
-          const currentValue = interactiveFormValues[key];
-          const otherValue = question.includeOtherOption ? otherInputValues[key] : undefined;
-          const trueDefault = trueInitialDefaults[key];
-          
-          if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, question.type, question.options)) {
-             // A field is considered changed if it's not default AND has a meaningful value
-             const effVal = effectiveValueToString(currentValue, otherValue);
-             if (effVal.trim() !== '') {
-                 formIsDirty = true;
-             }
-          }
-        });
-      });
-      
-      if (!formIsDirty) {
-        setGeneratedPrompt(t('initialPromptAreaInstruction'));
-        setPromptToCopy('');
-      } else {
-        let assembledPrompt = currentFrameworkLocale.interactivePromptTemplate;
-        const templateSubstitutions = new Map<string, string>();
-        
-        const createParamString = (
-            formKey: string,
-            paramPrefix: string,
-            valueTransformer: (val: string) => string = (v) => v.split(' ')[0], // Default transformer
-            isNegativeParam: boolean = false // For cases like multi-choice negative prompts
-        ) => {
-            const questionDef = currentFrameworkLocale.interactiveDefinition?.flatMap(s=>s.questions).find(q=>q.id === formKey);
-            const currentValue = interactiveFormValues[formKey];
-            const otherValue = questionDef?.includeOtherOption ? otherInputValues[formKey] : undefined;
-            const trueDefault = trueInitialDefaults[formKey];
-
-            if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, questionDef?.type, questionDef?.options)) {
-                 const effectiveValStr = effectiveValueToString(currentValue, otherValue);
-                 if (effectiveValStr.trim() !== '') {
-                     const transformedValue = valueTransformer(effectiveValStr.trim());
-                     if (transformedValue.trim() !== '') return `${paramPrefix}${transformedValue}`;
-                 } else if (isNegativeParam && Array.isArray(currentValue) && currentValue.length > 0) {
-                    const joinedArrayValues = currentValue.join(', ').trim();
-                    if(joinedArrayValues) return `${paramPrefix}${valueTransformer(joinedArrayValues)}`;
-                 }
-            }
-            return '';
-        };
-
+    
+    if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
+      if (Object.keys(trueInitialDefaults).length > 0) { 
         currentFrameworkLocale.interactiveDefinition.forEach(section => {
+          if (formIsDirty) return; 
           section.questions.forEach(question => {
+            if (formIsDirty) return;
             const key = question.id;
-            const currentValueInForm = interactiveFormValues[key];
-            const currentOtherValue = question.includeOtherOption ? otherInputValues[key] : undefined;
-            const trueDefaultForKey = trueInitialDefaults[key];
+            const currentValue = interactiveFormValues[key];
+            const otherValue = question.includeOtherOption ? otherInputValues[key] : undefined;
+            const trueDefault = trueInitialDefaults[key];
+            const effVal = effectiveValueToString(currentValue, otherValue);
             
-            const isDefault = isEffectivelyDefault(currentValueInForm, trueDefaultForKey, currentOtherValue, question.type, question.options);
-            const effectiveValStr = effectiveValueToString(currentValueInForm, currentOtherValue).trim();
-            
-            let finalSubstitution = "";
-            if (!isDefault && effectiveValStr !== "") {
-                finalSubstitution = effectiveValStr;
-                const activeTemplate = currentFrameworkLocale.interactivePromptTemplate;
-                
-                if (key === 'lighting' && activeTemplate === detailedImageVideoTemplate) {
-                    finalSubstitution = effectiveValStr + " lighting";
-                } else if (key === 'artist_influence' && (activeTemplate === detailedImageVideoTemplate || activeTemplate === dalle3Template) && effectiveValStr) {
-                    finalSubstitution = "in the style of " + effectiveValStr;
-                } else if (key === 'lyrics_theme' && activeTemplate === sunoAITemplate && effectiveValStr && !effectiveValStr.toLowerCase().startsWith('[verse]') && !effectiveValStr.toLowerCase().startsWith('[chorus]')) {
-                    // This specific prefix for suno_lyrics_block is handled later
-                } else if (key === 'custom_lyrics_section' && activeTemplate === sunoAITemplate && effectiveValStr && (effectiveValStr.toLowerCase().startsWith('[verse]') || effectiveValStr.toLowerCase().startsWith('[chorus]'))) {
-                     // This specific prefix for suno_lyrics_block is handled later
-                } else if (key === 'lyrical_theme_or_custom' && activeTemplate === detailedMusicTemplate && effectiveValStr) {
-                   // This specific prefix for detailed_music_lyrics_block is handled later
-                }
+            if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, question.type, question.options) && effVal.trim() !== '') {
+              formIsDirty = true;
             }
-            templateSubstitutions.set(key, finalSubstitution);
           });
         });
-        
-        // Specific parameter string substitutions
-        const activeTemplate = currentFrameworkLocale.interactivePromptTemplate;
-        if (activeTemplate === veoInteractivePromptTemplate) {
-            const currentNegative = effectiveValueToString(interactiveFormValues.negative, otherInputValues.negative).trim();
-            templateSubstitutions.set('veo_negative_parameter_string', currentNegative ? ` --no ${currentNegative}` : '');
-        }
-        if (activeTemplate === midjourneyTemplate) {
-            templateSubstitutions.set('midjourney_aspect_ratio_param_string', createParamString('aspect_ratio', ' --ar '));
-            const versionVal = effectiveValueToString(interactiveFormValues.version);
-            let versionParam = '';
-            if (!isEffectivelyDefault(interactiveFormValues.version, trueInitialDefaults.version, undefined, 'single-choice', language === 'id' ? midjourneyVersionOptions : midjourneyVersionOptionsEn) && versionVal) {
-                versionParam = versionVal.includes("niji") ? ` --niji ${versionVal.split(' ')[1]}` : ` --v ${versionVal}`;
-            }
-            templateSubstitutions.set('midjourney_version_param_string', versionParam);
-            templateSubstitutions.set('midjourney_stylize_param_string', createParamString('stylize', ' --s ', (v)=>v.trim()));
-            templateSubstitutions.set('midjourney_chaos_param_string', createParamString('chaos', ' --c ', (v)=>v.trim()));
-            templateSubstitutions.set('midjourney_weird_param_string', createParamString('weird', ' --weird ', (v)=>v.trim()));
-            const tileVal = effectiveValueToString(interactiveFormValues.tile);
-            const tileParam = (!isEffectivelyDefault(interactiveFormValues.tile, trueInitialDefaults.tile, undefined, 'single-choice') && tileVal === (language === 'id' ? 'Ya' : 'Yes')) ? ' --tile' : '';
-            templateSubstitutions.set('midjourney_tile_param_string', tileParam);
-            templateSubstitutions.set('midjourney_iw_param_string', createParamString('image_weight', ' --iw ', (v)=>v.trim()));
-            const styleRawVal = effectiveValueToString(interactiveFormValues.style_raw);
-            const styleRawParam = (!isEffectivelyDefault(interactiveFormValues.style_raw, trueInitialDefaults.style_raw, undefined, 'single-choice') && styleRawVal === (language === 'id' ? 'Ya (untuk v5+)' : 'Yes (for v5+)')) ? ' --style raw' : '';
-            templateSubstitutions.set('midjourney_style_raw_param_string', styleRawParam);
-        }
-        if (activeTemplate === dalle3Template) {
-            templateSubstitutions.set('dalle_aspect_ratio_value', createParamString('aspect_ratio_dalle', '', (v) => v.split(' ')[0]));
-        }
-        if (activeTemplate === stableDiffusionTemplate) {
-            let sdNegativeParts: string[] = [];
-            const negElementsArray = interactiveFormValues.negative_elements as string[] || [];
-            if (!isEffectivelyDefault(negElementsArray, trueInitialDefaults.negative_elements as string[], undefined, 'multiple-choice')) {
-                 sdNegativeParts.push(...negElementsArray.filter(el => el.trim() !== ''));
-            }
-            const customNegVal = effectiveValueToString(interactiveFormValues.custom_negative_prompt);
-            if (!isEffectivelyDefault(customNegVal, trueInitialDefaults.custom_negative_prompt, undefined, 'manual') && customNegVal.trim() !== '') {
-                 sdNegativeParts.push(customNegVal);
-            }
-            templateSubstitutions.set('sd_negative_param_string', sdNegativeParts.length > 0 ? ` --neg ${sdNegativeParts.join(', ')}` : '');
-            templateSubstitutions.set('sd_params_note_string', createParamString('param_info', ' --params ', (v)=>v.trim()));
-        }
-        if (activeTemplate === sunoAITemplate) {
-            const lyricsInputFromTheme = templateSubstitutions.get('lyrics_theme') || '';
-            const lyricsInputFromCustom = templateSubstitutions.get('custom_lyrics_section') || '';
-            let sunoLyricsContent = '';
-            const finalLyricsInput = lyricsInputFromCustom.trim() !== '' ? lyricsInputFromCustom : lyricsInputFromTheme;
-
-            if (finalLyricsInput.trim() !== '' && !isEffectivelyDefault(finalLyricsInput, trueInitialDefaults.lyrics_theme, undefined, 'manual')) { // Check if lyrics theme is not default
-                if (finalLyricsInput.toLowerCase().startsWith('[verse]') || finalLyricsInput.toLowerCase().startsWith('[chorus]')) {
-                   sunoLyricsContent = `\n\n[Lyrics]\n${finalLyricsInput}`;
-               } else {
-                   sunoLyricsContent = ` Lyrical theme: ${finalLyricsInput}.`;
-               }
-            }
-            templateSubstitutions.set('suno_lyrics_block', sunoLyricsContent);
-        }
-        if (activeTemplate === detailedImageVideoTemplate) {
-            let detailedNegativeParts: string[] = [];
-            const customNegDetailedVal = templateSubstitutions.get('custom_negative') || ''; 
-             if (customNegDetailedVal.trim() !== '' && !isEffectivelyDefault(customNegDetailedVal, trueInitialDefaults.custom_negative, undefined, 'manual')) {
-                detailedNegativeParts.push(customNegDetailedVal);
-            }
-            const negElementsArrayDetailed = interactiveFormValues.negative_prompt_elements as string[] || [];
-            if (!isEffectivelyDefault(negElementsArrayDetailed, trueInitialDefaults.negative_prompt_elements as string[], undefined, 'multiple-choice') && negElementsArrayDetailed.length > 0) {
-                detailedNegativeParts.push(...negElementsArrayDetailed.filter(el => el.trim() !== ''));
-            }
-            templateSubstitutions.set('detailed_image_negative_param_string', detailedNegativeParts.length > 0 ? ` --no ${detailedNegativeParts.join(', ')}` : '');
-            templateSubstitutions.set('detailed_image_aspect_ratio_param_string', createParamString('aspect_ratio', ' --ar '));
-        }
-        if (activeTemplate === detailedMusicTemplate) {
-             let lyricsBlockContent = "";
-             const lyricalThemeOrCustomValue = templateSubstitutions.get('lyrical_theme_or_custom') || '';
-             if (lyricalThemeOrCustomValue.trim() !== "" && !isEffectivelyDefault(lyricalThemeOrCustomValue, trueInitialDefaults.lyrical_theme_or_custom, undefined, 'manual')) {
-                 if (lyricalThemeOrCustomValue.toLowerCase().startsWith('[verse]') || lyricalThemeOrCustomValue.toLowerCase().startsWith('[chorus]')) {
-                    lyricsBlockContent = `\nLyrics:\n${lyricalThemeOrCustomValue}`;
-                 } else {
-                    lyricsBlockContent = ` Lyrical theme: ${lyricalThemeOrCustomValue}.`;
-                 }
-             }
-             templateSubstitutions.set('detailed_music_lyrics_block', lyricsBlockContent);
-        }
-        
-        templateSubstitutions.forEach((value, key) => {
-          const regex = new RegExp(`{{${key}}}`, 'g');
-          assembledPrompt = assembledPrompt.replace(regex, value);  
-        });
-
-        assembledPrompt = assembledPrompt.replace(/\{\{[^{}]*?\}\}/g, ''); 
-        assembledPrompt = assembledPrompt.replace(/\s\s+/g, ' ').trim(); 
-        // Remove "Label: ." or "Label: " if value was empty
-        assembledPrompt = assembledPrompt.replace(/([A-Za-z\s0-9()&']+?):\s*(?:\.\s*|\s*)(?=(\s*[A-Za-z\s0-9()&']+?:|\s*--|\s*$))/g, '');
-        assembledPrompt = assembledPrompt.replace(/\s\s+/g, ' ').trim(); 
-        
-        // Advanced comma/separator cleaning
-        assembledPrompt = assembledPrompt.replace(/\s*([.,;])\s*/g, '$1'); // Remove spaces around separators
-        assembledPrompt = assembledPrompt.replace(/([.,;])\1+/g, '$1'); // Consolidate multiple same separators (e.g. `,,` to `,`, `..` to `.`)
-        assembledPrompt = assembledPrompt.replace(/[.,;](?=[.,;])/g, ''); // Remove separator if followed immediately by another (e.g. `.,` becomes `,`)
-        
-        // Convert all remaining separators to a comma followed by a space, then remove duplicates
-        assembledPrompt = assembledPrompt.replace(/[.,;]/g, ',').replace(/(,\s*){2,}/g, ', '); 
-        
-        assembledPrompt = assembledPrompt.replace(/^[\s,.]+|[\s,.]+(?=$)/g, ''); // Remove leading/trailing separators/spaces
-        assembledPrompt = assembledPrompt.replace(/,\s*--/g, ' --'); // Remove comma before parameters
-        assembledPrompt = assembledPrompt.trim();
-
-
-        if (assembledPrompt === '' || assembledPrompt === '.' || assembledPrompt === ',') {
-            setGeneratedPrompt(t('initialPromptAreaInstruction'));
-            setPromptToCopy('');
-        } else {
-            setGeneratedPrompt(assembledPrompt);
-            setPromptToCopy(assembledPrompt);
-        }
       }
 
-    } else { 
-      const standardFormIsPristine = promptComponents.every(pc => pc.value.trim() === '') && userDefinedInteraction.trim() === '';
-      if (standardFormIsPristine) {
-        setGeneratedPrompt(t('initialPromptAreaInstruction'));
-        setPromptToCopy('');
-      } else {
-        let structuredPrompt = "";
-        let copyPrompt = "";
+        if (formIsDirty) {
+            const descriptiveSegments: string[] = [];
+            const technicalParamSegments: string[] = [];
+            
+            const createParamString = (
+                formKey: string,
+                paramPrefix: string,
+                valueTransformer: (val: string) => string = (v) => v.split(' ')[0], 
+                paramSuffix: string = ''
+            ): string => {
+                const questionDef = currentFrameworkLocale.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === formKey);
+                const currentValue = interactiveFormValues[formKey];
+                const otherValue = questionDef?.includeOtherOption ? otherInputValues[formKey] : undefined;
+                const trueDefault = trueInitialDefaults[formKey];
+
+                if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, questionDef?.type, questionDef?.options)) {
+                    const effectiveValStr = effectiveValueToString(currentValue, otherValue);
+                    if (effectiveValStr.trim() !== '') {
+                        const transformedValue = valueTransformer(effectiveValStr.trim());
+                        if (transformedValue.trim() !== '') return `${paramPrefix}${transformedValue}${paramSuffix}`;
+                    } else if (questionDef?.type === 'multiple-choice' && Array.isArray(currentValue) && currentValue.length > 0) {
+                        const joinedArrayValues = currentValue.join(', ').trim();
+                        if (joinedArrayValues) {
+                            const transformedArrayValue = valueTransformer(joinedArrayValues); 
+                            if(transformedArrayValue.trim() !== '') return `${paramPrefix}${transformedArrayValue}${paramSuffix}`;
+                        }
+                    }
+                }
+                return '';
+            };
+            
+            currentFrameworkLocale.interactiveDefinition.forEach(section => {
+                section.questions.forEach(question => {
+                    const key = question.id;
+                    const currentValueInForm = interactiveFormValues[key];
+                    const currentOtherValue = question.includeOtherOption ? otherInputValues[key] : undefined;
+                    const trueDefaultForKey = trueInitialDefaults[key];
+                    
+                    const isDefault = isEffectivelyDefault(currentValueInForm, trueDefaultForKey, currentOtherValue, question.type, question.options);
+                    const effectiveValStr = effectiveValueToString(currentValueInForm, currentOtherValue).trim();
+
+                    if (!isDefault && effectiveValStr !== "") {
+                        let processedValue = effectiveValStr;
+                        const activeTemplateRefId = selectedFramework?.id; 
+
+                        if (key === 'lighting' && activeTemplateRefId && ['leonardo_ai', 'adobe_firefly', 'ideogram_ai', 'pika_labs', 'openai_sora', 'playground_ai', 'canva_magic_media', 'kaiber_ai', 'nightcafe_creator', 'clipdrop_stability', 'midjourney', 'stable_diffusion', 'google_veo'].includes(activeTemplateRefId) ) {
+                            processedValue = effectiveValStr + " lighting";
+                        } else if (key === 'artist_influence' && activeTemplateRefId && ['leonardo_ai', 'adobe_firefly', 'ideogram_ai', 'pika_labs', 'openai_sora', 'playground_ai', 'canva_magic_media', 'kaiber_ai', 'nightcafe_creator', 'clipdrop_stability', 'midjourney', 'dalle3'].includes(activeTemplateRefId)) {
+                            processedValue = "in the style of " + effectiveValStr;
+                        } else if (key === 'artist_influences' && activeTemplateRefId === 'stable_diffusion') { 
+                            processedValue = "by " + effectiveValStr;
+                        } else if (key === 'lyrics_theme' && activeTemplateRefId === 'suno_ai' && !effectiveValStr.toLowerCase().startsWith('[verse]') && !effectiveValStr.toLowerCase().startsWith('[chorus]')) {
+                            processedValue = `Lyrical theme: ${effectiveValStr}`; 
+                        } else if (key === 'custom_lyrics_section' && activeTemplateRefId === 'suno_ai' && (effectiveValStr.toLowerCase().startsWith('[verse]') || effectiveValStr.toLowerCase().startsWith('[chorus]'))) {
+                            processedValue = `\n\n[Lyrics]\n${effectiveValStr}`;
+                        } else if (key === 'lyrical_theme_or_custom' && activeTemplateRefId && ['udio_ai', 'stable_audio', 'google_musicfx', 'mubert_ai'].includes(activeTemplateRefId) ) { 
+                            if (effectiveValStr.toLowerCase().startsWith('[verse]') || effectiveValStr.toLowerCase().startsWith('[chorus]')) {
+                            processedValue = `\nLyrics:\n${effectiveValStr}`;
+                            }
+                        }
+                        
+                        descriptiveSegments.push(processedValue);
+                    }
+                });
+            });
+            
+            const activeFrameworkId = selectedFramework?.id;
+            if (activeFrameworkId === 'google_veo') { 
+                technicalParamSegments.push(createParamString('negative', ' --no ', v => v.trim()));
+            }
+            if (activeFrameworkId === 'midjourney') {
+                technicalParamSegments.push(createParamString('aspect_ratio', '--ar '));
+                const versionVal = effectiveValueToString(interactiveFormValues.version);
+                if (!isEffectivelyDefault(interactiveFormValues.version, trueInitialDefaults.version, undefined, 'single-choice', language === 'id' ? midjourneyVersionOptions : midjourneyVersionOptionsEn) && versionVal) {
+                    technicalParamSegments.push(versionVal.includes("niji") ? ` --niji ${versionVal.split(' ')[1]}` : ` --v ${versionVal.split(' ')[0]}`);
+                }
+                technicalParamSegments.push(createParamString('stylize', '--s ', v => v.trim()));
+                technicalParamSegments.push(createParamString('chaos', '--c ', v => v.trim()));
+                technicalParamSegments.push(createParamString('weird', '--weird ', v => v.trim()));
+                if (!isEffectivelyDefault(interactiveFormValues.tile, trueInitialDefaults.tile, undefined, 'single-choice') && effectiveValueToString(interactiveFormValues.tile) === (language === 'id' ? 'Ya' : 'Yes')) {
+                    technicalParamSegments.push('--tile');
+                }
+                technicalParamSegments.push(createParamString('image_weight', '--iw ', v => v.trim()));
+                if (!isEffectivelyDefault(interactiveFormValues.style_raw, trueInitialDefaults.style_raw, undefined, 'single-choice') && effectiveValueToString(interactiveFormValues.style_raw) === (language === 'id' ? 'Ya (untuk v5+)' : 'Yes (for v5+)')) {
+                    technicalParamSegments.push('--style raw');
+                }
+                technicalParamSegments.push(createParamString('other_params', '', v => v.trim(), ' ')); 
+            }
+            if (activeFrameworkId === 'stable_diffusion') {
+                let sdNegativeParts: string[] = [];
+                const negElementsArray = interactiveFormValues.negative_elements as string[] || [];
+                if (!isEffectivelyDefault(negElementsArray, trueInitialDefaults.negative_elements as string[], undefined, 'multiple-choice') && negElementsArray.length > 0) {
+                    sdNegativeParts.push(...negElementsArray.filter(el => el.trim() !== ''));
+                }
+                const customNegVal = effectiveValueToString(interactiveFormValues.custom_negative_prompt);
+                if (!isEffectivelyDefault(customNegVal, trueInitialDefaults.custom_negative_prompt, undefined, 'manual') && customNegVal.trim() !== '') {
+                    sdNegativeParts.push(customNegVal);
+                }
+                if (sdNegativeParts.length > 0) technicalParamSegments.push(`--neg ${sdNegativeParts.join(', ')}`);
+            }
+
+            if (activeFrameworkId && ['leonardo_ai', 'adobe_firefly', 'ideogram_ai', 'pika_labs', 'openai_sora', 'playground_ai', 'canva_magic_media', 'kaiber_ai', 'nightcafe_creator', 'clipdrop_stability'].includes(activeFrameworkId)) {
+                let detailedNegativeParts: string[] = [];
+                const customNegDetailedVal = effectiveValueToString(interactiveFormValues.custom_negative, otherInputValues.custom_negative).trim();
+                if (customNegDetailedVal !== "" && !isEffectivelyDefault(interactiveFormValues.custom_negative, trueInitialDefaults.custom_negative, otherInputValues.custom_negative, 'manual')) {
+                    detailedNegativeParts.push(customNegDetailedVal);
+                }
+                const negElementsArrayDetailed = interactiveFormValues.negative_prompt_elements as string[] || [];
+                if (!isEffectivelyDefault(negElementsArrayDetailed, trueInitialDefaults.negative_prompt_elements as string[], undefined, 'multiple-choice') && negElementsArrayDetailed.length > 0) {
+                    detailedNegativeParts.push(...negElementsArrayDetailed.filter(el => el.trim() !== ''));
+                }
+                if (detailedNegativeParts.length > 0) technicalParamSegments.push(`--no ${detailedNegativeParts.join(', ')}`);
+                
+                technicalParamSegments.push(createParamString('aspect_ratio', '--ar '));
+                technicalParamSegments.push(createParamString('other_tool_params', '', v => v.trim(), ' ')); 
+            }
+            
+            let descriptivePart = descriptiveSegments.join('. ');
+            if (descriptivePart.trim() !== '' && !descriptivePart.endsWith('.')) {
+                descriptivePart += '.';
+            }
+            
+            const technicalPart = technicalParamSegments.filter(p => p.trim() !== '').join(' ');
+            
+            assembledPrompt = [descriptivePart, technicalPart].filter(p => p.trim() !== '').join(' ').trim();
+            
+            assembledPromptForCopy = assembledPrompt;
+        }
+    } else { // Standard text-based framework
+      standardFormIsPristine = !promptComponents.some(pc => pc.value.trim() !== '') && userDefinedInteraction.trim() === '';
+      if (!standardFormIsPristine) {
+        let displayValues: string[] = [];
+        let copyValues: string[] = [];
 
         if (currentFrameworkLocale?.components) {
-          promptComponents.forEach(component => {
-            const value = component.value.trim() || '';
-            const placeholder = t('promptTemplatePlaceholder', component.id);
-
+            promptComponents.forEach(component => {
+            const value = component.value.trim();
             if (value) {
-              structuredPrompt += `${component.label}:\n${value}\n\n`;
-              copyPrompt += `${value}, `;
-            } else {
-              structuredPrompt += `${component.label}:\n${placeholder}\n\n`;
+                displayValues.push(value); 
+                copyValues.push(value);
             }
-          });
+            });
         }
 
         if (userDefinedInteraction.trim()) {
-          structuredPrompt += `${t('userDefinedInteractionLabel')}\n${userDefinedInteraction.trim()}\n\n`;
-          copyPrompt += `${userDefinedInteraction.trim()}, `;
+            const interactionVal = userDefinedInteraction.trim();
+            displayValues.push(interactionVal); 
+            copyValues.push(interactionVal);
         }
-
-        setGeneratedPrompt(structuredPrompt.trim() || t('initialPromptAreaInstruction'));
-        setPromptToCopy(copyPrompt.replace(/, $/, '').trim());
+        assembledPrompt = displayValues.join('\n\n').trim(); 
+        assembledPromptForCopy = copyValues.join(', ').trim();
       }
     }
 
+    const finalGeneratedPromptValue = assembledPrompt.trim();
+    const finalPromptToCopyValue = assembledPromptForCopy.trim();
+
+    let shouldShowInitialInstruction = false;
+    if (!selectedFramework) {
+        shouldShowInitialInstruction = true;
+    } else if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
+        if (!formIsDirty) { 
+            shouldShowInitialInstruction = true;
+        }
+    } else { 
+        if (standardFormIsPristine) { 
+            shouldShowInitialInstruction = true;
+        }
+    }
+
+    if (shouldShowInitialInstruction) {
+        setGeneratedPrompt(t('initialPromptAreaInstruction'));
+        setPromptToCopy('');
+    } else if (finalGeneratedPromptValue === '') { 
+        setGeneratedPrompt(t('initialPromptAreaInstruction')); 
+        setPromptToCopy('');
+    } else {
+        setGeneratedPrompt(finalGeneratedPromptValue);
+        setPromptToCopy(finalPromptToCopyValue);
+    }
+
   }, [
-      promptComponents,
-      userDefinedInteraction,
-      selectedFramework,
-      language, t,
-      selectedCategory,
-      currentFrameworkLocale,
-      interactiveFormValues,
-      otherInputValues,
-      trueInitialDefaults, 
-      getTrueInitialFrameworkDefaultsInternal,
-      computeInitialDisplayFormState,
-      isEffectivelyDefault, 
+      promptComponents, userDefinedInteraction, selectedFramework, language, t, 
+      selectedCategory, currentFrameworkLocale, interactiveFormValues, otherInputValues, 
+      trueInitialDefaults, getTrueInitialFrameworkDefaultsInternal, computeInitialDisplayFormState, 
+      isEffectivelyDefault, apiKey 
   ]);
 
   useEffect(() => {
@@ -615,29 +574,29 @@ const App: React.FC = () => {
 
   const translateText = useCallback(async (text: string, from: Language, to: Language): Promise<string> => {
     if (!aiClient || !text.trim() || from === to) {
-      return text;
+      return text; 
     }
     try {
-      const model = 'gemini-2.5-flash-preview-04-17';
+      const model = 'gemini-2.5-flash-preview-04-17'; 
       const prompt = `Translate the following text from ${from === 'id' ? 'Indonesian' : 'English'} to ${to === 'id' ? 'Indonesian' : 'English'}. Return only the translated text, without any introductory phrases or explanations: "${text}"`;
       const response: GenerateContentResponse = await aiClient.models.generateContent({
         model: model,
         contents: prompt,
-        config: { thinkingConfig: { thinkingBudget: 0 } }
+        config: { thinkingConfig: { thinkingBudget: 0 } } 
       });
       return response.text.trim();
     } catch (error) {
       console.error("Translation API error:", error);
-      throw new Error("Translation failed");
+      throw new Error("Translation failed"); 
     }
-  }, [aiClient]);
+  }, [aiClient]); 
 
   const handleLanguageToggle = async () => {
     const newLanguage = language === 'id' ? 'en' : 'id';
-    const currentPreviousLanguage = previousLanguageRef.current;
+    const currentPreviousLanguage = previousLanguageRef.current; 
 
-    previousLanguageRef.current = newLanguage;
-    resetFrameworkSuggestionStates();
+    previousLanguageRef.current = newLanguage; 
+    if (apiKey) resetFrameworkSuggestionStates();
 
     if (!selectedFramework) { 
         setLanguage(newLanguage);
@@ -646,20 +605,19 @@ const App: React.FC = () => {
     
     const frameworkForNewLang = newLanguage === 'id' ? selectedFramework.idLocale : selectedFramework.enLocale;
     const newTrueDefaults = getTrueInitialFrameworkDefaultsInternal(frameworkForNewLang);
-    const newInitialDisplayState = computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults);
 
     if (!aiClient) { 
         setLanguage(newLanguage);
         setTrueInitialDefaults(newTrueDefaults);
         setOtherInputValues({}); 
         if (frameworkForNewLang.interactiveDefinition && frameworkForNewLang.interactiveDefinition.length > 0) {
-            setInteractiveFormValues(newInitialDisplayState);
+            setInteractiveFormValues(computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults));
         } else if (frameworkForNewLang.components) {
              const updatedComponents = frameworkForNewLang.components.map((compDetail: FrameworkComponentDetail) => {
-                const existingComp = promptComponents.find(pc => pc.id === compDetail.id);
+                const existingCompState = promptComponents.find(pc => pc.id === compDetail.id); 
                 return {
                     id: compDetail.id,
-                    value: existingComp?.value || '', 
+                    value: existingCompState?.value || '', 
                     label: compDetail.id, 
                     example: compDetail.example
                 };
@@ -674,7 +632,7 @@ const App: React.FC = () => {
     let translationOccurredError = false;
 
     try {
-      if (promptComponents.length > 0 && selectedFramework?.idLocale.components) {
+      if (promptComponents.length > 0 && selectedFramework?.idLocale.components) { 
         const translatedPromptComponents = await Promise.all(
           promptComponents.map(async (pc) => {
             let translatedValue = pc.value;
@@ -687,7 +645,7 @@ const App: React.FC = () => {
               }
             }
             const componentDetailForExample = frameworkForNewLang?.components?.find(compDet => compDet.id === pc.id);
-            return { ...pc, value: translatedValue, example: componentDetailForExample?.example || pc.example };
+            return { ...pc, value: translatedValue, example: componentDetailForExample?.example || pc.example, label: pc.id };
           })
         );
         setPromptComponents(translatedPromptComponents);
@@ -701,9 +659,8 @@ const App: React.FC = () => {
         
         for (const key in interactiveFormValues) {
           const currentValue = interactiveFormValues[key];
-          const originalOtherValue = otherInputValues[key];
-          const trueDefaultOldLang = trueInitialDefaults[key]; 
-          const trueDefaultNewLang = newTrueDefaults[key];     
+          const originalOtherValue = otherInputValues[key]; 
+          const trueDefaultOldLang = trueInitialDefaults[key];  
           const questionDef = frameworkLocaleForOldLang.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === key);
 
           const effectivelyDefaultInOldLang = isEffectivelyDefault(currentValue, trueDefaultOldLang, originalOtherValue, questionDef?.type, questionDef?.options);
@@ -711,33 +668,32 @@ const App: React.FC = () => {
           if (questionDef?.includeOtherOption && currentValue === 'LAINNYA_INTERAKTIF_PLACEHOLDER' && originalOtherValue && originalOtherValue.trim() !== '') {
             try {
               translatedOtherInputValues[key] = await translateText(originalOtherValue, currentPreviousLanguage, newLanguage);
-              translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER';
+              translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER'; 
             } catch (error) {
               console.warn(`Translation failed for interactive 'other' value ${key}:`, error);
               translationOccurredError = true;
               translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER'; 
             }
           } else if (effectivelyDefaultInOldLang) {
-            // If it was default in old lang, set it to the default in new lang (or cleared state for display)
-            if (questionDef?.type === 'manual' && typeof trueDefaultNewLang === 'string' && trueDefaultNewLang.trim() !== '' && effectiveValueToString(currentValue, originalOtherValue).trim() === '') {
-                 // It was a manual field, cleared for display, so keep it cleared if its new true default is also non-empty
-                 translatedInteractiveValues[key] = '';
-            } else {
-                 translatedInteractiveValues[key] = trueDefaultNewLang;
-            }
+             const displayDefault = computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults);
+             translatedInteractiveValues[key] = displayDefault[key];
+             if (questionDef?.includeOtherOption && displayDefault[key] !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
+                translatedOtherInputValues[key] = '';
+             }
+
           } else if (typeof currentValue === 'string' && currentValue.trim() !== '' && currentValue !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
              try { translatedInteractiveValues[key] = await translateText(currentValue, currentPreviousLanguage, newLanguage); }
              catch (e) { translatedInteractiveValues[key] = currentValue; translationOccurredError = true; }
-          } else if (Array.isArray(currentValue)) {
+          } else if (Array.isArray(currentValue)) { 
              const translatedArray = await Promise.all(currentValue.map(async item => {
-                if(item.trim() !== '') {
+                if(item.trim() !== '') { 
                     try { return await translateText(item, currentPreviousLanguage, newLanguage); }
-                    catch (e) { translationOccurredError = true; return item; }
+                    catch (e) { translationOccurredError = true; return item; } 
                 } return item;
              }));
              translatedInteractiveValues[key] = translatedArray;
           } else { 
-             translatedInteractiveValues[key] = currentValue; // Preserve if not string or array (e.g., LAINNYA)
+             translatedInteractiveValues[key] = currentValue; 
           }
         }
         setInteractiveFormValues(translatedInteractiveValues);
@@ -746,437 +702,433 @@ const App: React.FC = () => {
 
       if (userDefinedInteraction.trim() !== '') {
         try { setUserDefinedInteraction(await translateText(userDefinedInteraction, currentPreviousLanguage, newLanguage)); }
-        catch (e) { translationOccurredError = true; }
+        catch (e) { translationOccurredError = true;  }
       }
       if (aiFeedback && aiFeedback.trim() !== '') {
         try { setAiFeedback(await translateText(aiFeedback, currentPreviousLanguage, newLanguage)); }
-        catch (e) { translationOccurredError = true; }
+        catch (e) { translationOccurredError = true;  }
       }
-      if (userGoalForFramework.trim() !== '') {
+      if (apiKey && userGoalForFramework.trim() !== '') { 
          try { setUserGoalForFramework(await translateText(userGoalForFramework, currentPreviousLanguage, newLanguage)); }
-         catch (e) { translationOccurredError = true; }
+         catch (e) { translationOccurredError = true;  }
       }
 
       if (translationOccurredError) {
         setTranslationError(t('translationGeneralError'));
       }
-    } catch (error) {
+    } catch (error) { 
         console.error("General translation process error:", error);
         setTranslationError(t('translationGeneralError'));
     } finally {
-      setIsTranslating(false);
-      setLanguage(newLanguage); 
-      if (selectedFramework) {
-          const frameworkLocale = newLanguage === 'id' ? selectedFramework.idLocale : selectedFramework.enLocale;
-          setTrueInitialDefaults(getTrueInitialFrameworkDefaultsInternal(frameworkLocale));
-      }
+        setLanguage(newLanguage); 
+        setTrueInitialDefaults(newTrueDefaults);
+        setIsTranslating(false);
     }
   };
 
-
-  useEffect(() => {
-    // Update the ref when language actually changes, to be used as 'from' language in next toggle
-    previousLanguageRef.current = language;
-  }, [language]);
-
-  const handleEnhanceWithAI = async () => {
-    if (!aiClient) {
-      setAiError(t('apiKeyMissingError'));
+  const fetchAiFeedback = async () => {
+    if (!aiClient || !promptToCopy.trim()) {
+      setAiError(apiKey ? t('emptyPromptError') : t('apiKeyMissingError'));
       return;
     }
-    if (!promptToCopy.trim()) {
-      setAiError(t('emptyPromptError'));
-      setTimeout(() => setAiError(null), 3000);
-      return;
-    }
-
     setIsFetchingAiFeedback(true);
-    setAiFeedback(null);
     setAiError(null);
+    setAiFeedback(null); 
     setAiFeedbackReceived(false);
 
     try {
-      const model = 'gemini-2.5-flash-preview-04-17';
-      const instruction = t('geminiPromptInstruction');
-      const fullPrompt = `${instruction}\n---\n${promptToCopy}\n---`;
+      const model = 'gemini-2.5-flash-preview-04-17'; 
+      const systemInstruction = t('geminiPromptInstruction');
+      const fullPromptForAi = `${promptToCopy}`;
 
       const response: GenerateContentResponse = await aiClient.models.generateContent({
         model: model,
-        contents: fullPrompt,
+        contents: fullPromptForAi,
+        config: { systemInstruction: systemInstruction }
       });
 
       setAiFeedback(response.text);
       setAiFeedbackReceived(true);
-
-    } catch (error: any) {
-      console.error("AI enhancement error:", error);
-      let errorMessage = t('aiEnhancementError');
-      if (error && typeof error.message === 'string') {
-        errorMessage += ` (Details: ${error.message})`;
-      } else if (error && typeof error.toString === 'function') {
-        errorMessage += ` (Details: ${error.toString()})`;
-      }
-      setAiError(errorMessage);
+    } catch (e: any) {
+      console.error("AI feedback API error:", e);
+      const detailMessage = (e && typeof e.message === 'string') ? e.message : String(e);
+      setAiError(t('aiEnhancementError') + (detailMessage ? ` (${detailMessage})` : ''));
     } finally {
       setIsFetchingAiFeedback(false);
     }
   };
-
-  const fetchFieldSuggestions = useCallback(async (componentName: string, frameworkName: string, currentValue: string): Promise<string[]> => {
+  
+  const fetchSuggestionsForField = async (componentName: string, frameworkNameForSuggestion: string, currentValueForSuggestion: string): Promise<string[]> => {
     if (!aiClient) {
       throw new Error(t('apiKeyMissingError'));
     }
     try {
-      const model = 'gemini-2.5-flash-preview-04-17';
-      const prompt = t('geminiInstructionForAutocomplete', componentName, frameworkName, currentValue);
-
-      const response: GenerateContentResponse = await aiClient.models.generateContent({
+      const model = 'gemini-2.5-flash-preview-04-17'; 
+      const systemPrompt = t('geminiInstructionForAutocomplete', componentName, frameworkNameForSuggestion, currentValueForSuggestion);
+      const response = await aiClient.models.generateContent({
         model: model,
-        contents: prompt,
-        config: { responseMimeType: "application/json", thinkingConfig: {thinkingBudget: 0} }
+        contents: "Suggest continuations based on the system instruction.", 
+        config: { systemInstruction: systemPrompt, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } } 
       });
 
       let jsonStr = response.text.trim();
-      const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
+      const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s; 
       const match = jsonStr.match(fenceRegex);
       if (match && match[2]) {
-        jsonStr = match[2].trim();
+        jsonStr = match[2].trim(); 
       }
 
-      const suggestions = JSON.parse(jsonStr) as string[];
-      if (Array.isArray(suggestions)) {
-        return suggestions.filter(s => typeof s === 'string');
+      const suggestionsArray = JSON.parse(jsonStr);
+      if (Array.isArray(suggestionsArray) && suggestionsArray.every(s => typeof s === 'string')) {
+        return suggestionsArray;
       }
       return [];
-
-    } catch (e: any) {
-      console.error("Field suggestion API error:", e);
-      const detailMessage = (e && typeof e.message === 'string') ? e.message : String(e);
-      throw new Error(t('suggestionsError') + (detailMessage ? ` (${detailMessage})` : ''));
+    } catch (e) {
+      console.error("AI suggestion API error:", e);
+      throw new Error(t('suggestionsError')); 
     }
-  }, [aiClient, t]);
-
-  const frameworkCategories = {
-    text: frameworks.filter(f => (f.idLocale.category === 'text' || f.enLocale.category === 'text')),
-    media: frameworks.filter(f => (f.idLocale.category === 'media' || f.enLocale.category === 'media')),
-    music: frameworks.filter(f => (f.idLocale.category === 'music' || f.enLocale.category === 'music')),
   };
 
-  const getCategoryIcon = (category: 'text' | 'media' | 'music', className?: string): ReactNode => {
-    const commonClass = className || "w-4 h-4 mr-1.5";
-    if (category === 'text') return <PencilIcon className={commonClass} />;
-    if (category === 'media') return <CameraIcon className={commonClass} />;
-    if (category === 'music') return <MusicNoteIcon className={commonClass} />;
-    return null;
-  };
+  const currentYear = new Date().getFullYear();
+  const categoryIconClass = "w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-teal-400";
+  const selectedFrameworksForCategory = frameworks.filter(fw => fw.idLocale.category === selectedCategory);
+  
+  const langToggleAriaLabel = language === 'id' 
+    ? `Switch to ${t('languageEN')}` 
+    : `Switch to ${t('languageID')}`;
 
-  const footerContactText = t('footerContactMe');
+  const canEnhanceCurrentPrompt = !!apiKey && promptToCopy.trim().length > 0 && !isFetchingAiFeedback;
+  const isInteractiveFrameworkSelected = selectedFramework && currentFrameworkLocale?.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0;
+
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start p-2 sm:p-4 md:p-6 bg-[var(--bg-primary)] text-[var(--text-primary)] relative">
-      <DisclaimerModal isOpen={showDisclaimer} onClose={handleDisclaimerAcknowledge} />
-      <HowToUseModal isOpen={showHowToUse} onClose={() => setShowHowToUse(false)} />
-
-      <header className="w-full max-w-6xl mb-4 md:mb-6 text-center">
-        <div className="inline-flex items-center p-3 rounded-lg header-glowing-frame">
-          <AppLogoIcon className="w-10 h-10 sm:w-12 sm:h-12 mr-2 text-teal-600 dark:text-teal-500 shrink-0" />
-          <span className="text-3xl sm:text-4xl font-bold text-teal-600 dark:text-teal-500">
-            Prompt
-          </span>
-          <span className="text-3xl sm:text-4xl font-bold text-teal-600 dark:text-teal-500 ml-1.5">
-            Matrix
-          </span>
-          {apiKey && (
-            <span
-              className="ml-3 text-2xl font-bold text-purple-400 api-status-indicator shrink-0"
-              aria-label={t('aiFeaturesActiveIndicator')}
-              title={t('aiFeaturesActiveIndicator')}
-            >
-              AI
-            </span>
-          )}
-        </div>
-        <p className="text-sm sm:text-md text-center text-[var(--text-secondary)] dark:text-slate-400 animate-subtitle-pulse mt-2">{t('appSubtitle')}</p>
-      </header>
-
-      <main className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 flex-grow">
-        <div>
-          <div className="flex flex-col bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-1 rounded-xl shadow-xl border border-[var(--border-color)] dark:border-slate-700/50">
-            <div
-              className="flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 border-b border-[var(--border-color)] dark:border-slate-700/50 cursor-pointer hover:bg-slate-700/40 transition-colors"
-              onClick={() => setIsInputPanelExpanded(!isInputPanelExpanded)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setIsInputPanelExpanded(!isInputPanelExpanded)}
-              aria-expanded={isInputPanelExpanded}
-              aria-controls="input-panel-content"
-            >
-              <h2 className="text-lg sm:text-xl font-semibold text-teal-700 dark:text-teal-600 flex items-center">
-                  <ControlsIcon className="w-5 h-5 mr-2.5" />
-                  {t('inputComponentsTitle')}
-              </h2>
-              {isInputPanelExpanded ? <ChevronUpIcon className="w-6 h-6 text-teal-700 dark:text-teal-600" /> : <ChevronDownIcon className="w-6 h-6 text-teal-700 dark:text-teal-600" />}
-            </div>
-
-            <div id="input-panel-content" className={`flex-grow overflow-hidden ${isInputPanelExpanded ? 'collapsible-content open' : 'collapsible-content'}`}>
-              <div className="p-4 sm:p-6 space-y-3 md:space-y-4 flex-grow overflow-y-auto" style={{maxHeight: isInputPanelExpanded ? 'calc(100vh - 280px)' : '0px'}}>
-
-                <div className="p-3 border border-purple-600/50 rounded-lg bg-purple-900/10 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-purple-300 flex items-center">
-                      <SparklesIcon className="w-4 h-4 mr-1.5 text-purple-400" />
-                      {t('frameworkSuggestionsTitle')}
-                      {apiKey && (
-                        <span
-                          className="ml-2 text-lg font-bold text-purple-400 api-status-indicator shrink-0"
-                          aria-label={t('aiFeaturesActiveIndicator')}
-                          title={t('aiFeaturesActiveIndicator')}
-                        >
-                          AI
-                        </span>
-                      )}
-                    </h3>
-                  </div>
-                  <p className="text-xs text-slate-400">{t('frameworkSuggestionInstruction')}</p>
-                  <textarea
-                    value={userGoalForFramework}
-                    onChange={(e) => setUserGoalForFramework(e.target.value)}
-                    placeholder={t('userGoalInputPlaceholder')}
-                    rows={2}
-                    className="w-full p-2 bg-slate-700/60 border border-slate-600 rounded-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none text-xs text-slate-100 placeholder-slate-400/70 non-copyable-input-field ai-suggestion-textarea"
-                    aria-label={t('userGoalInputLabel')}
-                  />
-                  <button
-                    onClick={handleFetchFrameworkSuggestions}
-                    disabled={isFetchingFrameworkSuggestions || !apiKey}
-                    className={`w-full mt-1 py-1.5 px-2 text-xs font-semibold rounded-md transition-colors duration-150 flex items-center justify-center space-x-1.5 shadow
-                                ${!apiKey ? 'bg-slate-600 text-slate-400 cursor-not-allowed opacity-70' :
-                                 isFetchingFrameworkSuggestions ? 'bg-purple-700 text-purple-300 animate-pulse cursor-wait' :
-                                 'bg-purple-600 hover:bg-purple-500 text-white active:scale-95'}`}
-                    aria-label={t('getFrameworkSuggestionsButtonAria')}
-                    title={!apiKey ? t('apiKeyMissingError') : t('getFrameworkSuggestionsButtonAria')}
-                  >
-                    <SparklesIcon className="w-3.5 h-3.5" />
-                    <span className="button-text-content">{isFetchingFrameworkSuggestions ? t('frameworkSuggestionsLoading') : t('getFrameworkSuggestionsButton')}</span>
-                  </button>
-                  {frameworkSuggestionError && <p className="text-xs text-rose-400">{frameworkSuggestionError}</p>}
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-xs text-slate-400 dark:text-slate-400/80 mb-1.5">{t('selectCategoryInstruction')}</p>
-                  <div className="flex border-b border-slate-600">
-                    {(['text', 'media', 'music'] as const).map(cat => (
-                      <button
-                        key={cat}
-                        onClick={() => handleCategorySelect(cat)}
-                        className={`flex items-center justify-center py-2 px-3 sm:px-4 text-sm font-medium transition-colors duration-200 ease-in-out border-b-2 hover:bg-slate-700/60
-                                    ${selectedCategory === cat
-                                      ? 'border-teal-500 text-teal-500'
-                                      : 'border-transparent text-slate-400 hover:text-teal-600'
-                                    }`}
-                        title={t(`${cat}FrameworksCategoryTooltip` as any)}
-                        role="tab"
-                        aria-selected={selectedCategory === cat}
+    <div className="min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
+      <header className="sticky top-0 z-30 bg-slate-900/80 backdrop-blur-sm shadow-md">
+        <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-2 gap-x-4">
+            
+            {/* Left part: Title and conditional subtitle */}
+            <div className="flex flex-col items-center sm:items-start w-full sm:w-auto"> {/* Takes full width on xs to center its content */}
+              <div className="flex items-center"> {/* Inner flex for title block and md+ subtitle */}
+                <div className="flex items-center header-glowing-frame p-2 rounded-lg shrink-0"> {/* Title Block */}
+                  <AppLogoIcon className="w-8 h-8 sm:w-10 sm:h-10 mr-2 text-teal-600" />
+                  <div className="flex items-center">
+                    <span className="text-3xl sm:text-4xl font-bold text-teal-600 dark:text-teal-500">Prompt</span>
+                    <span className="text-3xl sm:text-4xl font-bold text-teal-400 dark:text-teal-300 ml-1.5">Matrix</span>
+                    {apiKey && (
+                      <span
+                        className="ml-3 text-2xl font-bold text-purple-400 api-status-indicator shrink-0"
+                        aria-label={t('aiFeaturesActiveIndicator')}
+                        title={t('aiFeaturesActiveIndicator')}
                       >
-                        {getCategoryIcon(cat, "w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2")}
-                        <span className="button-text-content">{t(`${cat}FrameworksTitle`)}</span>
-                      </button>
-                    ))}
+                        AI
+                      </span>
+                    )}
                   </div>
                 </div>
-
-                {selectedCategory && (
-                  <div className="space-y-1.5 pt-1">
-                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-1.5 sm:gap-2">
-                      {frameworkCategories[selectedCategory].map(fw => {
-                        const locale = language === 'id' ? fw.idLocale : fw.enLocale;
-                        const isSuggested = suggestedFrameworkIds.includes(fw.id);
-                        return (
-                          <button
-                            key={fw.id}
-                            onClick={() => handleFrameworkSelect(fw)}
-                            title={locale.description + (isSuggested ? ` (${t('suggestedFrameworkTooltip')})` : '')}
-                            className={`p-1.5 sm:p-2 rounded-md text-xs font-medium border transition-colors duration-150 flex flex-col items-center justify-center space-y-0.5 min-h-[50px] sm:min-h-[55px] text-center relative
-                                        ${selectedFramework?.id === fw.id
-                                          ? 'bg-teal-700 border-teal-500 text-white shadow-md'
-                                          : isSuggested
-                                            ? 'bg-purple-700/50 border-purple-500 text-slate-100 hover:bg-purple-600/60 shadow-sm'
-                                            : 'bg-slate-600 dark:bg-slate-700 hover:bg-teal-700/80 dark:hover:bg-teal-700/70 border-slate-500 dark:border-slate-600 text-slate-200 dark:text-slate-200 hover:text-white'
-                                        }`}
-                          >
-                              {isSuggested && ! (selectedFramework?.id === fw.id) && (
-                                <StarIcon className="absolute top-1 right-1 w-3 h-3 text-yellow-400" title={t('suggestedFrameworkTooltip')} />
-                              )}
-                              {getCategoryIcon(selectedCategory, "w-4 h-4 mb-0.5")}
-                              <span className="button-text-content leading-tight">{locale.shortName}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {selectedFramework && currentFrameworkLocale && (
-                  <div className="space-y-2.5 pt-2.5 border-t border-slate-700">
-                    <div className="mb-1.5">
-                        <p className="text-xs text-slate-300 dark:text-slate-400 mt-0.5">{currentFrameworkLocale.description}</p>
-                    </div>
-
-                    {currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0 && currentFrameworkLocale.interactivePromptTemplate ? (
-                        <InteractivePromptBuilder
-                            sections={currentFrameworkLocale.interactiveDefinition}
-                            initialValues={interactiveFormValues}
-                            onValuesChange={handleInteractiveFormChange}
-                            otherInputValues={otherInputValues}
-                            onOtherInputChange={handleOtherInputChange}
-                            language={language}
-                            fetchSuggestions={aiClient ? fetchFieldSuggestions : undefined}
-                            apiKeyAvailable={!!apiKey}
-                            frameworkName={currentFrameworkLocale.name}
-                        />
-                    ) : currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 ? (
-                        promptComponents.map(componentData => {
-                           const fieldDescription = t('inputFieldDescription', componentData.label, currentFrameworkLocale.shortName);
-                           const fieldPlaceholder = componentData.example || t('inputFieldPlaceholder', componentData.label);
-                           const predefinedOptions = currentFrameworkLocale.predefinedOptions?.[componentData.id];
-
-                          return (
-                            <InputField
-                              key={`${selectedFramework.id}-${componentData.id}-${language}`}
-                              id={componentData.id}
-                              label={componentData.label}
-                              value={componentData.value}
-                              onChange={handleInputChange}
-                              placeholder={fieldPlaceholder}
-                              isTextarea={true}
-                              rows={2}
-                              description={fieldDescription}
-                              predefinedOptions={predefinedOptions}
-                              isVisible={isInputPanelExpanded}
-                              fetchSuggestions={aiClient ? fetchFieldSuggestions : undefined}
-                              frameworkName={currentFrameworkLocale.name}
-                              apiKeyAvailable={!!apiKey}
-                              exampleText={componentData.example}
-                            />
-                          );
-                        })
-                    ) : (
-                        <p className="text-xs text-slate-400 italic">{t('noInputComponents')}</p>
-                    )}
-
-                    {(!currentFrameworkLocale.interactiveDefinition || currentFrameworkLocale.interactiveDefinition.length === 0 ) &&
-                     currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 && (
-                         <InputField
-                            id="userDefinedInteraction"
-                            label={t('userDefinedInteractionLabel')}
-                            value={userDefinedInteraction}
-                            onChange={handleUserInteractionChange}
-                            placeholder={t('userDefinedInteractionPlaceholder')}
-                            isTextarea={true}
-                            rows={3}
-                            isVisible={isInputPanelExpanded}
-                            apiKeyAvailable={!!apiKey}
-                        />
-                    )}
-
-                    <button
-                      onClick={clearInputs}
-                      className="w-full mt-1.5 py-2 px-2.5 text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white rounded-md transition-colors duration-150 flex items-center justify-center space-x-1.5 transform active:scale-95 shadow"
-                      aria-label={t('clearInputsButtonAria')}
-                    >
-                      <EraserIcon className="w-4 h-4" />
-                      <span className="button-text-content">{t('clearInputsButton')}</span>
-                    </button>
-                  </div>
-                )}
-                {!selectedFramework && (
-                   <p className="text-sm text-slate-400 italic text-center py-3">
-                      {selectedCategory ? t('selectSpecificFrameworkInputSummary') : t('initialPromptAreaInstruction')}
-                   </p>
-                )}
+                {/* Subtitle for md+ screens, next to title block */}
+                <p className="ml-4 text-xs sm:text-sm text-slate-400 animate-subtitle-pulse hidden md:block">
+                  {t('appSubtitle')}
+                </p>
               </div>
-            </div>
-             {!isInputPanelExpanded && selectedFramework && (
-               <p className="px-4 sm:px-6 py-2.5 text-xs text-center text-slate-400 italic">
-                  {t('clickToExpandInputPanel', currentFrameworkLocale?.name || '')}
+              {/* Subtitle for < md screens, below title block */}
+              <p className="text-xs text-slate-400 animate-subtitle-pulse mt-1 md:hidden text-center sm:text-left w-full"> {/* w-full for text-center to work on xs */}
+                {t('appSubtitle')}
               </p>
-             )}
+            </div>
+
+            {/* Right part: Action Buttons and Translation Status */}
+            <div className="flex items-center self-center sm:self-auto gap-x-2 sm:gap-x-3 mt-2 sm:mt-0 shrink-0">
+              <div className="text-xs">
+                  {isTranslating && ( <span className="text-slate-300 animate-pulse">{t('translationInProgress')}</span> )}
+                  {translationError && !isTranslating && ( <span className="text-rose-400" title={translationError}>{t('translationGeneralError').split('.')[0]}</span> )}
+              </div>
+              <button
+                onClick={() => setShowHowToUse(true)}
+                className="p-1.5 sm:p-2 text-slate-300 hover:text-teal-400 transition-colors rounded-full hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+                title={t('howToUseAppTitleShort')}
+                aria-label={t('howToUseAppTitleShort')}
+              >
+                <InfoIcon className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handleLanguageToggle}
+                className="px-2 py-1 sm:px-3 sm:py-1.5 text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm"
+                title={langToggleAriaLabel}
+                aria-label={langToggleAriaLabel}
+                disabled={isTranslating}
+              >
+                {language === 'id' ? 'EN' : 'ID'}
+              </button>
+            </div>
           </div>
         </div>
+      </header>
 
-        <div className="flex flex-col bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-1 rounded-xl shadow-xl border border-[var(--border-color)] dark:border-slate-700/50">
-          <PromptOutput
-            promptText={generatedPrompt}
-            promptToCopy={promptToCopy}
-            selectedFramework={selectedFramework}
-            isExpanded={isOutputPanelExpanded}
-            onToggleExpansion={() => setIsOutputPanelExpanded(!isOutputPanelExpanded)}
-            aiFeedback={aiFeedback}
-            isFetchingAiFeedback={isFetchingAiFeedback}
-            aiError={aiError}
-            onEnhanceWithAI={handleEnhanceWithAI}
-            apiKeyAvailable={!!apiKey}
-            aiFeedbackReceived={aiFeedbackReceived}
-            hasCurrentPromptBeenCopied={hasCurrentPromptBeenCopied}
-            onPromptSuccessfullyCopied={handlePromptSuccessfullyCopied}
-          />
+      <main className="flex-grow container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="md:col-span-1 space-y-4 sm:space-y-6">
+            {/* Category Selector */}
+            <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-3 sm:p-4 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
+              <h2 className="text-lg sm:text-xl font-semibold mb-3 text-teal-600 dark:text-teal-500 flex items-center">
+                <ControlsIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-teal-400" />
+                {t('selectCategoryTitle')}
+              </h2>
+              <div className="grid grid-cols-3 gap-2">
+                {(['text', 'media', 'music'] as const).map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => handleCategorySelect(cat)}
+                    className={`p-2 sm:p-3 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800
+                                ${selectedCategory === cat
+                                  ? 'bg-teal-700 text-white shadow-md scale-105 ring-teal-500'
+                                  : 'bg-slate-600 dark:bg-slate-700 hover:bg-teal-700 text-slate-200 dark:text-slate-300 hover:text-white shadow-sm'
+                                }`}
+                    title={t(`${cat}FrameworksCategoryTooltip` as TranslationKey)}
+                    aria-pressed={selectedCategory === cat}
+                  >
+                    <div className="flex flex-col items-center justify-center space-y-0.5"> {/* Adjusted space-y */}
+                      {cat === 'text' && <PencilIcon className="w-5 h-5 sm:w-6 sm:h-6" />}
+                      {cat === 'media' && <CameraIcon className="w-5 h-5 sm:w-6 sm:h-6" />}
+                      {cat === 'music' && <MusicNoteIcon className="w-5 h-5 sm:w-6 sm:h-6" />}
+
+                      {cat === 'media' ? (
+                        <>
+                          <span className="text-xs sm:text-sm font-medium button-text-content">
+                            {t('categoryLabelImage')}
+                          </span>
+                          <span className="text-[0.7rem] sm:text-xs leading-tight font-medium button-text-content -mt-1"> {/* Adjusted for Video text */}
+                            {t('categoryLabelVideo')}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-xs sm:text-sm font-medium button-text-content">
+                          {cat === 'text' && t('textFrameworksTitle').split(' ')[0]}
+                          {cat === 'music' && t('musicFrameworksTitle').split(' ')[0]}
+                        </span>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              {!selectedCategory && <p className="mt-3 text-xs text-center text-slate-400">{t('selectCategoryInstruction')}</p>}
+            </div>
+
+            {/* Framework Selector */}
+            {selectedCategory && (
+              <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-3 sm:p-4 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
+                <h2 className="text-lg sm:text-xl font-semibold mb-2 text-teal-600 dark:text-teal-500 flex items-center">
+                  {selectedCategory === 'text' && <PencilIcon className={categoryIconClass} />}
+                  {selectedCategory === 'media' && <CameraIcon className={categoryIconClass} />}
+                  {selectedCategory === 'music' && <MusicNoteIcon className={categoryIconClass} />}
+                  {t(`${selectedCategory}FrameworksTitle` as TranslationKey)}
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 max-h-[60vh] sm:max-h-[calc(100vh-280px)] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)' }}>
+                  {selectedFrameworksForCategory.map((framework) => {
+                    const locale = language === 'id' ? framework.idLocale : framework.enLocale;
+                    const isSuggested = suggestedFrameworkIds.includes(framework.id);
+                    return (
+                      <button
+                        key={framework.id}
+                        onClick={() => handleFrameworkSelect(framework)}
+                        className={`w-full text-left p-2.5 sm:p-3 rounded-md transition-all duration-150 ease-in-out relative focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800
+                                      ${selectedFramework?.id === framework.id
+                                        ? 'bg-teal-600 border border-teal-500 text-white shadow-lg scale-102'
+                                        : 'bg-slate-600 dark:bg-slate-700 hover:bg-teal-700 dark:hover:bg-slate-600 text-slate-100 dark:text-slate-200 shadow-sm'
+                                      }`}
+                        title={locale.description}
+                        aria-pressed={selectedFramework?.id === framework.id}
+                      >
+                        <span className="button-text-content text-xs sm:text-sm font-medium">{locale.name}</span>
+                        {isSuggested && (
+                            <StarIcon 
+                                className="w-3.5 h-3.5 sm:w-4 sm:h-4 absolute top-1 right-1 text-yellow-400 dark:text-yellow-300"
+                                title={t('suggestedFrameworkTooltip')}
+                            />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+                 {!selectedFramework && <p className="mt-3 text-xs text-center text-slate-400">{t('selectSpecificFrameworkInputSummary')}</p>}
+              </div>
+            )}
+          </div>
+
+          <div className="md:col-span-2 space-y-4 sm:space-y-6">
+            {apiKey && selectedCategory && (
+                <div className="bg-slate-700/40 dark:bg-slate-800/50 p-3 sm:p-4 rounded-lg border border-purple-600/50 shadow-sm">
+                    <h4 className="text-md font-semibold text-purple-400 dark:text-purple-300 mb-2 flex items-center">
+                        <SparklesIcon className="w-5 h-5 mr-2" />
+                        {t('frameworkSuggestionsTitle')}
+                        <span
+                        className="ml-2 text-md font-bold text-purple-400 api-status-indicator shrink-0"
+                        aria-label={t('aiFeaturesActiveIndicator')}
+                        title={t('aiFeaturesActiveIndicator')}
+                        >
+                        AI
+                        </span>
+                    </h4>
+                    <p className="text-xs text-slate-400 mb-2">{t('frameworkSuggestionInstruction')}</p>
+                    <textarea
+                        value={userGoalForFramework}
+                        onChange={(e) => setUserGoalForFramework(e.target.value)}
+                        placeholder={t('userGoalInputPlaceholder')}
+                        rows={2}
+                        className="w-full p-2 bg-slate-600/70 dark:bg-slate-700/60 border border-slate-500 rounded-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none text-sm text-slate-100 placeholder-slate-400/70 ai-suggestion-textarea non-copyable-input-field"
+                    />
+                    <button
+                        onClick={handleFetchFrameworkSuggestions}
+                        className={`w-full mt-2 py-2 px-3 text-xs font-semibold rounded-md transition-colors duration-150 flex items-center justify-center space-x-1.5
+                        ${userGoalForFramework.trim() && !isFetchingFrameworkSuggestions
+                            ? 'bg-purple-600 hover:bg-purple-500 text-white focus:ring-1 focus:ring-purple-400'
+                            : 'bg-slate-500 text-slate-300 cursor-not-allowed'
+                        }`}
+                        disabled={!userGoalForFramework.trim() || isFetchingFrameworkSuggestions}
+                        aria-label={t('getFrameworkSuggestionsButtonAria')}
+                    >
+                        <SparklesIcon className="w-4 h-4" />
+                        <span className="button-text-content">{isFetchingFrameworkSuggestions ? t('frameworkSuggestionsLoading') : t('getFrameworkSuggestionsButton')}</span>
+                    </button>
+                    {frameworkSuggestionError && <p className="text-xs text-rose-400 mt-1.5">{frameworkSuggestionError}</p>}
+                </div>
+            )}
+
+            <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
+              <div 
+                className="flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 border-b border-[var(--border-color)] dark:border-slate-700/50 cursor-pointer hover:bg-slate-700/40 transition-colors"
+                onClick={() => setIsInputPanelExpanded(!isInputPanelExpanded)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setIsInputPanelExpanded(!isInputPanelExpanded)}
+                aria-expanded={isInputPanelExpanded}
+                aria-controls="input-panel-content"
+              >
+                <h3 className="text-lg sm:text-xl font-semibold text-teal-700 dark:text-teal-600 flex items-center">
+                  <ControlsIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-teal-400" />
+                  {t('inputComponentsTitle')}
+                  {selectedFramework && (
+                    <span className="ml-1.5 text-sm text-slate-400">
+                      ({language === 'id' ? selectedFramework.idLocale.name : selectedFramework.enLocale.name})
+                    </span>
+                  )}
+                </h3>
+                {isInputPanelExpanded ? <ChevronUpIcon className="w-6 h-6 text-teal-700 dark:text-teal-600" /> : <ChevronDownIcon className="w-6 h-6 text-teal-700 dark:text-teal-600" />}
+              </div>
+
+              <div id="input-panel-content" className={`p-3 sm:p-4 space-y-3 sm:space-y-4 ${isInputPanelExpanded ? 'collapsible-content open' : 'collapsible-content'}`}>
+                
+                {selectedFramework && currentFrameworkLocale ? (
+                  currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0 ? (
+                    <InteractivePromptBuilder
+                      sections={currentFrameworkLocale.interactiveDefinition}
+                      initialValues={interactiveFormValues}
+                      onValuesChange={handleInteractiveFormChange}
+                      otherInputValues={otherInputValues}
+                      onOtherInputChange={handleOtherInputChange}
+                      language={language}
+                      fetchSuggestions={apiKey ? fetchSuggestionsForField : undefined}
+                      apiKeyAvailable={!!apiKey}
+                      frameworkName={currentFrameworkLocale.name}
+                      onEnhancePrompt={fetchAiFeedback}
+                      canEnhancePrompt={canEnhanceCurrentPrompt}
+                      isFetchingEnhancement={isFetchingAiFeedback}
+                    />
+                  ) : currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 ? (
+                    promptComponents.map(component => (
+                      <InputField
+                        key={component.id}
+                        id={component.id}
+                        label={t(component.id as TranslationKey, component.label)}
+                        value={component.value}
+                        onChange={handleInputChange}
+                        placeholder={t('inputFieldPlaceholder', t(component.id as TranslationKey, component.label))}
+                        isTextarea
+                        rows={2}
+                        description={t('inputFieldDescription', t(component.id as TranslationKey, component.label), currentFrameworkLocale.shortName)}
+                        predefinedOptions={currentFrameworkLocale.predefinedOptions?.[component.id]}
+                        isVisible={isInputPanelExpanded}
+                        fetchSuggestions={apiKey ? fetchSuggestionsForField : undefined} 
+                        frameworkName={currentFrameworkLocale.name}
+                        apiKeyAvailable={!!apiKey}
+                        exampleText={component.example}
+                      />
+                    ))
+                  ) : (
+                    <p className="text-sm text-center text-slate-400 py-4">{t('noInputComponents')}</p>
+                  )
+                ) : (
+                  <p className="text-sm text-center text-slate-400 py-4">{selectedCategory ? t('selectSpecificFrameworkInputSummary') : t('selectCategoryInstruction')}</p>
+                )}
+
+                {selectedFramework && !isInteractiveFrameworkSelected && (
+                  <InputField
+                    id="userDefinedInteraction"
+                    label={t('userDefinedInteractionLabel')}
+                    value={userDefinedInteraction}
+                    onChange={(e) => handleUserInteractionChange(e as React.ChangeEvent<HTMLTextAreaElement>)}
+                    placeholder={t('userDefinedInteractionPlaceholder')}
+                    isTextarea
+                    rows={3}
+                    isVisible={isInputPanelExpanded}
+                  />
+                )}
+
+                {selectedFramework && (
+                  <button
+                    onClick={clearInputs}
+                    className="w-full py-2 px-4 bg-rose-600 hover:bg-rose-500 text-white text-sm font-semibold rounded-md transition-colors duration-150 flex items-center justify-center space-x-1.5 shadow-sm focus:outline-none focus:ring-1 focus:ring-rose-400 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800"
+                    title={t('clearInputsButtonAria')}
+                  >
+                    <EraserIcon className="w-4 h-4" />
+                    <span className="button-text-content">{t('clearInputsButton')}</span>
+                  </button>
+                )}
+              </div>
+              {!isInputPanelExpanded && (
+                <p className="px-4 sm:px-6 py-2.5 text-xs text-center text-slate-400 italic">
+                  {t('clickToExpandInputPanel', selectedFramework ? (language === 'id' ? selectedFramework.idLocale.name : selectedFramework.enLocale.name) : '...')}
+                </p>
+              )}
+            </div>
+
+            <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50 min-h-[280px] sm:min-h-[300px] flex flex-col">
+              <PromptOutput
+                promptText={generatedPrompt}
+                promptToCopy={promptToCopy}
+                selectedFramework={selectedFramework}
+                isExpanded={isOutputPanelExpanded}
+                onToggleExpansion={() => setIsOutputPanelExpanded(!isOutputPanelExpanded)}
+                aiFeedback={aiFeedback}
+                isFetchingAiFeedback={isFetchingAiFeedback}
+                aiError={aiError}
+                onEnhanceWithAI={fetchAiFeedback}
+                apiKeyAvailable={!!apiKey} 
+                aiFeedbackReceived={aiFeedbackReceived}
+                hasCurrentPromptBeenCopied={hasCurrentPromptBeenCopied}
+                onPromptSuccessfullyCopied={handlePromptSuccessfullyCopied}
+              />
+            </div>
+          </div>
         </div>
       </main>
 
-      <div className="fab-container">
-        {(isTranslating || translationError) && (
-            <div className="fab-translation-status bg-slate-900/85 fab-visual-effect">
-                {isTranslating && (
-                    <div className="flex items-center text-xs text-teal-400">
-                        <svg className="animate-spin -ml-1 mr-1.5 h-4 w-4 text-teal-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        {t('translationInProgress')}
-                    </div>
-                )}
-                {translationError && !isTranslating && (
-                    <div className="flex items-center text-xs text-rose-400" title={translationError}>
-                        <InfoIcon className="w-4 h-4 mr-1"/>
-                        Error
-                    </div>
-                )}
-            </div>
-        )}
-        <button
-          onClick={() => setShowHowToUse(true)}
-          className="fab-button bg-slate-700/80 dark:bg-slate-800/80 hover:bg-teal-700/90 text-slate-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 animate-subtle-pulse fab-visual-effect"
-          title={t('howToUseAppTitleShort')}
-          aria-label={t('howToUseAppTitleShort')}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
-          </svg>
-        </button>
-        <button
-          onClick={handleLanguageToggle}
-          className="fab-button bg-slate-700/80 dark:bg-slate-800/80 hover:bg-teal-700/90 text-slate-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 fab-visual-effect"
-          title={`Switch to ${language === 'id' ? 'English' : 'Bahasa Indonesia'}`}
-          aria-label={`Switch to ${language === 'id' ? 'English' : 'Bahasa Indonesia'}`}
-          disabled={isTranslating}
-        >
-          <span className="button-text-content text-sm font-semibold">{language === 'id' ? t('languageEN') : t('languageID')}</span>
-        </button>
-      </div>
-
-      <footer className="w-full max-w-6xl mt-6 md:mt-8 pt-4 pb-2 border-t border-[var(--border-color)] text-center text-xs text-[var(--text-secondary)] dark:text-slate-500">
-        <p>PromptMatrix V5.0 {new Date().getFullYear()}</p>
-        <p>{t('footerOptimize')}</p>
-        <p>
-          {footerContactText}{' '}
-          <a
-            href="mailto:si.sigitadi@gmail.com"
-            className="animated-signature focus:outline-none focus:ring-1 focus:ring-teal-500 rounded-sm"
-          >
+      <footer className="text-center py-3 sm:py-4 border-t border-[var(--border-color)] dark:border-slate-700/50 bg-slate-900/80 backdrop-blur-sm">
+        <p className="text-xs text-slate-400 dark:text-slate-500">
+          © {currentYear} <span className="animated-signature">PromptMatrix</span>. {t('footerOptimize')}
+        </p>
+        <p className="text-xs text-slate-500 dark:text-slate-600 mt-0.5">
+          {t('footerContactMe')}{' '}
+          <a href="mailto:si.sigitadi@gmail.com" className="hover:underline">
             si.sigitadi@gmail.com
           </a>
         </p>
       </footer>
+
+      {/* FAB Container removed, buttons moved to header */}
+
+      <DisclaimerModal isOpen={showDisclaimer} onClose={handleDisclaimerAcknowledge} />
+      <HowToUseModal isOpen={showHowToUse} onClose={() => setShowHowToUse(false)} />
     </div>
   );
 };

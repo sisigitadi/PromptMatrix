@@ -1,4 +1,4 @@
-import { TranslationSet } from './types';
+import { TranslationSet, TranslationKey } from './types'; // Ensure TranslationKey is imported
 
 export const translations: TranslationSet = {
   en: {
@@ -124,6 +124,86 @@ User's prompt:`,
     aiPoweredFeatureTooltip: "AI Powered Feature (Requires API Key)",
     aiFeaturesActiveIndicator: "AI features enabled (API Key detected)",
     geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => `You are an AI assistant specialized in recommending prompt engineering frameworks. Based on the user's goal, you must suggest the most relevant framework IDs from the provided list. The list of available frameworks (including their ID, name, description, and category) is: ${frameworksInfoJson}. Respond ONLY with a JSON object containing a single key "suggestedFrameworkIds", which should be an array of strings (the IDs of the suggested frameworks). If no frameworks seem relevant, return an empty array for "suggestedFrameworkIds". Do not add any explanations or introductory text outside the JSON object.`,
+
+    // Labels for Interactive Prompt Assembly (New section for clarity)
+    promptLabel_subject: "Subject",
+    promptLabel_action_details: "Action/Details",
+    promptLabel_art_style: "Art Style",
+    promptLabel_art_medium: "Art Medium",
+    promptLabel_artist_influence: "Artist Influence",
+    promptLabel_artist_influences: "Artist Influences", // For Stable Diffusion
+    promptLabel_composition: "Composition",
+    promptLabel_lighting: "Lighting Style",
+    promptLabel_color_palette: "Color Palette",
+    promptLabel_detail_level: "Detail Level",
+    promptLabel_aspect_ratio: "Aspect Ratio",
+    promptLabel_negative_prompt_elements: "Negative Elements",
+    promptLabel_custom_negative: "Custom Negative",
+    promptLabel_other_tool_params: "Other Parameters",
+    promptLabel_environment: "Environment",
+    promptLabel_atmosphere: "Atmosphere",
+    promptLabel_version: "Version",
+    promptLabel_stylize: "Stylize",
+    promptLabel_chaos: "Chaos",
+    promptLabel_weird: "Weird",
+    promptLabel_tile: "Tile",
+    promptLabel_image_weight: "Image Weight",
+    promptLabel_style_raw: "Style Raw",
+    promptLabel_other_params: "Other Params", // Midjourney specific "other"
+    promptLabel_scene_description: "Scene Description", // DALL-E 3
+    promptLabel_specific_details: "Specific Details", // DALL-E 3
+    promptLabel_color_focus: "Color Focus", // DALL-E 3
+    promptLabel_lighting_mood: "Lighting/Mood", // DALL-E 3, Stable Diffusion
+    promptLabel_composition_angle: "Composition/Angle", // DALL-E 3
+    promptLabel_aspect_ratio_dalle: "Aspect Ratio", // DALL-E 3
+    promptLabel_main_subject: "Main Subject", // Stable Diffusion
+    promptLabel_key_details: "Key Details", // Stable Diffusion
+    promptLabel_quality_descriptors: "Quality Descriptors", // Stable Diffusion
+    promptLabel_art_style_medium: "Art Style/Medium", // Stable Diffusion
+    promptLabel_technical_aspects: "Technical Aspects", // Stable Diffusion
+    promptLabel_camera_shot: "Camera Shot", // Stable Diffusion
+    promptLabel_lighting_style: "Lighting Style", // Stable Diffusion (can reuse, context should be clear)
+    promptLabel_negative_elements: "Negative Elements", // Stable Diffusion (can reuse)
+    promptLabel_custom_negative_prompt: "Custom Negative Prompt", // Stable Diffusion
+    promptLabel_param_info: "Parameters Note", // Stable Diffusion
+    promptLabel_subjek: "Subject", // Veo (ID specific, ensure EN matches)
+    promptLabel_aksi: "Action", // Veo
+    promptLabel_lokasi: "Location", // Veo
+    promptLabel_gaya: "Style", // Veo
+    promptLabel_mood: "Mood", // Veo, Music
+    promptLabel_warna: "Color Palette", // Veo (ID specific, ensure EN matches)
+    promptLabel_shot: "Shot Type", // Veo
+    promptLabel_angle: "Camera Angle", // Veo
+    promptLabel_movement: "Camera Movement", // Veo
+    promptLabel_cahaya: "Lighting", // Veo (ID specific, ensure EN matches)
+    promptLabel_kualitas: "Quality", // Veo (ID specific, ensure EN matches)
+    promptLabel_elemen_spesifik: "Specific Elements", // Veo
+    promptLabel_negative: "Negative Prompt", // Veo custom negative
+    promptLabel_scene_subject: "Scene/Subject", // Runway
+    promptLabel_subject_action: "Subject Action", // Runway
+    promptLabel_camera_movement: "Camera/Movement", // Runway
+    promptLabel_visual_style: "Visual Style", // Runway
+    promptLabel_lighting_atmosphere: "Lighting/Atmosphere", // Runway
+    promptLabel_environment_action: "Environment Action", // Runway
+    promptLabel_sound_design_note: "Sound Design Note", // Runway
+    promptLabel_duration_note: "Duration Note", // Runway
+    promptLabel_genre: "Genre", // Suno, Detailed Music
+    promptLabel_subgenre_modifiers: "Subgenre/Modifiers", // Suno
+    promptLabel_main_instruments: "Main Instruments", // Suno, Detailed Music
+    promptLabel_vocal_style: "Vocal Style", // Suno, Detailed Music
+    promptLabel_tempo: "Tempo", // Suno, Detailed Music
+    promptLabel_rhythm_description: "Rhythm/Groove", // Suno
+    promptLabel_song_structure: "Song Structure", // Suno
+    promptLabel_lyrics_theme: "Lyrical Theme", // Suno
+    promptLabel_custom_lyrics_section: "Custom Lyrics", // Suno
+    promptLabel_main_genre: "Main Genre", // Detailed Music
+    promptLabel_subgenre_style: "Subgenre/Style", // Detailed Music
+    promptLabel_song_structure_desc: "Song Structure", // Detailed Music
+    promptLabel_duration_or_specifics: "Duration/Specifics", // Detailed Music
+    promptLabel_lyrical_theme_or_custom: "Lyrics", // Detailed Music
+
+    categoryLabelImage: "Image",
+    categoryLabelVideo: "Video",
   },
   id: {
     appTitle: "PromptMatrix",
@@ -248,5 +328,85 @@ Prompt pengguna:`,
     aiPoweredFeatureTooltip: "Fitur Ditenagai AI (Membutuhkan Kunci API)",
     aiFeaturesActiveIndicator: "Fitur AI aktif (Kunci API terdeteksi)",
     geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => `Anda adalah asisten AI yang berspesialisasi dalam merekomendasikan kerangka kerja rekayasa prompt. Berdasarkan tujuan pengguna, Anda harus menyarankan ID kerangka kerja yang paling relevan dari daftar yang disediakan. Daftar kerangka kerja yang tersedia (termasuk ID, nama, deskripsi, dan kategori) adalah: ${frameworksInfoJson}. Balas HANYA dengan objek JSON yang berisi satu kunci "suggestedFrameworkIds", yang seharusnya berupa array string (ID dari kerangka kerja yang disarankan). Jika tidak ada kerangka kerja yang tampak relevan, kembalikan array kosong untuk "suggestedFrameworkIds". Jangan tambahkan penjelasan atau teks pengantar apa pun di luar objek JSON.`,
+
+    // Labels for Interactive Prompt Assembly (New section for clarity)
+    promptLabel_subject: "Subjek",
+    promptLabel_action_details: "Aksi/Detail",
+    promptLabel_art_style: "Gaya Seni",
+    promptLabel_art_medium: "Medium Seni",
+    promptLabel_artist_influence: "Pengaruh Seniman",
+    promptLabel_artist_influences: "Pengaruh Seniman", // For Stable Diffusion
+    promptLabel_composition: "Komposisi",
+    promptLabel_lighting: "Gaya Pencahayaan",
+    promptLabel_color_palette: "Palet Warna",
+    promptLabel_detail_level: "Tingkat Detail",
+    promptLabel_aspect_ratio: "Rasio Aspek",
+    promptLabel_negative_prompt_elements: "Elemen Negatif",
+    promptLabel_custom_negative: "Negatif Kustom",
+    promptLabel_other_tool_params: "Parameter Lain",
+    promptLabel_environment: "Lingkungan",
+    promptLabel_atmosphere: "Atmosfer",
+    promptLabel_version: "Versi",
+    promptLabel_stylize: "Stylize",
+    promptLabel_chaos: "Chaos",
+    promptLabel_weird: "Weird",
+    promptLabel_tile: "Tile",
+    promptLabel_image_weight: "Bobot Gambar",
+    promptLabel_style_raw: "Style Raw",
+    promptLabel_other_params: "Parameter Lain", // Midjourney specific "other"
+    promptLabel_scene_description: "Deskripsi Adegan", // DALL-E 3
+    promptLabel_specific_details: "Detail Spesifik", // DALL-E 3
+    promptLabel_color_focus: "Fokus Warna", // DALL-E 3
+    promptLabel_lighting_mood: "Pencahayaan/Mood", // DALL-E 3, Stable Diffusion
+    promptLabel_composition_angle: "Komposisi/Sudut", // DALL-E 3
+    promptLabel_aspect_ratio_dalle: "Rasio Aspek", // DALL-E 3
+    promptLabel_main_subject: "Subjek Utama", // Stable Diffusion
+    promptLabel_key_details: "Detail Kunci", // Stable Diffusion
+    promptLabel_quality_descriptors: "Deskriptor Kualitas", // Stable Diffusion
+    promptLabel_art_style_medium: "Gaya Seni/Medium", // Stable Diffusion
+    promptLabel_technical_aspects: "Aspek Teknis", // Stable Diffusion
+    promptLabel_camera_shot: "Shot Kamera", // Stable Diffusion
+    promptLabel_lighting_style: "Gaya Pencahayaan", // Stable Diffusion (can reuse, context should be clear)
+    promptLabel_negative_elements: "Elemen Negatif", // Stable Diffusion (can reuse)
+    promptLabel_custom_negative_prompt: "Prompt Negatif Kustom", // Stable Diffusion
+    promptLabel_param_info: "Catatan Parameter", // Stable Diffusion
+    promptLabel_subjek: "Subjek", // Veo
+    promptLabel_aksi: "Aksi", // Veo
+    promptLabel_lokasi: "Lokasi", // Veo
+    promptLabel_gaya: "Gaya", // Veo
+    promptLabel_mood: "Mood", // Veo, Musik
+    promptLabel_warna: "Palet Warna", // Veo
+    promptLabel_shot: "Jenis Shot", // Veo
+    promptLabel_angle: "Sudut Kamera", // Veo
+    promptLabel_movement: "Gerakan Kamera", // Veo
+    promptLabel_cahaya: "Pencahayaan", // Veo
+    promptLabel_kualitas: "Kualitas", // Veo
+    promptLabel_elemen_spesifik: "Elemen Spesifik", // Veo
+    promptLabel_negative: "Prompt Negatif", // Veo custom negative
+    promptLabel_scene_subject: "Adegan/Subjek", // Runway
+    promptLabel_subject_action: "Aksi Subjek", // Runway
+    promptLabel_camera_movement: "Kamera/Gerakan", // Runway
+    promptLabel_visual_style: "Gaya Visual", // Runway
+    promptLabel_lighting_atmosphere: "Pencahayaan/Atmosfer", // Runway
+    promptLabel_environment_action: "Aksi Lingkungan", // Runway
+    promptLabel_sound_design_note: "Catatan Suara", // Runway
+    promptLabel_duration_note: "Catatan Durasi", // Runway
+    promptLabel_genre: "Genre", // Suno, Detailed Music
+    promptLabel_subgenre_modifiers: "Subgenre/Modifier", // Suno
+    promptLabel_main_instruments: "Instrumen Utama", // Suno, Detailed Music
+    promptLabel_vocal_style: "Gaya Vokal", // Suno, Detailed Music
+    promptLabel_tempo: "Tempo", // Suno, Detailed Music
+    promptLabel_rhythm_description: "Ritme/Groove", // Suno
+    promptLabel_song_structure: "Struktur Lagu", // Suno
+    promptLabel_lyrics_theme: "Tema Lirik", // Suno
+    promptLabel_custom_lyrics_section: "Lirik Kustom", // Suno
+    promptLabel_main_genre: "Genre Utama", // Detailed Music
+    promptLabel_subgenre_style: "Subgenre/Gaya", // Detailed Music
+    promptLabel_song_structure_desc: "Struktur Lagu", // Detailed Music
+    promptLabel_duration_or_specifics: "Durasi/Spesifik", // Detailed Music
+    promptLabel_lyrical_theme_or_custom: "Lirik", // Detailed Music
+
+    categoryLabelImage: "Gambar",
+    categoryLabelVideo: "Video",
   }
 };

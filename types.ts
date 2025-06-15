@@ -167,6 +167,87 @@ export interface Translations {
   aiPoweredFeatureTooltip: string; // Tooltip umum untuk fitur AI
   aiFeaturesActiveIndicator: string; // Tooltip/label untuk indikator fitur AI aktif karena API Key ada
   geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => string;
+
+  // Labels for Interactive Prompt Assembly
+  promptLabel_subject?: string;
+  promptLabel_action_details?: string;
+  promptLabel_art_style?: string;
+  promptLabel_art_medium?: string;
+  promptLabel_artist_influence?: string;
+  promptLabel_artist_influences?: string;
+  promptLabel_composition?: string;
+  promptLabel_lighting?: string;
+  promptLabel_color_palette?: string;
+  promptLabel_detail_level?: string;
+  promptLabel_aspect_ratio?: string;
+  promptLabel_negative_prompt_elements?: string;
+  promptLabel_custom_negative?: string;
+  promptLabel_other_tool_params?: string;
+  promptLabel_environment?: string;
+  promptLabel_atmosphere?: string;
+  promptLabel_version?: string;
+  promptLabel_stylize?: string;
+  promptLabel_chaos?: string;
+  promptLabel_weird?: string;
+  promptLabel_tile?: string;
+  promptLabel_image_weight?: string;
+  promptLabel_style_raw?: string;
+  promptLabel_other_params?: string;
+  promptLabel_scene_description?: string;
+  promptLabel_specific_details?: string;
+  promptLabel_color_focus?: string;
+  promptLabel_lighting_mood?: string;
+  promptLabel_composition_angle?: string;
+  promptLabel_aspect_ratio_dalle?: string;
+  promptLabel_main_subject?: string;
+  promptLabel_key_details?: string;
+  promptLabel_quality_descriptors?: string;
+  promptLabel_art_style_medium?: string;
+  promptLabel_technical_aspects?: string;
+  promptLabel_camera_shot?: string;
+  promptLabel_lighting_style?: string;
+  promptLabel_negative_elements?: string;
+  promptLabel_custom_negative_prompt?: string;
+  promptLabel_param_info?: string;
+  promptLabel_subjek?: string;
+  promptLabel_aksi?: string;
+  promptLabel_lokasi?: string;
+  promptLabel_gaya?: string;
+  promptLabel_mood?: string;
+  promptLabel_warna?: string;
+  promptLabel_shot?: string;
+  promptLabel_angle?: string;
+  promptLabel_movement?: string;
+  promptLabel_cahaya?: string;
+  promptLabel_kualitas?: string;
+  promptLabel_elemen_spesifik?: string;
+  promptLabel_negative?: string;
+  promptLabel_scene_subject?: string;
+  promptLabel_subject_action?: string;
+  promptLabel_camera_movement?: string;
+  promptLabel_visual_style?: string;
+  promptLabel_lighting_atmosphere?: string;
+  promptLabel_environment_action?: string;
+  promptLabel_sound_design_note?: string;
+  promptLabel_duration_note?: string;
+  promptLabel_genre?: string;
+  promptLabel_subgenre_modifiers?: string;
+  promptLabel_main_instruments?: string;
+  promptLabel_vocal_style?: string;
+  promptLabel_tempo?: string;
+  promptLabel_rhythm_description?: string;
+  promptLabel_song_structure?: string;
+  promptLabel_lyrics_theme?: string;
+  promptLabel_custom_lyrics_section?: string;
+  promptLabel_main_genre?: string;
+  promptLabel_subgenre_style?: string;
+  promptLabel_song_structure_desc?: string;
+  promptLabel_duration_or_specifics?: string;
+  promptLabel_lyrical_theme_or_custom?: string;
+
+  // New keys for category button labels
+  categoryLabelImage: string;
+  categoryLabelVideo: string;
 }
 
 export type TranslationKey = keyof Translations;
