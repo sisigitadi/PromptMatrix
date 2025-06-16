@@ -108,7 +108,7 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
   };
 
   const handleSuggestForInteractiveField = async (fieldId: string, fieldPromptText: string, currentFieldValue: string) => {
-    if (!fetchSuggestions || !frameworkName || !apiKeyAvailable) return;
+    if (!fetchSuggestions || !frameworkName || !apiKeyAvailable) return; // Guard against calling if not available
     
     setActiveSuggestionFieldId(fieldId);
     setIsFetchingInteractiveFieldSuggestions(true);
@@ -135,7 +135,7 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
     if (questionType === 'manual') {
         handleManualInputChange(fieldId, suggestion);
     } else if (questionType === 'single-choice') { 
-        onOtherInputChange(fieldId, suggestion);
+        onOtherInputChange(fieldId, suggestion); // For 'Other' field in single-choice
     }
     setShowInteractiveFieldSuggestions(false);
     setInteractiveFieldSuggestions([]);
@@ -189,14 +189,16 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
   const renderQuestion = (question: InteractiveQuestionDefinition) => {
     const questionValue = currentValues[question.id];
     const otherTextValueForThisQuestion = otherInputValues[question.id] || '';
-    const effectiveSuggestButtonTitle = !apiKeyAvailable ? t('apiKeyMissingError') : t('suggestButtonTitle');
+    const effectiveSuggestButtonTitle = !apiKeyAvailable 
+      ? t('aiFeatureRequiresSubscriptionTooltip') 
+      : t('suggestButtonTitle');
 
     switch (question.type) {
       case 'manual':
         const manualPlaceholder = (question.defaultValue && typeof question.defaultValue === 'string' && question.defaultValue.trim() !== '') 
                                   ? question.defaultValue 
                                   : t('interactiveFormManualInputPlaceholder');
-        const showSuggestButtonForManual = !!apiKeyAvailable && !!fetchSuggestions;
+        const showSuggestButtonForManual = !!fetchSuggestions; // Icon is always shown if applicable
         return (
             <div className="relative" onBlur={(e) => handleInteractiveFieldBlur(e, question.id)}>
                 <textarea
@@ -215,19 +217,19 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
                 {showSuggestButtonForManual && (
                     <button
                         type="button"
-                        onClick={() => handleSuggestForInteractiveField(question.id, question.promptText, (questionValue as string) || '')}
-                        className={`absolute right-1.5 top-1.5 p-1 text-purple-400 hover:text-purple-200 active:text-purple-500 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button-${question.id}`}
+                        onClick={apiKeyAvailable ? () => handleSuggestForInteractiveField(question.id, question.promptText, (questionValue as string) || '') : undefined}
+                        className={`absolute right-1.5 top-1.5 p-1 text-purple-400 ${apiKeyAvailable ? 'hover:text-purple-200 active:text-purple-500' : 'opacity-50 cursor-not-allowed'} transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button-${question.id}`}
                         title={effectiveSuggestButtonTitle}
                         aria-label={t('suggestButtonTitle')}
-                        disabled={isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id}
+                        disabled={!apiKeyAvailable || (isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id)}
                     >
                         <AppLogoIcon 
-                            animatedAsAiIndicator
-                            className={`w-4 h-4 api-status-indicator ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''}`} 
+                            animatedAsAiIndicator={apiKeyAvailable}
+                            className={`w-4 h-4 api-status-indicator ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''} ${!apiKeyAvailable ? 'grayscale' : ''}`} 
                         />
                     </button>
                 )}
-                {showInteractiveFieldSuggestions && activeSuggestionFieldId === question.id && (isFetchingInteractiveFieldSuggestions || interactiveFieldSuggestionError || interactiveFieldSuggestions.length > 0) && (
+                {showInteractiveFieldSuggestions && apiKeyAvailable && activeSuggestionFieldId === question.id && (isFetchingInteractiveFieldSuggestions || interactiveFieldSuggestionError || interactiveFieldSuggestions.length > 0) && (
                     <div className="interactive-suggestion-list-container" id={`${question.id}-interactive-suggestions`} role="listbox">
                         {isFetchingInteractiveFieldSuggestions && (
                             <div className="px-2.5 py-1.5 text-xs text-slate-400 animate-pulse">{t('suggestionsLoading')}</div>
@@ -260,7 +262,7 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
       case 'single-choice':
         const options = question.options || [];
         const showOtherInput = question.includeOtherOption && questionValue === 'LAINNYA_INTERAKTIF_PLACEHOLDER';
-        const showSuggestButtonForOther = !!apiKeyAvailable && !!fetchSuggestions && showOtherInput;
+        const showSuggestButtonForOther = !!fetchSuggestions && showOtherInput; // Icon is always shown if applicable
 
         return (
           <div className="space-y-1.5 relative" onBlur={(e) => handleInteractiveFieldBlur(e, question.id)}>
@@ -299,21 +301,21 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
                 {showSuggestButtonForOther && (
                     <button
                         type="button"
-                        onClick={() => handleSuggestForInteractiveField(question.id, question.promptText, otherTextValueForThisQuestion)}
-                        className={`absolute right-1 top-1/2 -translate-y-1/2 p-1 text-purple-400 hover:text-purple-200 active:text-purple-500 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button-${question.id}`}
+                        onClick={apiKeyAvailable ? () => handleSuggestForInteractiveField(question.id, question.promptText, otherTextValueForThisQuestion) : undefined}
+                        className={`absolute right-1 top-1/2 -translate-y-1/2 p-1 text-purple-400 ${apiKeyAvailable ? 'hover:text-purple-200 active:text-purple-500' : 'opacity-50 cursor-not-allowed'} transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button-${question.id}`}
                         title={effectiveSuggestButtonTitle}
                         aria-label={t('suggestButtonTitle')}
-                        disabled={isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id}
+                        disabled={!apiKeyAvailable || (isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id)}
                     >
                         <AppLogoIcon
-                            animatedAsAiIndicator
-                            className={`w-4 h-4 api-status-indicator ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''}`} 
+                            animatedAsAiIndicator={apiKeyAvailable}
+                            className={`w-4 h-4 api-status-indicator ${isFetchingInteractiveFieldSuggestions && activeSuggestionFieldId === question.id ? 'opacity-70 animate-pulse' : ''} ${!apiKeyAvailable ? 'grayscale' : ''}`} 
                         />
                     </button>
                 )}
               </div>
             )}
-            {showInteractiveFieldSuggestions && activeSuggestionFieldId === question.id && (isFetchingInteractiveFieldSuggestions || interactiveFieldSuggestionError || interactiveFieldSuggestions.length > 0) && (
+            {showInteractiveFieldSuggestions && apiKeyAvailable && activeSuggestionFieldId === question.id && (isFetchingInteractiveFieldSuggestions || interactiveFieldSuggestionError || interactiveFieldSuggestions.length > 0) && (
               <div className="interactive-suggestion-list-container" id={`${question.id}-interactive-suggestions`} role="listbox">
                 {isFetchingInteractiveFieldSuggestions && (
                   <div className="px-2.5 py-1.5 text-xs text-slate-400 animate-pulse">{t('suggestionsLoading')}</div>

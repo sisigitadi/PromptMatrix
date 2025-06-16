@@ -10,7 +10,7 @@ import { ChevronDownIcon } from './icons/ChevronDownIcon';
 import { ChevronUpIcon } from './icons/ChevronUpIcon';
 import { AppLogoIcon } from './icons/AppLogoIcon'; 
 import { SaveIcon } from './icons/SaveIcon'; 
-import { ChartBarIcon } from './icons/ChartBarIcon'; // New icon for detailed analysis
+// import { ChartBarIcon } from './icons/ChartBarIcon'; // Replaced by AppLogoIcon for detailed analysis
 
 interface PromptOutputProps {
   promptText: string;
@@ -144,23 +144,27 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
   const [copied, setCopied] = useState<boolean>(false); 
   const [copyAttemptedMessage, setCopyAttemptedMessage] = useState<string | null>(null);
   const [isToolSelectorModalOpen, setIsToolSelectorModalOpen] = useState<boolean>(false);
-  const [isAiFeedbackExpanded, setIsAiFeedbackExpanded] = useState<boolean>(true);
-  const [isDetailedAnalysisExpanded, setIsDetailedAnalysisExpanded] = useState<boolean>(false);
+  
+  // Initialize expansion state based on apiKeyAvailable for default visibility
+  const [isAiFeedbackExpanded, setIsAiFeedbackExpanded] = useState<boolean>(!apiKeyAvailable ? true : true);
+  const [isDetailedAnalysisExpanded, setIsDetailedAnalysisExpanded] = useState<boolean>(!apiKeyAvailable ? true : false);
 
 
   const currentFrameworkLocale = selectedFramework ? selectedFramework[language === 'id' ? 'idLocale' : 'enLocale'] : null;
 
   useEffect(() => {
-    if (aiFeedbackReceived && !isFetchingAiFeedback && !aiError && aiFeedback) {
+    // Only auto-expand on new data if API key is available, otherwise keep default state
+    if (apiKeyAvailable && aiFeedbackReceived && !isFetchingAiFeedback && !aiError && aiFeedback) {
       setIsAiFeedbackExpanded(true);
     }
-  }, [aiFeedbackReceived, isFetchingAiFeedback, aiError, aiFeedback]);
+  }, [apiKeyAvailable, aiFeedbackReceived, isFetchingAiFeedback, aiError, aiFeedback]);
 
   useEffect(() => {
-    if (detailedAiAnalysisReceived && !isFetchingDetailedAnalysis && !detailedAnalysisError && detailedAiAnalysis) {
-      setIsDetailedAnalysisExpanded(true); // Auto-expand detailed analysis when new data arrives
+    // Only auto-expand on new data if API key is available
+    if (apiKeyAvailable && detailedAiAnalysisReceived && !isFetchingDetailedAnalysis && !detailedAnalysisError && detailedAiAnalysis) {
+      setIsDetailedAnalysisExpanded(true); 
     }
-  }, [detailedAiAnalysisReceived, isFetchingDetailedAnalysis, detailedAnalysisError, detailedAiAnalysis]);
+  }, [apiKeyAvailable, detailedAiAnalysisReceived, isFetchingDetailedAnalysis, detailedAnalysisError, detailedAiAnalysis]);
 
   const handleCopy = useCallback(async () => {
     const trimmedPromptToCopy = promptToCopy.trim();
@@ -202,8 +206,10 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
       !!currentFrameworkLocale.toolLink
     );
   
-  const canEnhanceInternal = !!apiKeyAvailable && promptToCopy.trim().length > 0 && !isFetchingAiFeedback;
-  const canAnalyzeInternal = !!apiKeyAvailable && promptToCopy.trim().length > 0 && !isFetchingDetailedAnalysis;
+  const isPromptNotEmpty = promptToCopy.trim().length > 0;
+  const enhanceButtonTitle = !apiKeyAvailable || !isPromptNotEmpty ? t('aiFeatureRequiresSubscriptionTooltip') : t('enhanceButtonTitle');
+  const analyzeButtonTitle = !apiKeyAvailable || !isPromptNotEmpty ? t('aiFeatureRequiresSubscriptionTooltip') : t('analyzeButtonTitle');
+
   const canCopy = promptToCopy.trim().length > 0;
 
   const isActuallyShowingPrompt = selectedFramework && promptText !== t('initialPromptAreaInstruction') && promptText !== t('initialPromptAreaInstructionNoApiKey') && promptText !== t('selectFrameworkPromptAreaInstruction') && promptToCopy.trim() !== '';
@@ -213,6 +219,9 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
   const showDetailedAnalysisSuccessIndicator = detailedAiAnalysisReceived && !isFetchingDetailedAnalysis && !detailedAnalysisError && apiKeyAvailable;
 
   const renderFormattedTextSection = (text: string | null, titleKey: string, defaultContentKey: string) => {
+    if (!apiKeyAvailable) { 
+        return <p className="text-xs text-slate-400">{t(defaultContentKey as any)}. {t('aiFeaturesRequireSubscriptionMessage')}</p>;
+    }
     if (!text) return <p className="text-xs text-slate-400">{t(defaultContentKey as any)}</p>;
   
     const sections: { header?: string; content: ReactNode[] }[] = [];
@@ -235,26 +244,25 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
     const knownHeaders = [
       t('aiFeedbackStrengthsTitle'), t('aiFeedbackWeaknessesTitle'), t('aiFeedbackReasoningTitle'), t('aiFeedbackActionableSuggestionsTitle'),
       t('detailedAnalysisClarityScoreTitle'), t('detailedAnalysisSpecificityScoreTitle'), t('detailedAnalysisAmbiguitiesTitle'), t('detailedAnalysisSuggestionsTitle'), t('detailedAnalysisOverallAssessmentTitle')
-    ].map(h => h.replace(':', '')); // Remove colon for matching flexibility
+    ].map(h => h.replace(':', '')); 
   
     let isFirstSection = true;
     for (const line of lines) {
       const matchingHeader = knownHeaders.find(header => line.toLowerCase().startsWith(header.toLowerCase()));
       if (matchingHeader) {
         flushCurrentSection();
-        currentSectionTitle = line; // Keep the original line as title
+        currentSectionTitle = line; 
         isFirstSection = false;
       } else {
         if (isFirstSection && !currentSectionTitle) {
-            // This part assumes that if the AI response starts with content before any known headers,
-            // it should be grouped under the main title of the feedback section (e.g. "Overall Feedback" or "Detailed Analysis")
+           
         }
         currentSectionContent.push(line);
       }
     }
     flushCurrentSection();
   
-    if (sections.length === 0 && text.trim()) { // Fallback if no known headers were found but text exists
+    if (sections.length === 0 && text.trim()) { 
       return (
         <div className="font-sans text-sm sm:text-base text-slate-100 leading-relaxed max-h-60 sm:max-h-72 overflow-y-auto space-y-1" aria-live="polite">
           {parseMarkdownContent(text)}
@@ -312,9 +320,8 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
             </pre>
           </div>
 
-          {apiKeyAvailable && isExpanded && (
+          {isExpanded && ( 
             <div className="mx-4 sm:mx-6 mt-2.5 space-y-2.5"> 
-              {/* General AI Feedback Section */}
               <div>
                 <div 
                   className="flex justify-between items-center px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-700/30 dark:bg-slate-800/40 rounded-t-lg border border-b-0 border-[var(--border-color)] dark:border-slate-600/70 cursor-pointer hover:bg-slate-700/50"
@@ -322,27 +329,26 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
                   role="button" tabIndex={0} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setIsAiFeedbackExpanded(!isAiFeedbackExpanded)}
                   aria-expanded={isAiFeedbackExpanded} aria-controls="ai-feedback-content"
                 >
-                  <h4 className="text-sm sm:text-md font-semibold text-purple-400 dark:text-purple-300 flex items-center">
-                    <strong className="italic">{t('aiFeedbackTitleTextOnly')}</strong>
-                    <AppLogoIcon animatedAsAiIndicator className="w-4 h-4 ml-1.5 api-status-indicator shrink-0" />
+                  <h4 className={`text-md font-semibold flex items-center ${apiKeyAvailable ? 'text-purple-400 dark:text-purple-300' : 'text-slate-400'}`}>
+                    <strong>{t('aiFeedbackTitleTextOnly')} {!apiKeyAvailable && t('premiumFeatureTitleSuffix')}</strong>
+                    <AppLogoIcon animatedAsAiIndicator={apiKeyAvailable} className={`w-4 h-4 ml-1.5 api-status-indicator shrink-0 ${!apiKeyAvailable ? 'grayscale' : ''}`} />
                     {showAiFeedbackSuccessIndicator && (
                       <CheckCircleIcon className="w-4 h-4 text-green-500 dark:text-green-400 ml-1.5 shrink-0" title={t('aiFeedbackReceivedIndicatorTooltip')} />
                     )}
                   </h4>
-                  {isAiFeedbackExpanded ? <ChevronUpIcon className="w-5 h-5 text-purple-400" /> : <ChevronDownIcon className="w-5 h-5 text-purple-400" />}
+                  {isAiFeedbackExpanded ? <ChevronUpIcon className={`w-5 h-5 ${apiKeyAvailable ? 'text-purple-400' : 'text-slate-400'}`} /> : <ChevronDownIcon className={`w-5 h-5 ${apiKeyAvailable ? 'text-purple-400' : 'text-slate-400'}`} />}
                 </div>
                 <div 
                   id="ai-feedback-content" 
                   className={`overflow-hidden transition-all duration-300 ease-in-out bg-slate-700/30 dark:bg-slate-800/40 rounded-b-lg border border-t-0 border-[var(--border-color)] dark:border-slate-600/70
                               ${isAiFeedbackExpanded ? 'max-h-[500px] opacity-100 p-3 sm:p-4' : 'max-h-0 opacity-0 p-0'}`}
                 >
-                  {isFetchingAiFeedback && <p className="text-xs sm:text-sm text-slate-300 animate-pulse">{t('aiFeedbackLoading')}</p>}
-                  {aiError && <p className="text-xs sm:text-sm text-rose-400 dark:text-rose-400" role="alert">{aiError}</p>}
-                  {!isFetchingAiFeedback && renderFormattedTextSection(aiFeedback, 'aiFeedbackTitleTextOnly', 'initialPromptAreaInstruction')}
+                  {isFetchingAiFeedback && apiKeyAvailable && <p className="text-xs sm:text-sm text-slate-300 animate-pulse">{t('aiFeedbackLoading')}</p>}
+                  {aiError && apiKeyAvailable && <p className="text-xs sm:text-sm text-rose-400 dark:text-rose-400" role="alert">{aiError}</p>}
+                  {renderFormattedTextSection(aiFeedback, 'aiFeedbackTitleTextOnly', 'initialPromptAreaInstruction')}
                 </div>
               </div>
 
-              {/* Detailed AI Analysis Section */}
               <div>
                 <div 
                   className="flex justify-between items-center px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-700/30 dark:bg-slate-800/40 rounded-t-lg border border-b-0 border-[var(--border-color)] dark:border-slate-600/70 cursor-pointer hover:bg-slate-700/50 mt-2"
@@ -350,63 +356,62 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
                   role="button" tabIndex={0} onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setIsDetailedAnalysisExpanded(!isDetailedAnalysisExpanded)}
                   aria-expanded={isDetailedAnalysisExpanded} aria-controls="detailed-ai-analysis-content"
                 >
-                  <h4 className="text-sm sm:text-md font-semibold text-purple-400 dark:text-purple-300 flex items-center">
-                    <strong className="italic">{t('detailedAnalysisTitle')}</strong>
-                    <ChartBarIcon className="w-4 h-4 ml-1.5 text-purple-400 dark:text-purple-300 shrink-0" />
+                  <h4 className={`text-md font-semibold flex items-center ${apiKeyAvailable ? 'text-purple-400 dark:text-purple-300' : 'text-slate-400'}`}>
+                    <strong>{t('detailedAnalysisTitle')} {!apiKeyAvailable && t('premiumFeatureTitleSuffix')}</strong>
+                    <AppLogoIcon animatedAsAiIndicator={apiKeyAvailable} className={`w-4 h-4 ml-1.5 shrink-0 ${!apiKeyAvailable ? 'grayscale' : ''}`} />
                     {showDetailedAnalysisSuccessIndicator && (
                        <CheckCircleIcon className="w-4 h-4 text-green-500 dark:text-green-400 ml-1.5 shrink-0" title={t('detailedAnalysisReceivedIndicatorTooltip')} />
                     )}
                   </h4>
-                  {isDetailedAnalysisExpanded ? <ChevronUpIcon className="w-5 h-5 text-purple-400" /> : <ChevronDownIcon className="w-5 h-5 text-purple-400" />}
+                  {isDetailedAnalysisExpanded ? <ChevronUpIcon className={`w-5 h-5 ${apiKeyAvailable ? 'text-purple-400' : 'text-slate-400'}`} /> : <ChevronDownIcon className={`w-5 h-5 ${apiKeyAvailable ? 'text-purple-400' : 'text-slate-400'}`} />}
                 </div>
                 <div 
                   id="detailed-ai-analysis-content" 
                   className={`overflow-hidden transition-all duration-300 ease-in-out bg-slate-700/30 dark:bg-slate-800/40 rounded-b-lg border border-t-0 border-[var(--border-color)] dark:border-slate-600/70
                               ${isDetailedAnalysisExpanded ? 'max-h-[500px] opacity-100 p-3 sm:p-4' : 'max-h-0 opacity-0 p-0'}`}
                 >
-                  {isFetchingDetailedAnalysis && <p className="text-xs sm:text-sm text-slate-300 animate-pulse">{t('detailedAnalysisLoading')}</p>}
-                  {detailedAnalysisError && <p className="text-xs sm:text-sm text-rose-400 dark:text-rose-400" role="alert">{detailedAnalysisError}</p>}
-                  {!isFetchingDetailedAnalysis && renderFormattedTextSection(detailedAiAnalysis, 'detailedAnalysisTitle', 'initialDetailedAnalysisInstruction')}
+                  {isFetchingDetailedAnalysis && apiKeyAvailable && <p className="text-xs sm:text-sm text-slate-300 animate-pulse">{t('detailedAnalysisLoading')}</p>}
+                  {detailedAnalysisError && apiKeyAvailable && <p className="text-xs sm:text-sm text-rose-400 dark:text-rose-400" role="alert">{detailedAnalysisError}</p>}
+                  {renderFormattedTextSection(detailedAiAnalysis, 'detailedAnalysisTitle', 'initialDetailedAnalysisInstruction')}
                 </div>
               </div>
             </div>
           )}
 
           <div className="mt-auto pt-2.5 px-4 sm:px-6 pb-3 sm:pb-4 space-y-2.5"> 
-            {apiKeyAvailable && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5"> 
                   <button
                       onClick={onEnhanceWithAI}
-                      title={t('enhanceButtonTitle')}
+                      title={enhanceButtonTitle}
                       className={`w-full py-2 px-2.5 text-xs font-semibold rounded-md transition-all duration-200 ease-in-out flex items-center justify-center space-x-1.5
                                   transform active:scale-95 shadow-md
-                                  ${canEnhanceInternal
+                                  ${apiKeyAvailable && isPromptNotEmpty
                                       ? 'bg-purple-600 hover:bg-purple-500 text-white focus:ring-1 focus:ring-purple-400 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800'
                                       : 'bg-slate-600 text-slate-400 cursor-not-allowed focus:ring-slate-500 opacity-70'
                                   }`}
                       aria-label={t('enhanceButtonAria')}
-                      disabled={!canEnhanceInternal || isFetchingAiFeedback}
+                      disabled={!apiKeyAvailable || !isPromptNotEmpty || isFetchingAiFeedback}
                   >
                       <span className="button-text-content">{isFetchingAiFeedback ? t('enhanceButtonLoadingText') : t('enhanceButtonText')}</span>
-                      <AppLogoIcon animatedAsAiIndicator className={`w-4 h-4 api-status-indicator ml-1.5 ${isFetchingAiFeedback ? 'opacity-70 animate-pulse' : ''}`} /> 
+                      <AppLogoIcon animatedAsAiIndicator={apiKeyAvailable} className={`w-4 h-4 api-status-indicator ml-1.5 ${isFetchingAiFeedback ? 'opacity-70 animate-pulse' : ''} ${!apiKeyAvailable ? 'grayscale' :''}`} /> 
                   </button>
                   <button
                       onClick={onAnalyzeWithAI}
-                      title={t('analyzeButtonTitle')}
+                      title={analyzeButtonTitle}
                       className={`w-full py-2 px-2.5 text-xs font-semibold rounded-md transition-all duration-200 ease-in-out flex items-center justify-center space-x-1.5
                                   transform active:scale-95 shadow-md
-                                  ${canAnalyzeInternal
+                                  ${apiKeyAvailable && isPromptNotEmpty
                                       ? 'bg-indigo-600 hover:bg-indigo-500 text-white focus:ring-1 focus:ring-indigo-400 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800'
                                       : 'bg-slate-600 text-slate-400 cursor-not-allowed focus:ring-slate-500 opacity-70'
                                   }`}
                       aria-label={t('analyzeButtonAria')}
-                      disabled={!canAnalyzeInternal || isFetchingDetailedAnalysis}
+                      disabled={!apiKeyAvailable || !isPromptNotEmpty || isFetchingDetailedAnalysis}
                   >
                       <span className="button-text-content">{isFetchingDetailedAnalysis ? t('analyzeButtonLoadingText') : t('analyzeButtonText')}</span>
-                      <ChartBarIcon className={`w-4 h-4 text-white ml-1.5 ${isFetchingDetailedAnalysis ? 'opacity-70 animate-pulse' : ''}`} /> 
+                      <AppLogoIcon animatedAsAiIndicator={apiKeyAvailable} className={`w-4 h-4 text-white ml-1.5 shrink-0 ${isFetchingDetailedAnalysis ? 'opacity-70 animate-pulse' : ''} ${!apiKeyAvailable ? 'grayscale' :''}`} />
                   </button>
               </div>
-            )}
+            
              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
                 <button
                   onClick={onSavePrompt}

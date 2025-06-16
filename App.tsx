@@ -114,10 +114,20 @@ const App: React.FC = (): ReactElement => {
 
   const [trueInitialDefaults, setTrueInitialDefaults] = useState<Record<string, string | string[]>>({});
 
-  const rawApiKeyFromEnv = process.env.API_KEY;
-  const apiKey = (typeof rawApiKeyFromEnv === 'string' && rawApiKeyFromEnv !== "undefined" && rawApiKeyFromEnv.trim() !== '') ? rawApiKeyFromEnv : null;
-  const aiClient = apiKey ? new GoogleGenAI({ apiKey }) : null;
-  const apiKeyAvailable = !!apiKey; 
+  // --- API KEY LOGIC ADHERING TO GUIDELINES ---
+  const apiKeyFromEnv = process.env.API_KEY; // This value is injected by Vite's define config.
+
+  let resolvedApiKey: string | null = null;
+
+  if (typeof apiKeyFromEnv === 'string' && apiKeyFromEnv.trim() !== '' && apiKeyFromEnv.trim() !== "undefined") {
+      // The string "undefined" can occur if the env var was not set when Vite ran.
+      resolvedApiKey = apiKeyFromEnv.trim();
+  }
+  
+  // The GoogleGenAI constructor now correctly expects an object { apiKey: string }
+  const aiClient = resolvedApiKey ? new GoogleGenAI({ apiKey: resolvedApiKey }) : null;
+  const apiKeyAvailable = !!aiClient; // True if the client could be initialized.
+  // --- END OF API KEY LOGIC ---
 
   const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
   const [isDBLoading, setIsDBLoading] = useState<boolean>(true);
@@ -136,7 +146,7 @@ const App: React.FC = (): ReactElement => {
       }, 500); 
       return () => clearTimeout(timer);
     }
-    return undefined;
+    return undefined; // Explicitly return undefined if condition is not met
   }, [hasShownInitialModals]);
 
   useEffect((): void => {
@@ -146,12 +156,12 @@ const App: React.FC = (): ReactElement => {
       setGlobalActivityMessage(t('activityAnalyzingPrompt'));
     } else if (isFetchingFrameworkSuggestions) {
       setGlobalActivityMessage(t('activityFetchingSuggestions'));
-    } else if (isTranslating) {
+    } else if (isTranslating && apiKeyAvailable) { // Only show translating message if AI translation is possible
       setGlobalActivityMessage(t('activityTranslatingContent'));
     } else {
       setGlobalActivityMessage(null);
     }
-  }, [isFetchingAiFeedback, isFetchingDetailedAnalysis, isFetchingFrameworkSuggestions, isTranslating, t]);
+  }, [isFetchingAiFeedback, isFetchingDetailedAnalysis, isFetchingFrameworkSuggestions, isTranslating, t, apiKeyAvailable]);
 
   useEffect((): void => {
     const storedFavorites = localStorage.getItem('favoriteFrameworkIds');
@@ -252,26 +262,33 @@ const App: React.FC = (): ReactElement => {
     try {
       const promptToLoad = await getPromptByIdFromDB(promptId);
       if (promptToLoad) {
-        if (promptToLoad.language !== language) {
-          setLanguage(promptToLoad.language);
-          previousLanguageRef.current = promptToLoad.language; 
+        const targetLanguage = promptToLoad.language;
+        
+        // Logic for language switching when loading a prompt
+        if (targetLanguage !== language) {
+            previousLanguageRef.current = language; // Store current language before switching
+            setLanguage(targetLanguage); // Switch UI language first
+            // The useEffect for language change or selectedFramework change should handle content reset/translation
         }
-
+        
         const frameworkToLoad = frameworks.find(fw => fw.id === promptToLoad.frameworkId);
         if (frameworkToLoad) {
           setSelectedCategory(promptToLoad.category); 
-          setSelectedFramework(frameworkToLoad); 
+          setSelectedFramework(frameworkToLoad); // This will trigger its own useEffect to set defaults
 
+          // Delay slightly to ensure language and framework states are settled
+          // before populating with saved values.
           setTimeout(() => {
-            const currentLocale = promptToLoad.language === 'id' ? frameworkToLoad.idLocale : frameworkToLoad.enLocale;
+            const currentLocale = targetLanguage === 'id' ? frameworkToLoad.idLocale : frameworkToLoad.enLocale;
             const calculatedTrueDefaults = getTrueInitialFrameworkDefaultsInternal(currentLocale);
             setTrueInitialDefaults(calculatedTrueDefaults);
 
+            // Populate with saved values
             setPromptComponents(promptToLoad.promptComponents.map(pc => ({...pc})));
             setInteractiveFormValues({...promptToLoad.interactiveFormValues});
             setOtherInputValues({...promptToLoad.otherInputValues});
             setUserDefinedInteraction(promptToLoad.userDefinedInteraction);
-
+            
             setGeneratedPrompt(promptToLoad.generatedPrompt);
             setPromptToCopy(promptToLoad.promptToCopy);
 
@@ -279,11 +296,11 @@ const App: React.FC = (): ReactElement => {
             setHasCurrentPromptBeenCopied(false);
             resetFrameworkSuggestionStates(); 
             showToast('success', 'promptLoadedSuccess');
-             if (window.innerWidth < 768) {
+            if (window.innerWidth < 768) {
                 setIsInputPanelExpanded(true);
                 setIsOutputPanelExpanded(true);
             }
-          }, 50);
+          }, 100); // Increased delay slightly
 
         } else {
           showToast('error', 'errorLoadingPrompts');
@@ -385,10 +402,13 @@ const App: React.FC = (): ReactElement => {
         section.questions.forEach(question => {
           const key = question.id;
           const trueDefaultValue = currentTrueDefaults[key];
+          // For manual inputs, if trueDefaultValue exists (i.e., was example text from frameworks.ts),
+          // the display value should be empty to encourage user input.
+          // But if trueDefaultValue is empty itself, then display remains empty.
           if (question.type === 'manual' && typeof trueDefaultValue === 'string' && trueDefaultValue.trim() !== '') {
-            formInitialDisplayState[key] = '';
+            formInitialDisplayState[key] = ''; // Override with empty for display
           } else {
-            formInitialDisplayState[key] = trueDefaultValue;
+            formInitialDisplayState[key] = trueDefaultValue; // Use the actual default for other types
           }
         });
       });
@@ -409,15 +429,20 @@ const App: React.FC = (): ReactElement => {
     }
 
     let defaultToCompare = trueDefaultValue;
+    // Special handling for single-choice where trueDefault might be empty string but options exist.
+    // In this case, the "effective default" for comparison is the first option if the current value isn't "Other...".
+    // If current value is "Other...", then the default to compare against is an empty string for the "other" field.
     if (questionType === 'single-choice' &&
         (trueDefaultValue === undefined || (typeof trueDefaultValue === 'string' && trueDefaultValue.trim() === '')) &&
         questionOptions && questionOptions.length > 0) {
         if (currentValue !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
-            defaultToCompare = questionOptions[0];
+            defaultToCompare = questionOptions[0]; // Compare against the first option
         } else {
-            defaultToCompare = '';
+            // If "Other..." is selected, and trueDefault was empty, "Other..." input should also be empty to be considered default.
+            defaultToCompare = ''; 
         }
     }
+
 
     if (Array.isArray(currentValForCompare) && Array.isArray(defaultToCompare)) {
         return areArraysEqual(currentValForCompare, defaultToCompare);
@@ -445,7 +470,7 @@ const App: React.FC = (): ReactElement => {
         setInteractiveFormValues({});
         const initialComponents = currentLocale.components.map((componentDetail: FrameworkComponentDetail) => ({
           id: componentDetail.id,
-          value: '',
+          value: '', // Standard components always start empty
           label: componentDetail.id,
           example: componentDetail.example,
         }));
@@ -471,9 +496,9 @@ const App: React.FC = (): ReactElement => {
     setFrameworkSuggestionError(null);
   };
 
-  const handleCategorySelect = (category: 'text' | 'media' | 'music') => {
-    if (selectedCategory !== category) {
-      setSelectedCategory(category);
+  const handleCategorySelect = (newCategory: 'text' | 'media' | 'music') => {
+    if (selectedCategory !== newCategory) {
+      setSelectedCategory(newCategory);
       setSelectedFramework(null);
       setPromptComponents([]);
       setUserDefinedInteraction('');
@@ -509,35 +534,40 @@ const App: React.FC = (): ReactElement => {
   };
 
   const currentFrameworkLocale = selectedFramework ? (language === 'id' ? selectedFramework.idLocale : selectedFramework.enLocale) : null;
+  const isInteractiveFrameworkSelected = !!(selectedFramework && currentFrameworkLocale && currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0);
+
 
   const clearInputs = () => {
+    // For standard frameworks
     setPromptComponents(prevComponents =>
       prevComponents.map(comp => ({ ...comp, value: '' }))
     );
-    setUserDefinedInteraction('');
-    setOtherInputValues({});
-
+    setUserDefinedInteraction(''); // Clear this too
+    
+    // For interactive frameworks
+    setOtherInputValues({}); // Always clear "other" text inputs
     if (selectedFramework && currentFrameworkLocale) {
         const calculatedTrueDefaults = getTrueInitialFrameworkDefaultsInternal(currentFrameworkLocale);
         setTrueInitialDefaults(calculatedTrueDefaults);
         if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
+            // This correctly sets interactive fields to their "display" defaults (often empty for manual)
             setInteractiveFormValues(computeInitialDisplayFormState(currentFrameworkLocale, calculatedTrueDefaults));
         } else {
-            setInteractiveFormValues({});
+            setInteractiveFormValues({}); // Clear if not interactive (though covered by standard above)
         }
     } else {
-        setInteractiveFormValues({});
+        setInteractiveFormValues({}); // No framework selected
         setTrueInitialDefaults({});
     }
 
     clearAiStates();
     setHasCurrentPromptBeenCopied(false);
-    resetFrameworkSuggestionStates();
+    // Do not reset framework suggestions here, as "clear inputs" is about the current prompt form
+    // resetFrameworkSuggestionStates(); 
   };
 
   const handleFetchFrameworkSuggestions = async () => {
     if (!aiClient || !userGoalForFramework.trim()) {
-      setFrameworkSuggestionError(t('aiFeatureRequiresSubscriptionTooltip')); 
       return;
     }
     setIsFetchingFrameworkSuggestions(true);
@@ -595,7 +625,8 @@ const App: React.FC = (): ReactElement => {
     let assembledPromptForCopy: string = "";
     let formIsDirty: boolean = false;
     let standardFormIsPristine: boolean = true;
-    const placeholderInstructionKey: TranslationKey = 'initialPromptAreaInstruction';
+    const placeholderInstructionKey: TranslationKey = apiKeyAvailable ? 'initialPromptAreaInstruction' : 'initialPromptAreaInstructionNoApiKey';
+
 
     if (selectedFramework && currentFrameworkLocale) {
       if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
@@ -607,11 +638,18 @@ const App: React.FC = (): ReactElement => {
               const key = question.id;
               const currentValue = interactiveFormValues[key];
               const otherValue = question.includeOtherOption ? otherInputValues[key] : undefined;
-              const trueDefault = trueInitialDefaults[key];
-              const effVal = effectiveValueToString(currentValue, otherValue);
-
-              if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, question.type, question.options) && effVal.trim() !== '') {
-                formIsDirty = true;
+              const trueDefault = trueInitialDefaults[key]; // This is the 'true' default from frameworks.ts
+              
+              // Check if the current value is different from its 'true' default.
+              // For manual fields, a non-empty input is considered dirty if trueDefault was empty.
+              // If trueDefault was not empty (e.g. example text), then empty is NOT dirty.
+              // isEffectivelyDefault handles this complex logic.
+              if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, question.type, question.options)) {
+                // Additional check: if it's not default, is it actually providing a value?
+                const effVal = effectiveValueToString(currentValue, otherValue);
+                if (effVal.trim() !== '') { // Only consider it dirty if it's non-default AND has content
+                    formIsDirty = true;
+                }
               }
             });
           });
@@ -739,7 +777,7 @@ const App: React.FC = (): ReactElement => {
             descriptivePart += '.';
           }
 
-          const technicalPart = technicalParamSegments.filter(p => p.trim() !== '').join(' ');
+          const technicalPart = technicalParamSegments.filter(p => p.trim() !== '').join(' ').trim();
 
           assembledPrompt = [descriptivePart, technicalPart].filter(p => p.trim() !== '').join(' ').trim();
           assembledPromptForCopy = assembledPrompt;
@@ -775,11 +813,11 @@ const App: React.FC = (): ReactElement => {
 
       let shouldShowInitialInstruction = false;
       if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
-        if (!formIsDirty) {
+        if (!formIsDirty) { // For interactive, show instruction if form is not dirty
           shouldShowInitialInstruction = true;
         }
-      } else {
-        if (standardFormIsPristine) {
+      } else { // For standard frameworks
+        if (standardFormIsPristine) { // Show instruction if form is pristine
           shouldShowInitialInstruction = true;
         }
       }
@@ -787,7 +825,7 @@ const App: React.FC = (): ReactElement => {
       if (shouldShowInitialInstruction) {
         setGeneratedPrompt(t(placeholderInstructionKey));
         setPromptToCopy('');
-      } else if (finalGeneratedPromptValue === '') {
+      } else if (finalGeneratedPromptValue === '') { // If form was dirty but resulted in empty prompt
         setGeneratedPrompt(t(placeholderInstructionKey));
         setPromptToCopy('');
       } else {
@@ -801,8 +839,8 @@ const App: React.FC = (): ReactElement => {
   }, [
       promptComponents, userDefinedInteraction, selectedFramework, language, t,
       selectedCategory, currentFrameworkLocale, interactiveFormValues, otherInputValues,
-      trueInitialDefaults, getTrueInitialFrameworkDefaultsInternal, computeInitialDisplayFormState,
-      isEffectivelyDefault 
+      trueInitialDefaults, // computeInitialDisplayFormState, // Removed from deps as it's stable
+      isEffectivelyDefault, apiKeyAvailable // Added apiKeyAvailable
   ]);
 
   useEffect((): void => {
@@ -835,145 +873,129 @@ const App: React.FC = (): ReactElement => {
 
   const handleLanguageToggle = async () => {
     const newLanguage = language === 'id' ? 'en' : 'id';
-    const currentPreviousLanguage = previousLanguageRef.current;
+    const currentPreviousLanguage = previousLanguageRef.current; 
 
-    previousLanguageRef.current = newLanguage;
-    resetFrameworkSuggestionStates(); 
+    previousLanguageRef.current = newLanguage; 
+    resetFrameworkSuggestionStates();
     clearAiStates();
 
     if (!selectedFramework) {
-        setLanguage(newLanguage);
+        setLanguage(newLanguage); 
         return;
     }
-
+    
     const frameworkForNewLang = newLanguage === 'id' ? selectedFramework.idLocale : selectedFramework.enLocale;
     const newTrueDefaults = getTrueInitialFrameworkDefaultsInternal(frameworkForNewLang);
 
-    if (!apiKeyAvailable) { 
-        setLanguage(newLanguage);
-        setTrueInitialDefaults(newTrueDefaults);
-        setOtherInputValues({});
-        if (frameworkForNewLang.interactiveDefinition && frameworkForNewLang.interactiveDefinition.length > 0) {
-            setInteractiveFormValues(computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults));
-        } else if (frameworkForNewLang.components) {
-            const oldLocaleComponents = (currentPreviousLanguage === 'id' ? selectedFramework.idLocale.components : selectedFramework.enLocale.components) || [];
-            const newLocaleComponentsDetails = frameworkForNewLang.components || [];
-            const updatedComponents = newLocaleComponentsDetails.map((newCompDetail, index) => {
-                const existingCompState = promptComponents[index];
-                return {
-                    id: newCompDetail.id,
-                    value: existingCompState?.value || '', 
-                    label: newCompDetail.id, 
-                    example: newCompDetail.example
-                };
-            });
-            setPromptComponents(updatedComponents);
-        }
-        return;
+    setTrueInitialDefaults(newTrueDefaults);
+    setOtherInputValues({}); 
+
+    if (frameworkForNewLang.interactiveDefinition && frameworkForNewLang.interactiveDefinition.length > 0) {
+        setInteractiveFormValues(computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults));
+        setPromptComponents([]); 
+    } else if (frameworkForNewLang.components) {
+        const initialComponents = frameworkForNewLang.components.map((componentDetail: FrameworkComponentDetail) => ({
+            id: componentDetail.id,
+            value: '', 
+            label: componentDetail.id,
+            example: componentDetail.example,
+        }));
+        setPromptComponents(initialComponents);
+        setInteractiveFormValues({});
+    } else {
+        setPromptComponents([]);
+        setInteractiveFormValues({});
     }
+    
+    if (!apiKeyAvailable) {
+        setUserDefinedInteraction('');
+        setUserGoalForFramework('');
+        setLanguage(newLanguage); // Set language for UI and exit if no API key
+        return; 
+    }
+
+    // Continue with AI Translation if API key is available
     setIsTranslating(true);
     setTranslationError(null);
     let translationOccurredError = false;
 
     try {
-      if (promptComponents.length > 0 && selectedFramework?.idLocale.components) {
-        const newLocaleFrameworkComponents = frameworkForNewLang.components || [];
-
-        const translatedPromptComponents = await Promise.all(
-          newLocaleFrameworkComponents.map(async (newCompDetail, index) => {
-            const existingCompState = promptComponents[index]; 
-            let translatedValue = existingCompState?.value || '';
-
-            if (translatedValue.trim() !== '') {
-              try {
-                translatedValue = await translateText(translatedValue, currentPreviousLanguage, newLanguage);
-              } catch (error) {
-                console.warn(`Translation failed for component value (new ID: ${newCompDetail.id}):`, error);
-                translationOccurredError = true;
-              }
-            }
-            return {
-              id: newCompDetail.id, 
-              value: translatedValue,
-              label: newCompDetail.id, 
-              example: newCompDetail.example 
-            };
-          })
-        );
-        setPromptComponents(translatedPromptComponents);
-      }
-
-      if (Object.keys(interactiveFormValues).length > 0 && selectedFramework?.idLocale.interactiveDefinition) {
-        const translatedInteractiveValues: Record<string, string | string[]> = {};
-        const translatedOtherInputValues: Record<string, string> = {...otherInputValues};
-
-        const frameworkLocaleForOldLang = currentPreviousLanguage === 'id' ? selectedFramework.idLocale : selectedFramework.enLocale;
-
-        for (const key in interactiveFormValues) {
-          const currentValue = interactiveFormValues[key];
-          const originalOtherValue = otherInputValues[key];
-          const trueDefaultOldLang = trueInitialDefaults[key];
-          const questionDefOldLang = frameworkLocaleForOldLang.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === key);
-          const questionDefNewLang = frameworkForNewLang.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === key);
-
-
-          const effectivelyDefaultInOldLang = isEffectivelyDefault(currentValue, trueDefaultOldLang, originalOtherValue, questionDefOldLang?.type, questionDefOldLang?.options);
-
-          if (questionDefOldLang?.includeOtherOption && currentValue === 'LAINNYA_INTERAKTIF_PLACEHOLDER' && originalOtherValue && originalOtherValue.trim() !== '') {
-            try {
-              translatedOtherInputValues[key] = await translateText(originalOtherValue, currentPreviousLanguage, newLanguage);
-              translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER';
-            } catch (error) {
-              console.warn(`Translation failed for interactive 'other' value ${key}:`, error);
-              translationOccurredError = true;
-              translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER';
-            }
-          } else if (effectivelyDefaultInOldLang && questionDefNewLang) {
-             const displayDefaultNewLang = computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults);
-             translatedInteractiveValues[key] = displayDefaultNewLang[key];
-             if (questionDefNewLang?.includeOtherOption && displayDefaultNewLang[key] !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
-                translatedOtherInputValues[key] = '';
-             }
-          } else if (typeof currentValue === 'string' && currentValue.trim() !== '' && currentValue !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
-             try { translatedInteractiveValues[key] = await translateText(currentValue, currentPreviousLanguage, newLanguage); }
-             catch (e) { translatedInteractiveValues[key] = currentValue; translationOccurredError = true; }
-          } else if (Array.isArray(currentValue)) {
-             const translatedArray = await Promise.all(currentValue.map(async item => {
-                if(item.trim() !== '') {
-                    try { return await translateText(item, currentPreviousLanguage, newLanguage); }
-                    catch (e) { translationOccurredError = true; return item; }
-                } return item;
-             }));
-             translatedInteractiveValues[key] = translatedArray;
-          } else {
-             translatedInteractiveValues[key] = currentValue;
-          }
+        if (promptComponents.length > 0 && selectedFramework?.idLocale.components && (!isInteractiveFrameworkSelected)) {
+            const newLocaleFrameworkComponents = frameworkForNewLang.components || [];
+            const translatedPromptComponents = await Promise.all(
+                newLocaleFrameworkComponents.map(async (newCompDetail, index) => {
+                    const existingCompState = promptComponents[index];
+                    let translatedValue = existingCompState?.value || '';
+                    if (translatedValue.trim() !== '') {
+                        try { translatedValue = await translateText(translatedValue, currentPreviousLanguage, newLanguage); } 
+                        catch (e) { console.warn(`Translation failed for component ${newCompDetail.id}:`, e); translationOccurredError = true; }
+                    }
+                    return { id: newCompDetail.id, value: translatedValue, label: newCompDetail.id, example: newCompDetail.example };
+                })
+            );
+            setPromptComponents(translatedPromptComponents);
         }
-        setInteractiveFormValues(translatedInteractiveValues);
-        setOtherInputValues(translatedOtherInputValues);
-      }
+        
+        if (Object.keys(interactiveFormValues).length > 0 && selectedFramework?.idLocale.interactiveDefinition && isInteractiveFrameworkSelected) {
+            const translatedInteractiveValues: Record<string, string | string[]> = {};
+            const translatedOtherInputValues: Record<string, string> = { ...otherInputValues };
+            const frameworkLocaleForOldLang = currentPreviousLanguage === 'id' ? selectedFramework.idLocale : selectedFramework.enLocale;
 
-      if (userDefinedInteraction.trim() !== '') {
-        try { setUserDefinedInteraction(await translateText(userDefinedInteraction, currentPreviousLanguage, newLanguage)); }
-        catch (e) { translationOccurredError = true;  }
-      }
+            for (const key in interactiveFormValues) {
+                const currentValue = interactiveFormValues[key];
+                const originalOtherValue = otherInputValues[key];
+                const trueDefaultOldLang = (currentPreviousLanguage === language ? trueInitialDefaults : getTrueInitialFrameworkDefaultsInternal(frameworkLocaleForOldLang))[key]; 
+                const questionDefOldLang = frameworkLocaleForOldLang.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === key);
+                const questionDefNewLang = frameworkForNewLang.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === key);
 
-      if (userGoalForFramework.trim() !== '') { 
-         try { setUserGoalForFramework(await translateText(userGoalForFramework, currentPreviousLanguage, newLanguage)); }
-         catch (e) { translationOccurredError = true;  }
-      }
+                const effectivelyDefaultInOldLang = isEffectivelyDefault(currentValue, trueDefaultOldLang, originalOtherValue, questionDefOldLang?.type, questionDefOldLang?.options);
 
-      if (translationOccurredError) {
-        setTranslationError(t('translationGeneralError'));
-      }
+                if (questionDefOldLang?.includeOtherOption && currentValue === 'LAINNYA_INTERAKTIF_PLACEHOLDER' && originalOtherValue && originalOtherValue.trim() !== '') {
+                    try {
+                        translatedOtherInputValues[key] = await translateText(originalOtherValue, currentPreviousLanguage, newLanguage);
+                        translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER';
+                    } catch (error) { console.warn(`Translation failed for 'other' ${key}:`, error); translationOccurredError = true; translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER'; }
+                } else if (effectivelyDefaultInOldLang && questionDefNewLang) {
+                    const displayDefaultNewLang = computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults);
+                    translatedInteractiveValues[key] = displayDefaultNewLang[key];
+                    if (questionDefNewLang?.includeOtherOption && displayDefaultNewLang[key] !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
+                        translatedOtherInputValues[key] = '';
+                    }
+                } else if (typeof currentValue === 'string' && currentValue.trim() !== '' && currentValue !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
+                    try { translatedInteractiveValues[key] = await translateText(currentValue, currentPreviousLanguage, newLanguage); }
+                    catch (e) { translatedInteractiveValues[key] = currentValue; translationOccurredError = true; }
+                } else if (Array.isArray(currentValue)) {
+                    const translatedArray = await Promise.all(currentValue.map(async item => {
+                        if (item.trim() !== '') { try { return await translateText(item, currentPreviousLanguage, newLanguage); } catch (e) { translationOccurredError = true; return item; } } return item;
+                    }));
+                    translatedInteractiveValues[key] = translatedArray;
+                } else {
+                    translatedInteractiveValues[key] = currentValue;
+                }
+            }
+            setInteractiveFormValues(translatedInteractiveValues);
+            setOtherInputValues(translatedOtherInputValues);
+        }
+
+        if (userDefinedInteraction.trim() !== '') {
+            try { setUserDefinedInteraction(await translateText(userDefinedInteraction, currentPreviousLanguage, newLanguage)); }
+            catch (e) { translationOccurredError = true; }
+        }
+        if (userGoalForFramework.trim() !== '') {
+            try { setUserGoalForFramework(await translateText(userGoalForFramework, currentPreviousLanguage, newLanguage)); }
+            catch (e) { translationOccurredError = true; }
+        }
+
+        if (translationOccurredError) {
+            setTranslationError(t('translationGeneralError'));
+        }
     } catch (error) {
         console.error("General translation process error:", error);
         setTranslationError(t('translationGeneralError'));
     } finally {
-        setLanguage(newLanguage);
-        setTrueInitialDefaults(newTrueDefaults);
         setIsTranslating(false);
     }
+    setLanguage(newLanguage); // Set language for UI text *after* translations (if any) are processed
   };
 
   const fetchAiFeedback = async () => {
@@ -1091,13 +1113,12 @@ const App: React.FC = (): ReactElement => {
       return aLocale.name.localeCompare(bLocale.name);
     });
 
-  const langToggleAriaLabel = language === 'id'
-    ? `Switch to ${t('languageEN')}`
-    : `Switch to ${t('languageID')}`;
+  const langToggleAriaLabel = language === 'id' ? t('switchToEnglish') : t('switchToIndonesian');
+  const langToggleTitle = language === 'id' ? t('switchToEnglish') : t('switchToIndonesian');
+
 
   const canEnhanceCurrentPrompt = apiKeyAvailable && promptToCopy.trim().length > 0 && !isFetchingAiFeedback;
   const canAnalyzeCurrentPrompt = apiKeyAvailable && promptToCopy.trim().length > 0 && !isFetchingDetailedAnalysis;
-  const isInteractiveFrameworkSelected = selectedFramework && currentFrameworkLocale?.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0;
   const isPromptSavable = promptToCopy.trim().length > 0 && !!selectedFramework;
 
   const baseTitleKey = `${selectedCategory}FrameworksTitle` as TranslationKey;
@@ -1168,8 +1189,8 @@ const App: React.FC = (): ReactElement => {
 
             <div className="flex items-center self-center sm:self-auto gap-x-2 sm:gap-x-3 mt-2 sm:mt-0 shrink-0">
               <div className="text-xs">
-                  {isTranslating && !globalActivityMessage && ( <span className="text-slate-300 animate-pulse">{t('translationInProgress')}</span> )}
-                  {translationError && !isTranslating && ( <span className="text-rose-400" title={translationError}>{t('translationGeneralError').split('.')[0]}</span> )}
+                  {isTranslating && apiKeyAvailable && !globalActivityMessage && ( <span className="text-slate-300 animate-pulse">{t('translationInProgress')}</span> )}
+                  {translationError && apiKeyAvailable && !isTranslating && ( <span className="text-rose-400" title={translationError}>{t('translationGeneralError').split('.')[0]}</span> )}
               </div>
               <button
                 onClick={() => setShowSubscriptionInfoModal(true)}
@@ -1192,10 +1213,11 @@ const App: React.FC = (): ReactElement => {
               </button>
               <button
                 onClick={handleLanguageToggle}
-                className="button-header-3d px-2 py-1 sm:px-3 sm:py-1.5 text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm"
-                title={langToggleAriaLabel}
+                className={`button-header-3d px-2 py-1 sm:px-3 sm:py-1.5 text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm
+                            ${isTranslating && apiKeyAvailable ? 'cursor-not-allowed opacity-60' : ''}`}
+                title={langToggleTitle}
                 aria-label={langToggleAriaLabel}
-                disabled={isTranslating || !apiKeyAvailable} 
+                disabled={isTranslating && apiKeyAvailable} 
               >
                 {language === 'id' ? 'EN' : 'ID'}
               </button>
@@ -1334,7 +1356,7 @@ const App: React.FC = (): ReactElement => {
                         {apiKeyAvailable && <AppLogoIcon animatedAsAiIndicator className="w-4 h-4 ml-2 shrink-0" />}
                     </h4>
                     <p className="text-xs text-slate-400 mb-2">
-                        {apiKeyAvailable ? t('frameworkSuggestionInstruction') : t('aiFeaturesRequireSubscriptionMessage')}
+                        {t('frameworkSuggestionInstruction')}
                     </p>
                     <textarea
                         value={userGoalForFramework}

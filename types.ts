@@ -1,4 +1,3 @@
-
 export interface PromptComponent {
   id: string;
   value: string;
@@ -292,7 +291,7 @@ export interface Translations {
   activityTranslatingContent: string;
   activityAnalyzingPrompt: string;
   activityGettingFeedback: string;
-
+  premiumFeatureTitleSuffix: string; // Added this line
 }
 
 export type TranslationKey = keyof Translations;
