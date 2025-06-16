@@ -73,10 +73,15 @@ const App: React.FC = () => {
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [promptToCopy, setPromptToCopy] = useState<string>('');
   
-  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(true); 
+  // Initialize hasShownInitialModals from localStorage
+  const initialHasShownModalsFromStorage = localStorage.getItem('hasShownInitialModals') === 'true';
+  const [hasShownInitialModals, setHasShownInitialModals] = useState<boolean>(initialHasShownModalsFromStorage);
+
+  // Show disclaimer only if modals haven't been shown before
+  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(!initialHasShownModalsFromStorage); 
   const [showHowToUse, setShowHowToUse] = useState<boolean>(false);
   const [isHowToUseModalShownAutomatically, setIsHowToUseModalShownAutomatically] = useState<boolean>(false);
-  const [hasShownInitialModals, setHasShownInitialModals] = useState<boolean>(false);
+
 
   const [selectedCategory, setSelectedCategory] = useState<'text' | 'media' | 'music'>('text');
 
@@ -109,6 +114,7 @@ const App: React.FC = () => {
 
   const handleDisclaimerAcknowledge = () => {
     setShowDisclaimer(false);
+    // Only show "How To Use" automatically if it's the first time seeing modals
     if (!hasShownInitialModals) {
       setShowHowToUse(true);
       setIsHowToUseModalShownAutomatically(true);
@@ -119,6 +125,7 @@ const App: React.FC = () => {
     setShowHowToUse(false);
     if (isHowToUseModalShownAutomatically) {
       setHasShownInitialModals(true);
+      localStorage.setItem('hasShownInitialModals', 'true'); // Persist that modals have been shown
       setIsHowToUseModalShownAutomatically(false); 
     }
   };
@@ -988,7 +995,12 @@ const App: React.FC = () => {
           <div className="md:col-span-2 space-y-4 sm:space-y-6">
             {apiKey && selectedCategory && (
                 <div className="bg-slate-700/40 dark:bg-slate-800/50 p-3 sm:p-4 rounded-lg border border-purple-600/50 shadow-sm">
-                    <h4 className="text-md font-semibold text-purple-400 dark:text-purple-300 mb-2 flex items-center">
+                    <h4 className="relative text-md font-semibold text-purple-400 dark:text-purple-300 mb-2 flex items-center">
+                        <AppLogoIcon
+                            animatedAsAiIndicator={true}
+                            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 opacity-[0.08] -z-10"
+                            aria-hidden="true"
+                        />
                         {t('frameworkSuggestionsTitle')}
                         {apiKey && <AppLogoIcon animatedAsAiIndicator className="w-4 h-4 ml-2 api-status-indicator shrink-0" />}
                     </h4>
