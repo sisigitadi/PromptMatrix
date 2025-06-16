@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PromptMatrix</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='appLogoGradFavicon' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230D9488'/%3E%3C!-- teal-600 --%3E%3Cstop offset='100%25' stop-color='%230F766E'/%3E%3C!-- teal-700 --%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='6' y='6' width='8' height='8' rx='1' fill='url(%23appLogoGradFavicon)'/%3E%3Crect x='18' y='6' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='6' y='18' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='18' y='18' width='8' height='8' rx='1' fill='url(%23appLogoGradFavicon)'/%3E%3C/svg%3E" type="image/svg+xml">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='appLogoGradFaviconTeal' x1='0.5' y1='0' x2='0.5' y2='1'%3E%3Cstop offset='0%25' stop-color='%230D9488'/%3E%3Cstop offset='100%25' stop-color='%230F766E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='6' y='6' width='8' height='8' rx='1' fill='url(%23appLogoGradFaviconTeal)'/%3E%3Crect x='18' y='6' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='6' y='18' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='18' y='18' width='8' height='8' rx='1' fill='url(%23appLogoGradFaviconTeal)'/%3E%3C/svg%3E" type="image/svg+xml">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -29,13 +29,21 @@
       --text-anim-default-active: #A3FAF0; /* teal-200 */
       --text-anim-accent-bg-hover: #F0FDFA; /* teal-50 */
       --text-anim-accent-bg-active: #CCFBF1; /* teal-100 */
-      --text-disconnected: #F43F5E; /* rose-500 */
-      --text-teal-400: #2dd4bf; /* Tailwind teal-400 for JS access if needed */
+      
+      /* Colors for Plan Badges */
+      --badge-premium-bg-start: #8B5CF6; /* purple-500 */
+      --badge-premium-bg-end: #6D28D9;   /* purple-700 */
+      --badge-premium-border: #A78BFA;   /* purple-400 */
+      --badge-premium-icon: #FACC15;   /* yellow-400 */
+      --badge-premium-text: #FFFFFF;
+      --badge-premium-glow: rgba(167, 139, 250, 0.7); /* purple-400 with alpha */
 
-      /* Purple colors for API status indicator (from Tailwind) */
-      --text-purple-400: #a855f7;
-      --text-purple-300: #c084fc;
-      --text-purple-200: #d8b4fe;
+
+      --badge-free-bg: #334155;       /* slate-700 */
+      --badge-free-border: #475569;   /* slate-600 */
+      --badge-free-icon: #2DD4BF;     /* teal-400 */
+      --badge-free-text: #E2E8F0;     /* slate-200 */
+      --badge-free-glow: rgba(45, 212, 191, 0.6); /* teal-400 with alpha */
     }
 
     body {
@@ -128,12 +136,10 @@
       75% { transform: translateY(1px); }
     }
 
-    /* 3D effect for subtitle */
     .subtitle-3d-effect {
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); /* Standard drop shadow for depth */
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); 
     }
 
-    /* General collapsible styles for main panels */
     .collapsible-content {
       max-height: 0;
       opacity: 0;
@@ -142,13 +148,12 @@
       visibility: hidden;
     }
     .collapsible-content.open {
-      max-height: 2000px; /* Ample height for content */
+      max-height: 2000px; 
       opacity: 1;
       visibility: visible;
       transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
     }
 
-    /* Collapsible styles for multiple choice in InteractivePromptBuilder */
     .collapsible-mc-content {
       max-height: 0;
       opacity: 0;
@@ -158,16 +163,16 @@
       padding-bottom: 0;
     }
     .collapsible-mc-content.open {
-      max-height: 500px; /* Adjust as needed for typical content height */
+      max-height: 500px; 
       opacity: 1;
       transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out, padding 0.35s ease-in-out;
     }
 
     .non-copyable-input-field {
       user-select: none;
-      -webkit-user-select: none; /* Safari */
-      -moz-user-select: none;    /* Firefox */
-      -ms-user-select: none;     /* Internet Explorer/Edge */
+      -webkit-user-select: none; 
+      -moz-user-select: none;    
+      -ms-user-select: none;     
     }
     .non-copyable-input-field::placeholder {
       user-select: none;
@@ -175,7 +180,6 @@
       -moz-user-select: none;
       -ms-user-select: none;
       font-style: italic;
-      /* Color is handled by Tailwind: placeholder-[var(--text-secondary)] dark:placeholder-slate-400/80 */
     }
 
     @keyframes subtle-button-pulse {
@@ -192,74 +196,97 @@
       animation: subtle-button-pulse 2s infinite ease-in-out;
     }
 
-    /* Button Text Animations */
     .button-text-content {
-      display: inline-block; /* Allows transform */
+      display: inline-block; 
       transition: transform 0.1s ease-out, color 0.1s ease-out;
-      will-change: transform, color; /* Optimize for animations */
+      will-change: transform, color; 
     }
 
-    /* Default buttons (teal based text animations for buttons that turn teal on hover) */
+    /* General 3D Button Effect for Header */
+    .button-header-3d {
+      position: relative;
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, top 0.1s ease-out;
+      box-shadow: 0 2px 0 0 var(--bg-tertiary); /* Default shadow, adjust color if needed */
+    }
+    .button-header-3d:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 0 0 var(--bg-tertiary);
+    }
+    .button-header-3d:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 0 0 var(--bg-tertiary);
+    }
+    /* Specific hover text color for header buttons if not covered by existing rules */
+    .button-header-3d.text-purple-300:hover .button-text-content { color: var(--text-yellow-300, #FDE047); } /* Assuming yellow-300 equivalent */
+    .button-header-3d.text-slate-300:hover .button-text-content { color: var(--text-teal-400, #2DD4BF); }
+
     button:hover .button-text-content {
       color: var(--text-anim-default-hover);
     }
     button:active .button-text-content {
       color: var(--text-anim-default-active);
-      transform: translateY(1px); /* Press down effect */
+      transform: translateY(1px); 
     }
 
-    /* Specifically target slate buttons that get teal BG on hover */
     button.bg-slate-600:hover .button-text-content,
-    button.bg-slate-700:hover .button-text-content {
-        color: var(--text-anim-accent-bg-hover); /* Ensure text becomes lighter on teal bg */
+    button.bg-slate-700:hover .button-text-content,
+    button.bg-slate-500:hover .button-text-content { 
+        color: var(--text-anim-accent-bg-hover); 
     }
     button.bg-slate-600:active .button-text-content,
-    button.bg-slate-700:active .button-text-content {
+    button.bg-slate-700:active .button-text-content,
+    button.bg-slate-500:active .button-text-content { 
         color: var(--text-anim-accent-bg-active);
         transform: translateY(1px);
     }
 
-    /* Override for buttons with explicit TEAL background and white text */
     button.bg-teal-700 > .button-text-content,
     button.bg-teal-600 > .button-text-content {
-        color: #FFFFFF; /* Initial text color for teal buttons */
+        color: #FFFFFF; 
     }
     button.bg-teal-700:hover > .button-text-content,
     button.bg-teal-600:hover > .button-text-content {
-      color: var(--text-anim-accent-bg-hover); /* Slightly off-white/lighter for hover on dark teal */
+      color: var(--text-anim-accent-bg-hover); 
     }
     button.bg-teal-700:active > .button-text-content,
     button.bg-teal-600:active > .button-text-content {
-      color: var(--text-anim-accent-bg-active); /* Slightly more off-white/lighter for active on dark teal */
+      color: var(--text-anim-accent-bg-active); 
       transform: translateY(1px);
     }
 
-    /* Rose buttons text animation */
     button.bg-rose-600 > .button-text-content {
-       color: #FFFFFF; /* Initial text color for rose buttons */
+       color: #FFFFFF; 
     }
     button.bg-rose-600:hover > .button-text-content {
-      color: #FFE4E6; /* Lighter rose/pink for hover */
+      color: #FFE4E6; 
     }
     button.bg-rose-600:active > .button-text-content {
-      color: #FFF1F2; /* Even lighter rose/pink for active */
+      color: #FFF1F2; 
       transform: translateY(1px);
     }
 
-    /* Green buttons text animation (for 'Copied' state) */
     button.bg-green-500 > .button-text-content {
-       color: #FFFFFF; /* Initial text color for green buttons */
+       color: #FFFFFF; 
     }
     button.bg-green-500:hover > .button-text-content {
-      color: #D1FAE5; /* Lighter green for hover */
+      color: #D1FAE5; 
     }
     button.bg-green-500:active > .button-text-content {
-      color: #F0FDF4; /* Even lighter green for active */
+      color: #F0FDF4; 
       transform: translateY(1px);
     }
 
-    /* Ensure framework selection buttons' text also animate correctly */
-    /* Selected state has a strong teal background */
+    button.bg-sky-600 > .button-text-content {
+       color: #FFFFFF;
+    }
+    button.bg-sky-600:hover > .button-text-content {
+      color: #E0F2FE; 
+    }
+    button.bg-sky-600:active > .button-text-content {
+      color: #F0F9FF; 
+      transform: translateY(1px);
+    }
+
     button.bg-teal-600.border-teal-500.text-white:hover > .button-text-content,
     button.bg-teal-700.border-teal-500.text-white:hover > .button-text-content {
       color: var(--text-anim-accent-bg-hover);
@@ -269,15 +296,13 @@
       color: var(--text-anim-accent-bg-active);
       transform: translateY(1px);
     }
-    /* Non-selected state for framework buttons (slate bg, hover to teal) */
     button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700 > .button-text-content,
     button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-slate-600 > .button-text-content {
-        color: #E2E8F0; /* Initial slate-200 like color */
+        color: #E2E8F0; 
     }
-    /* This rule needs to specifically target the case where the BG turns teal */
     button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700:hover > .button-text-content,
-    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:hover > .button-text-content { /* For buttons that turn teal-700 on hover */
-        color: var(--text-anim-accent-bg-hover); /* text should be light on teal bg */
+    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:hover > .button-text-content { 
+        color: var(--text-anim-accent-bg-hover); 
     }
     button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content,
     button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content {
@@ -285,105 +310,166 @@
         transform: translateY(1px);
     }
 
-    /* Enhance with AI button specific styles */
     button.bg-purple-600 > .button-text-content {
        color: #FFFFFF;
     }
     button.bg-purple-600:hover > .button-text-content {
-      color: #E9D5FF; /* Lighter purple for hover */
+      color: #E9D5FF; 
     }
     button.bg-purple-600:active > .button-text-content {
-      color: #F3E8FF; /* Even lighter purple for active */
+      color: #F3E8FF; 
       transform: translateY(1px);
     }
 
-    /* Styling for select dropdown to match theme */
+    button.bg-indigo-600 > .button-text-content { 
+       color: #FFFFFF;
+    }
+    button.bg-indigo-600:hover > .button-text-content {
+      color: #E0E7FF; 
+    }
+    button.bg-indigo-600:active > .button-text-content {
+      color: #EEF2FF; 
+      transform: translateY(1px);
+    }
+
+
     select {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* slate-500 arrow */
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); 
       background-position: right 0.5rem center;
       background-repeat: no-repeat;
       background-size: 1.5em 1.5em;
-      padding-right: 2.5rem; /* Ensure space for arrow */
+      padding-right: 2.5rem; 
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      /* Tailwind classes in component handle bg, border, text, focus rings */
     }
-    select:focus { /* Change arrow color on focus to match ring */
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230D9488' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* teal-600 arrow */
+    select:focus { 
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230D9488' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); 
     }
 
-    /* Attempt to style option elements */
     select option {
-      background-color: var(--bg-secondary); /* Dark background for dropdown options */
-      color: var(--text-primary);       /* Light text for dropdown options */
+      background-color: var(--bg-secondary); 
+      color: var(--text-primary);       
     }
     select option:checked,
     select option:hover {
-      background-color: var(--text-accent); /* Teal background for hovered/selected option */
-      color: var(--text-primary);          /* Light text for hovered/selected option */
+      background-color: var(--text-accent); 
+      color: var(--text-primary);          
     }
 
-    /* Style for the 'Other...' option to make it slightly distinct if needed */
     select option[value="LAINNYA_INTERAKTIF_PLACEHOLDER"] {
       font-style: italic;
-      color: var(--text-secondary); /* Or a slightly different color */
+      color: var(--text-secondary); 
     }
 
-    /* Additional styling for textarea for AI Framework Suggester */
     .ai-suggestion-textarea {
-      min-height: 60px; /* Ensure a decent minimum height */
+      min-height: 60px; 
     }
 
-    /* Styling for suggestion list in InteractivePromptBuilder (for "Other..." input) */
     .interactive-suggestion-list-container {
-      margin-top: 0.125rem; /* Equivalent to mt-0.5 */
+      margin-top: 0.125rem; 
       position: absolute;
       z-index: 20;
       width: 100%;
       background-color: var(--bg-tertiary); 
       border: 1px solid var(--border-color);
-      border-radius: 0.375rem; /* rounded-md */
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* shadow-lg */
-      max-height: 13rem; /* max-h-52 */
+      border-radius: 0.375rem; 
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+      max-height: 13rem; 
       overflow-y: auto;
     }
-    /* Styling for multiple-choice collapsible header (chevron) */
     .mc-collapsible-header button svg {
       transition: transform 0.3s ease-in-out;
     }
     .mc-collapsible-header button[aria-expanded="true"] svg {
       transform: rotate(180deg);
     }
-
-    /* API Status Indicator Animations */
-    @keyframes api-glow {
-      0%, 100% {
-        text-shadow: 0 0 3px var(--text-purple-400), 
-                     0 0 5px var(--text-purple-400), 
-                     0 0 8px var(--text-purple-300);
-        opacity: 0.8;
-      }
-      50% {
-        text-shadow: 0 0 5px var(--text-purple-300), 
-                     0 0 10px var(--text-purple-300), 
-                     0 0 15px var(--text-purple-200),
-                     0 0 20px var(--text-purple-200);
-        opacity: 1;
-      }
+    
+    @keyframes global-activity-fade-in-out {
+      0%, 100% { opacity: 0; transform: translateY(10px) scale(0.95); }
+      10%, 90% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .global-activity-indicator-animation {
+      animation: global-activity-fade-in-out 4s ease-in-out forwards;
+    }
+    .animate-spin-slow {
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
-    @keyframes api-sway {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      25% { transform: translateY(-1px) rotate(-2deg); }
-      75% { transform: translateY(1px) rotate(2deg); }
+    @keyframes progress-bar-animation {
+      0% { width: 100%; }
+      100% { width: 0%; }
+    }
+    .animate-progress-bar {
+      animation: progress-bar-animation 5s linear forwards; /* Changed from 15s to 5s */
     }
 
-    .api-status-indicator {
-      display: inline-block; /* Essential for transform to work */
-      animation: api-glow 2s infinite ease-in-out, 
-                 api-sway 3s infinite ease-in-out alternate;
-      animation-delay: 0s, 0.3s; /* Stagger animations for a more organic feel */
+    /* Custom Plan Badge Styles */
+    .plan-badge {
+      display: flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem; /* py-1 px-3 */
+      font-size: 0.75rem; /* text-xs */
+      font-weight: 700; /* font-bold */
+      border-radius: 0.375rem; /* rounded-md */
+      /* Removed base shadow to apply glow directly */
+    }
+    .plan-badge-premium {
+      background-image: linear-gradient(to right, var(--badge-premium-bg-start), var(--badge-premium-bg-end));
+      color: var(--badge-premium-text);
+      border: 1px solid var(--badge-premium-border);
+    }
+    .plan-badge-premium svg {
+      color: var(--badge-premium-icon);
+    }
+    .plan-badge-free {
+      background-color: var(--badge-free-bg);
+      color: var(--badge-free-text);
+      border: 1px solid var(--badge-free-border);
+    }
+    .plan-badge-free svg {
+      color: var(--badge-free-icon);
+    }
+    .plan-badge svg {
+      width: 1rem; /* w-4 */
+      height: 1rem; /* h-4 */
+      margin-right: 0.375rem; /* mr-1.5 */
+    }
+
+    /* Badge Animations */
+    @keyframes badgeGlowPremiumAnimation {
+      0%, 100% { box-shadow: 0 0 4px 1px var(--badge-premium-glow); }
+      50% { box-shadow: 0 0 10px 3px var(--badge-premium-glow); }
+    }
+    .plan-badge-glow-premium {
+      animation: badgeGlowPremiumAnimation 2.8s infinite ease-in-out;
+    }
+
+    @keyframes badgeGlowFreeAnimation {
+      0%, 100% { box-shadow: 0 0 4px 1px var(--badge-free-glow); }
+      50% { box-shadow: 0 0 10px 3px var(--badge-free-glow); }
+    }
+    .plan-badge-glow-free {
+      animation: badgeGlowFreeAnimation 2.8s infinite ease-in-out;
+    }
+
+    @keyframes badgeSwayAnimation {
+      0%, 100% { transform: rotate(0deg) translateY(0px); }
+      25% { transform: rotate(-1.5deg) translateY(-1px); }
+      75% { transform: rotate(1.5deg) translateY(-1px); }
+    }
+    .plan-badge-sway { /* Common class for sway */
+      animation-name: badgeSwayAnimation;
+      animation-duration: 4.5s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+    .plan-badge-animated { /* Base class to combine animations */
+        /* Add other base styles for animated badges if needed */
     }
 
   </style>
@@ -392,16 +478,16 @@
 <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.1.0/",
     "react": "https://esm.sh/react@^19.1.0",
     "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
     "@google/genai": "https://esm.sh/@google/genai@^1.5.1",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2",
-    "vite": "https://esm.sh/vite@^6.3.5"
+    "vite": "https://esm.sh/vite@^6.3.5",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2"
   }
 }
 </script>
-  <script type="module" crossorigin src="/promptmatrix/assets/index-DY4eUUFl.js"></script>
+  <script type="module" crossorigin src="/promptmatrix/assets/index-CI5OVCqP.js"></script>
 </head>
 <body class="antialiased theme-dark">
   <div id="root"></div>
