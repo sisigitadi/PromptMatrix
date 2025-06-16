@@ -115,18 +115,31 @@ const App: React.FC = (): ReactElement => {
   const [trueInitialDefaults, setTrueInitialDefaults] = useState<Record<string, string | string[]>>({});
 
   // --- API KEY LOGIC ADHERING TO GUIDELINES ---
-  const apiKeyFromEnv = process.env.API_KEY; // This value is injected by Vite's define config.
-
   let resolvedApiKey: string | null = null;
+  let isDevelopmentMode = false;
 
-  if (typeof apiKeyFromEnv === 'string' && apiKeyFromEnv.trim() !== '' && apiKeyFromEnv.trim() !== "undefined") {
-      // The string "undefined" can occur if the env var was not set when Vite ran.
-      resolvedApiKey = apiKeyFromEnv.trim();
+  // Safely check for Vite's development mode flag.
+  // In a production build, Vite should replace `import.meta.env.DEV` with `false`.
+  // This check handles cases where `import.meta.env` might be undefined at runtime.
+  if (typeof import.meta !== 'undefined' && 
+      typeof import.meta.env === 'object' && 
+      import.meta.env !== null &&
+      import.meta.env.DEV === true) {
+    isDevelopmentMode = true;
   }
+
+  // Only attempt to use API key if in development mode
+  if (isDevelopmentMode) {
+    const apiKeyFromEnv = process.env.API_KEY; // This value is injected by Vite's define config.
+    if (typeof apiKeyFromEnv === 'string' && apiKeyFromEnv.trim() !== '' && apiKeyFromEnv.trim() !== "undefined") {
+        // The string "undefined" can occur if the env var was not set when Vite ran.
+        resolvedApiKey = apiKeyFromEnv.trim();
+    }
+  }
+  // In production (isDevelopmentMode is false, or if import.meta.env.DEV was false or undefined), resolvedApiKey remains null.
   
-  // The GoogleGenAI constructor now correctly expects an object { apiKey: string }
   const aiClient = resolvedApiKey ? new GoogleGenAI({ apiKey: resolvedApiKey }) : null;
-  const apiKeyAvailable = !!aiClient; // True if the client could be initialized.
+  const apiKeyAvailable = !!aiClient; // True if the client could be initialized (only possible in DEV with key).
   // --- END OF API KEY LOGIC ---
 
   const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
