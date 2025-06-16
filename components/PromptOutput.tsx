@@ -8,8 +8,6 @@ import { ClipboardIcon } from './icons/ClipboardIcon';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
 import { ChevronDownIcon } from './icons/ChevronDownIcon';
 import { ChevronUpIcon } from './icons/ChevronUpIcon';
-// SparklesIcon import removed as it's no longer used for titles.
-// AppLogoIcon will replace its use on the button.
 import { AppLogoIcon } from './icons/AppLogoIcon'; 
 
 interface PromptOutputProps {

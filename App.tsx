@@ -10,13 +10,8 @@ import { EraserIcon } from './components/icons/EraserIcon';
 import DisclaimerModal from './components/DisclaimerModal';
 import HowToUseModal from './components/HowToUseModal';
 import { AppLogoIcon } from './components/icons/AppLogoIcon';
-// import { SquaresPlusIcon } from './components/icons/SquaresPlusIcon'; // Replaced
-// import { ViewColumnsIcon } from './components/icons/ViewColumnsIcon'; // Replaced
 import { ChevronDownIcon } from './components/icons/ChevronDownIcon';
 import { ChevronUpIcon } from './components/icons/ChevronUpIcon';
-// import { PencilIcon } from './components/icons/PencilIcon'; // Replaced
-// import { CameraIcon } from './components/icons/CameraIcon'; // Replaced
-// import { MusicNoteIcon } from './components/icons/MusicNoteIcon'; // Replaced
 import { InfoIcon } from './components/icons/InfoIcon'; 
 import { StarIcon } from './components/icons/StarIcon';
 import { GmailIcon } from './components/icons/GmailIcon';
@@ -25,7 +20,6 @@ import { MediumIcon } from './components/icons/MediumIcon';
 import { PencilIcon } from './components/icons/PencilIcon'; // Still needed for category buttons
 import { CameraIcon } from './components/icons/CameraIcon'; // Still needed for category buttons
 import { MusicNoteIcon } from './components/icons/MusicNoteIcon'; // Still needed for category buttons
-// NumberIcon imports removed
 
 import {
   frameworks,
@@ -915,7 +909,6 @@ const App: React.FC = () => {
           <div className="md:col-span-1 space-y-4 sm:space-y-6">
             <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-3 sm:p-4 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
               <h2 className="text-lg sm:text-xl font-semibold mb-3 text-teal-600 dark:text-teal-500 flex items-center">
-                {/* NumberOneIcon removed */}
                 {t('selectCategoryTitle')}
               </h2>
               <div className="grid grid-cols-3 gap-2">
@@ -961,7 +954,6 @@ const App: React.FC = () => {
             {selectedCategory && (
               <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 p-3 sm:p-4 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
                 <h2 className="text-lg sm:text-xl font-semibold mb-2 text-teal-600 dark:text-teal-500 flex items-center">
-                  {/* NumberTwoIcon removed */}
                   {frameworkListTitle}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 max-h-[60vh] sm:max-h-[calc(100vh-280px)] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)' }}>
