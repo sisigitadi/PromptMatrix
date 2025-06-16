@@ -373,8 +373,10 @@ const App: React.FC = () => {
     let formIsDirty = false; 
     let standardFormIsPristine = true; 
 
+    const placeholderInstructionKey: TranslationKey = apiKey ? 'initialPromptAreaInstruction' : 'initialPromptAreaInstructionNoApiKey';
+
     if (!selectedFramework || !currentFrameworkLocale) {
-      setGeneratedPrompt(selectedCategory ? t('selectSpecificFrameworkOutputSummary') : t('selectFrameworkPromptAreaInstruction'));
+      setGeneratedPrompt(selectedCategory ? t('selectSpecificFrameworkOutputSummary') : t(placeholderInstructionKey));
       setPromptToCopy('');
       return;
     }
@@ -569,10 +571,10 @@ const App: React.FC = () => {
     }
 
     if (shouldShowInitialInstruction) {
-        setGeneratedPrompt(t('initialPromptAreaInstruction'));
+        setGeneratedPrompt(t(placeholderInstructionKey));
         setPromptToCopy('');
     } else if (finalGeneratedPromptValue === '') { 
-        setGeneratedPrompt(t('initialPromptAreaInstruction')); 
+        setGeneratedPrompt(t(placeholderInstructionKey));
         setPromptToCopy('');
     } else {
         setGeneratedPrompt(finalGeneratedPromptValue);
@@ -822,22 +824,24 @@ const App: React.FC = () => {
   const isInteractiveFrameworkSelected = selectedFramework && currentFrameworkLocale?.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0;
 
   const baseTitleKey = `${selectedCategory}FrameworksTitle` as TranslationKey;
-  const baseTitle = t(baseTitleKey); // This will now include "2. " or similar prefix
+  const baseTitle = t(baseTitleKey); 
   const frameworkWord = t('frameworkWord'); 
   let frameworkListTitle = baseTitle;
 
   if (selectedFramework && currentFrameworkLocale) {
     const selectedFrameworkName = currentFrameworkLocale.name;
-    // If "2. Text Prompt Framework" ends with "Framework"
     if (baseTitle.endsWith(frameworkWord)) {
-      // frameworkListTitle becomes "2. Text Prompt " + "SelectedFrameworkName"
       frameworkListTitle = baseTitle.substring(0, baseTitle.length - frameworkWord.length).trimEnd() + " " + selectedFrameworkName;
     } else {
-      // Fallback, e.g., "2. Some Base Title (SelectedFrameworkName)"
       frameworkListTitle = `${baseTitle} (${selectedFrameworkName})`;
     }
   }
 
+  const inputPanelTitleText = selectedFramework && currentFrameworkLocale
+    ? `${t('inputComponentsTitle')} (${currentFrameworkLocale.name})`
+    : t('inputComponentsTitle');
+
+  const inputPanelTitleClasses = "text-lg sm:text-xl font-semibold text-teal-700 dark:text-teal-600";
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
@@ -1039,61 +1043,61 @@ const App: React.FC = () => {
                 aria-expanded={isInputPanelExpanded}
                 aria-controls="input-panel-content"
               >
-                <h3 className="text-lg sm:text-xl font-semibold text-teal-700 dark:text-teal-600 flex items-center">
-                  {/* NumberThreeIcon removed */}
-                  {t('inputComponentsTitle')}
-                  {selectedFramework && (
-                    <span className="ml-1.5 text-sm text-slate-400">
-                      ({language === 'id' ? selectedFramework.idLocale.name : selectedFramework.enLocale.name})
-                    </span>
-                  )}
+                <h3 className={inputPanelTitleClasses}>
+                  {inputPanelTitleText}
                 </h3>
                 {isInputPanelExpanded ? <ChevronUpIcon className="w-6 h-6 text-teal-700 dark:text-teal-600" /> : <ChevronDownIcon className="w-6 h-6 text-teal-700 dark:text-teal-600" />}
               </div>
 
               <div id="input-panel-content" className={`p-3 sm:p-4 space-y-3 sm:space-y-4 ${isInputPanelExpanded ? 'collapsible-content open' : 'collapsible-content'}`}>
-                
                 {selectedFramework && currentFrameworkLocale ? (
-                  currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0 ? (
-                    <InteractivePromptBuilder
-                      sections={currentFrameworkLocale.interactiveDefinition}
-                      initialValues={interactiveFormValues}
-                      onValuesChange={handleInteractiveFormChange}
-                      otherInputValues={otherInputValues}
-                      onOtherInputChange={handleOtherInputChange}
-                      language={language}
-                      fetchSuggestions={apiKey ? fetchSuggestionsForField : undefined}
-                      apiKeyAvailable={!!apiKey}
-                      frameworkName={currentFrameworkLocale.name}
-                      onEnhancePrompt={apiKey ? fetchAiFeedback : undefined}
-                      canEnhancePrompt={canEnhanceCurrentPrompt}
-                      isFetchingEnhancement={isFetchingAiFeedback}
-                    />
-                  ) : currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 ? (
-                    promptComponents.map(component => (
-                      <InputField
-                        key={component.id}
-                        id={component.id}
-                        label={t(component.id as TranslationKey, component.label)}
-                        value={component.value}
-                        onChange={handleInputChange}
-                        placeholder={t('inputFieldPlaceholder', t(component.id as TranslationKey, component.label))}
-                        isTextarea
-                        rows={2}
-                        description={t('inputFieldDescription', t(component.id as TranslationKey, component.label), currentFrameworkLocale.shortName)}
-                        predefinedOptions={currentFrameworkLocale.predefinedOptions?.[component.id]}
-                        isVisible={isInputPanelExpanded}
-                        fetchSuggestions={apiKey ? fetchSuggestionsForField : undefined} 
-                        frameworkName={currentFrameworkLocale.name}
+                  <>
+                    <p className="text-sm text-center text-slate-400 dark:text-slate-400 py-4">
+                      {currentFrameworkLocale.description}
+                    </p>
+                    {currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0 ? (
+                      <InteractivePromptBuilder
+                        sections={currentFrameworkLocale.interactiveDefinition}
+                        initialValues={interactiveFormValues}
+                        onValuesChange={handleInteractiveFormChange}
+                        otherInputValues={otherInputValues}
+                        onOtherInputChange={handleOtherInputChange}
+                        language={language}
+                        fetchSuggestions={apiKey ? fetchSuggestionsForField : undefined}
                         apiKeyAvailable={!!apiKey}
-                        exampleText={component.example}
+                        frameworkName={currentFrameworkLocale.name}
+                        onEnhancePrompt={apiKey ? fetchAiFeedback : undefined}
+                        canEnhancePrompt={canEnhanceCurrentPrompt}
+                        isFetchingEnhancement={isFetchingAiFeedback}
                       />
-                    ))
-                  ) : (
-                    <p className="text-sm text-center text-slate-400 py-4">{t('noInputComponents')}</p>
-                  )
+                    ) : currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 ? (
+                      promptComponents.map(component => (
+                        <InputField
+                          key={component.id}
+                          id={component.id}
+                          label={t(component.id as TranslationKey, component.label)}
+                          value={component.value}
+                          onChange={handleInputChange}
+                          placeholder={t('inputFieldPlaceholder', t(component.id as TranslationKey, component.label))}
+                          isTextarea
+                          rows={2}
+                          description={t('inputFieldDescription', t(component.id as TranslationKey, component.label), currentFrameworkLocale.shortName)}
+                          predefinedOptions={currentFrameworkLocale.predefinedOptions?.[component.id]}
+                          isVisible={isInputPanelExpanded}
+                          fetchSuggestions={apiKey ? fetchSuggestionsForField : undefined} 
+                          frameworkName={currentFrameworkLocale.name}
+                          apiKeyAvailable={!!apiKey}
+                          exampleText={component.example}
+                        />
+                      ))
+                    ) : (
+                      null 
+                    )}
+                  </>
                 ) : (
-                  <p className="text-sm text-center text-slate-400 py-4">{selectedCategory ? t('selectSpecificFrameworkInputSummary') : t('selectCategoryInstruction')}</p>
+                  <p className="text-sm text-center text-slate-400 py-4">
+                    {selectedCategory ? t('selectSpecificFrameworkInputSummary') : t('selectCategoryInstruction')}
+                  </p>
                 )}
 
                 {selectedFramework && !isInteractiveFrameworkSelected && (

@@ -1,4 +1,3 @@
-
 export interface PromptComponent {
   id: string;
   value: string;
@@ -65,6 +64,7 @@ export interface Translations {
   footerOptimize: string;
   footerContactMe: string;
   initialPromptAreaInstruction: string;
+  initialPromptAreaInstructionNoApiKey: string; // Added new key
   selectFrameworkPromptAreaInstruction: string; 
   nothingToCopyMessage: string;
   noInputComponents: string;
