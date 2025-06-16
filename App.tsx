@@ -1,25 +1,31 @@
 
-import React, { useState, useEffect, useCallback, ReactNode, useRef } from 'react';
+import React, { useState, useEffect, useCallback, ReactNode, useRef, ReactElement } from 'react';
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-import InputField from './components/InputField';
-import PromptOutput from './components/PromptOutput';
-import InteractivePromptBuilder from './components/InteractivePromptBuilder';
-import { Framework, Language, PromptComponent, FrameworkComponentDetail, InteractiveQuestionDefinition, InteractiveQuestionType, TranslationKey } from './types';
-import { useLanguage } from './contexts/LanguageContext';
-import { EraserIcon } from './components/icons/EraserIcon';
-import DisclaimerModal from './components/DisclaimerModal';
-import HowToUseModal from './components/HowToUseModal';
-import { AppLogoIcon } from './components/icons/AppLogoIcon';
-import { ChevronDownIcon } from './components/icons/ChevronDownIcon';
-import { ChevronUpIcon } from './components/icons/ChevronUpIcon';
-import { InfoIcon } from './components/icons/InfoIcon'; 
-import { StarIcon } from './components/icons/StarIcon';
-import { GmailIcon } from './components/icons/GmailIcon';
-import { GithubIcon } from './components/icons/GithubIcon';
-import { MediumIcon } from './components/icons/MediumIcon'; 
-import { PencilIcon } from './components/icons/PencilIcon'; // Still needed for category buttons
-import { CameraIcon } from './components/icons/CameraIcon'; // Still needed for category buttons
-import { MusicNoteIcon } from './components/icons/MusicNoteIcon'; // Still needed for category buttons
+import InputField from './components/InputField.tsx';
+import PromptOutput from './components/PromptOutput.tsx';
+import InteractivePromptBuilder from './components/InteractivePromptBuilder.tsx';
+import { Framework, Language, PromptComponent, FrameworkComponentDetail, InteractiveQuestionDefinition, InteractiveQuestionType, TranslationKey, SavedPrompt } from './types.ts';
+import { useLanguage } from './contexts/LanguageContext.tsx';
+import { EraserIcon } from './components/icons/EraserIcon.tsx';
+import DisclaimerModal from './components/DisclaimerModal.tsx';
+import HowToUseModal from './components/HowToUseModal.tsx';
+import SubscriptionInfoModal from './components/SubscriptionInfoModal.tsx';
+import TeaserPopupModal from './components/TeaserPopupModal.tsx';
+import { AppLogoIcon } from './components/icons/AppLogoIcon.tsx';
+import { ChevronDownIcon } from './components/icons/ChevronDownIcon.tsx';
+import { ChevronUpIcon } from './components/icons/ChevronUpIcon.tsx';
+import { StarIcon } from './components/icons/StarIcon.tsx';
+import { GmailIcon } from './components/icons/GmailIcon.tsx';
+import { GithubIcon } from './components/icons/GithubIcon.tsx';
+import { MediumIcon } from './components/icons/MediumIcon.tsx';
+import { PencilIcon } from './components/icons/PencilIcon.tsx';
+import { CameraIcon } from './components/icons/CameraIcon.tsx';
+import { MusicNoteIcon } from './components/icons/MusicNoteIcon.tsx';
+import PromptStashPanel from './components/PromptStashPanel.tsx';
+import GlobalActivityIndicator from './components/GlobalActivityIndicator.tsx';
+import { addPromptToDB, getAllPromptsFromDB, deletePromptFromDB, updatePromptInDB, getPromptByIdFromDB } from './db.ts';
+import { BadgeCheckIcon } from './components/icons/BadgeCheckIcon.tsx';
+
 
 import {
   frameworks,
@@ -33,7 +39,7 @@ import {
   sunoAITemplate,
   midjourneyVersionOptions,
   midjourneyVersionOptionsEn
-} from './frameworks';
+} from './frameworks.ts';
 
 // Helper function to compare arrays (used for multiple-choice fields)
 const areArraysEqual = (array1: any[] | undefined, array2: any[] | undefined): boolean => {
@@ -59,23 +65,24 @@ const effectiveValueToString = (
     return (currentValue as string || '').trim();
 };
 
-const App: React.FC = () => {
+const APP_VERSION = "V6.0.0"; 
+
+const App: React.FC = (): ReactElement => {
   const { language, setLanguage, t } = useLanguage();
   const [selectedFramework, setSelectedFramework] = useState<Framework | null>(null);
   const [promptComponents, setPromptComponents] = useState<PromptComponent[]>([]);
   const [userDefinedInteraction, setUserDefinedInteraction] = useState<string>('');
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [promptToCopy, setPromptToCopy] = useState<string>('');
-  
-  // Initialize hasShownInitialModals from localStorage
-  const initialHasShownModalsFromStorage = localStorage.getItem('hasShownInitialModals') === 'true';
+
+  const initialHasShownModalsFromStorage = localStorage.getItem('hasShownInitialModalsV6') === 'true';
   const [hasShownInitialModals, setHasShownInitialModals] = useState<boolean>(initialHasShownModalsFromStorage);
 
-  // Show disclaimer only if modals haven't been shown before
-  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(!initialHasShownModalsFromStorage); 
+  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(!initialHasShownModalsFromStorage);
   const [showHowToUse, setShowHowToUse] = useState<boolean>(false);
   const [isHowToUseModalShownAutomatically, setIsHowToUseModalShownAutomatically] = useState<boolean>(false);
-
+  const [showSubscriptionInfoModal, setShowSubscriptionInfoModal] = useState<boolean>(false);
+  const [showTeaserPopup, setShowTeaserPopup] = useState<boolean>(false);
 
   const [selectedCategory, setSelectedCategory] = useState<'text' | 'media' | 'music'>('text');
 
@@ -88,6 +95,11 @@ const App: React.FC = () => {
   const [aiFeedbackReceived, setAiFeedbackReceived] = useState<boolean>(false);
   const [hasCurrentPromptBeenCopied, setHasCurrentPromptBeenCopied] = useState<boolean>(false);
 
+  const [detailedAiAnalysis, setDetailedAiAnalysis] = useState<string | null>(null);
+  const [isFetchingDetailedAnalysis, setIsFetchingDetailedAnalysis] = useState<boolean>(false);
+  const [detailedAnalysisError, setDetailedAnalysisError] = useState<string | null>(null);
+  const [detailedAiAnalysisReceived, setDetailedAiAnalysisReceived] = useState<boolean>(false);
+
   const [translationError, setTranslationError] = useState<string | null>(null);
   const [isTranslating, setIsTranslating] = useState<boolean>(false);
   const previousLanguageRef = useRef<Language>(language);
@@ -99,19 +111,237 @@ const App: React.FC = () => {
   const [suggestedFrameworkIds, setSuggestedFrameworkIds] = useState<string[]>([]);
   const [isFetchingFrameworkSuggestions, setIsFetchingFrameworkSuggestions] = useState<boolean>(false);
   const [frameworkSuggestionError, setFrameworkSuggestionError] = useState<string | null>(null);
-  
+
   const [trueInitialDefaults, setTrueInitialDefaults] = useState<Record<string, string | string[]>>({});
 
   const rawApiKeyFromEnv = process.env.API_KEY;
   const apiKey = (typeof rawApiKeyFromEnv === 'string' && rawApiKeyFromEnv !== "undefined" && rawApiKeyFromEnv.trim() !== '') ? rawApiKeyFromEnv : null;
   const aiClient = apiKey ? new GoogleGenAI({ apiKey }) : null;
+  const apiKeyAvailable = !!apiKey; 
+
+  const [savedPrompts, setSavedPrompts] = useState<SavedPrompt[]>([]);
+  const [isDBLoading, setIsDBLoading] = useState<boolean>(true);
+  const [dbError, setDbError] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<{type: 'success' | 'error', message: string} | null>(null);
+
+  const [frameworkSearchTerm, setFrameworkSearchTerm] = useState<string>('');
+  const [favoriteFrameworkIds, setFavoriteFrameworkIds] = useState<string[]>([]);
+  const [globalActivityMessage, setGlobalActivityMessage] = useState<string | null>(null);
+
+  useEffect((): (() => void) | undefined => {
+    if (hasShownInitialModals && localStorage.getItem('shownTeaserPopupV6_0_0') !== 'true') {
+      const timer = setTimeout(() => {
+        setShowTeaserPopup(true);
+        localStorage.setItem('shownTeaserPopupV6_0_0', 'true'); // Use version specific key
+      }, 500); 
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [hasShownInitialModals]);
+
+  useEffect((): void => {
+    if (isFetchingAiFeedback) {
+      setGlobalActivityMessage(t('activityGettingFeedback'));
+    } else if (isFetchingDetailedAnalysis) {
+      setGlobalActivityMessage(t('activityAnalyzingPrompt'));
+    } else if (isFetchingFrameworkSuggestions) {
+      setGlobalActivityMessage(t('activityFetchingSuggestions'));
+    } else if (isTranslating) {
+      setGlobalActivityMessage(t('activityTranslatingContent'));
+    } else {
+      setGlobalActivityMessage(null);
+    }
+  }, [isFetchingAiFeedback, isFetchingDetailedAnalysis, isFetchingFrameworkSuggestions, isTranslating, t]);
+
+  useEffect((): void => {
+    const storedFavorites = localStorage.getItem('favoriteFrameworkIds');
+    if (storedFavorites) {
+      try {
+        const parsedFavorites = JSON.parse(storedFavorites);
+        if (Array.isArray(parsedFavorites) && parsedFavorites.every(id => typeof id === 'string')) {
+          setFavoriteFrameworkIds(parsedFavorites);
+        }
+      } catch (e) {
+        console.error("Error parsing favorite frameworks from localStorage:", e);
+      }
+    }
+  }, []);
+
+  useEffect((): void => {
+    localStorage.setItem('favoriteFrameworkIds', JSON.stringify(favoriteFrameworkIds));
+  }, [favoriteFrameworkIds]);
+
+  useEffect((): (() => void) | undefined => {
+    if (toastMessage) {
+      const timer = setTimeout(() => {
+        setToastMessage(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [toastMessage]);
+
+  const showToast = useCallback((type: 'success' | 'error', messageKey: TranslationKey, ...args: any[]) => {
+    setToastMessage({ type, message: t(messageKey, ...args) });
+  },[t]);
+
+  const loadPromptsFromDB = useCallback(async () => {
+    setIsDBLoading(true);
+    setDbError(null);
+    try {
+      if (!('indexedDB' in window)) {
+        throw new Error(t('errorUnsupportedBrowserDB'));
+      }
+      const prompts = await getAllPromptsFromDB();
+      setSavedPrompts(prompts);
+    } catch (error: any) {
+      console.error(error);
+      setDbError(error.message || t('errorLoadingPrompts'));
+      showToast('error', 'errorLoadingPrompts');
+    } finally {
+      setIsDBLoading(false);
+    }
+  }, [t, showToast]);
+
+  useEffect((): void => {
+    loadPromptsFromDB();
+  }, [loadPromptsFromDB]);
+
+  const clearAiStates = () => {
+    setAiFeedback(null);
+    setAiError(null);
+    setAiFeedbackReceived(false);
+    setDetailedAiAnalysis(null);
+    setDetailedAnalysisError(null);
+    setDetailedAiAnalysisReceived(false);
+  };
+
+  const handleSavePrompt = async () => {
+    if (!promptToCopy.trim() || !selectedFramework) {
+      showToast('error', 'nothingToCopyMessage');
+      return;
+    }
+    const promptName = window.prompt(t('promptNameInputPlaceholder'), selectedFramework[language === 'id' ? 'idLocale' : 'enLocale'].name + " - " + new Date().toLocaleTimeString());
+    if (!promptName || !promptName.trim()) return;
+
+    const newSavedPromptData: Omit<SavedPrompt, 'id' | 'timestamp'> = {
+      name: promptName.trim(),
+      frameworkId: selectedFramework.id,
+      category: selectedCategory,
+      promptComponents: [...promptComponents],
+      interactiveFormValues: {...interactiveFormValues},
+      otherInputValues: {...otherInputValues},
+      userDefinedInteraction: userDefinedInteraction,
+      generatedPrompt: generatedPrompt,
+      promptToCopy: promptToCopy,
+      language: language,
+      selectedFrameworkName: selectedFramework[language === 'id' ? 'idLocale' : 'enLocale'].name,
+    };
+
+    try {
+      await addPromptToDB(newSavedPromptData);
+      loadPromptsFromDB(); 
+      showToast('success', 'promptSavedSuccess');
+    } catch (error) {
+      console.error(error);
+      showToast('error', 'errorSavingPrompt');
+    }
+  };
+
+  const handleLoadPrompt = async (promptId: number) => {
+    try {
+      const promptToLoad = await getPromptByIdFromDB(promptId);
+      if (promptToLoad) {
+        if (promptToLoad.language !== language) {
+          setLanguage(promptToLoad.language);
+          previousLanguageRef.current = promptToLoad.language; 
+        }
+
+        const frameworkToLoad = frameworks.find(fw => fw.id === promptToLoad.frameworkId);
+        if (frameworkToLoad) {
+          setSelectedCategory(promptToLoad.category); 
+          setSelectedFramework(frameworkToLoad); 
+
+          setTimeout(() => {
+            const currentLocale = promptToLoad.language === 'id' ? frameworkToLoad.idLocale : frameworkToLoad.enLocale;
+            const calculatedTrueDefaults = getTrueInitialFrameworkDefaultsInternal(currentLocale);
+            setTrueInitialDefaults(calculatedTrueDefaults);
+
+            setPromptComponents(promptToLoad.promptComponents.map(pc => ({...pc})));
+            setInteractiveFormValues({...promptToLoad.interactiveFormValues});
+            setOtherInputValues({...promptToLoad.otherInputValues});
+            setUserDefinedInteraction(promptToLoad.userDefinedInteraction);
+
+            setGeneratedPrompt(promptToLoad.generatedPrompt);
+            setPromptToCopy(promptToLoad.promptToCopy);
+
+            clearAiStates();
+            setHasCurrentPromptBeenCopied(false);
+            resetFrameworkSuggestionStates(); 
+            showToast('success', 'promptLoadedSuccess');
+             if (window.innerWidth < 768) {
+                setIsInputPanelExpanded(true);
+                setIsOutputPanelExpanded(true);
+            }
+          }, 50);
+
+        } else {
+          showToast('error', 'errorLoadingPrompts');
+        }
+      } else {
+        showToast('error', 'errorLoadingPrompts');
+      }
+    } catch (error) {
+      console.error(error);
+      showToast('error', 'errorLoadingPrompts');
+    }
+  };
+
+  const handleDeletePrompt = async (promptId: number) => {
+    try {
+      await deletePromptFromDB(promptId);
+      loadPromptsFromDB();
+      showToast('success', 'promptDeletedSuccess');
+    } catch (error) {
+      console.error(error);
+      showToast('error', 'errorDeletingPrompt');
+    }
+  };
+
+  const handleRenamePrompt = async (promptId: number, newName: string) => {
+    try {
+      const promptToUpdate = await getPromptByIdFromDB(promptId);
+      if (promptToUpdate) {
+        await updatePromptInDB({ ...promptToUpdate, name: newName });
+        loadPromptsFromDB();
+        showToast('success', 'promptRenamedSuccess');
+      }
+    } catch (error) {
+      console.error(error);
+      showToast('error', 'errorRenamingPrompt');
+    }
+  };
+
+  const toggleFavoriteFramework = (frameworkId: string) => {
+    setFavoriteFrameworkIds(prevFavorites => {
+      if (prevFavorites.includes(frameworkId)) {
+        return prevFavorites.filter(id => id !== frameworkId);
+      } else {
+        return [...prevFavorites, frameworkId];
+      }
+    });
+  };
 
   const handleDisclaimerAcknowledge = () => {
     setShowDisclaimer(false);
-    // Only show "How To Use" automatically if it's the first time seeing modals
     if (!hasShownInitialModals) {
       setShowHowToUse(true);
       setIsHowToUseModalShownAutomatically(true);
+    } else {
+        if (localStorage.getItem('shownTeaserPopupV6_0_0') !== 'true') {
+            setShowTeaserPopup(true);
+            localStorage.setItem('shownTeaserPopupV6_0_0', 'true');
+        }
     }
   };
 
@@ -119,8 +349,12 @@ const App: React.FC = () => {
     setShowHowToUse(false);
     if (isHowToUseModalShownAutomatically) {
       setHasShownInitialModals(true);
-      localStorage.setItem('hasShownInitialModals', 'true'); // Persist that modals have been shown
-      setIsHowToUseModalShownAutomatically(false); 
+      localStorage.setItem('hasShownInitialModalsV6', 'true');
+      setIsHowToUseModalShownAutomatically(false);
+      if (localStorage.getItem('shownTeaserPopupV6_0_0') !== 'true') {
+        setShowTeaserPopup(true);
+        localStorage.setItem('shownTeaserPopupV6_0_0', 'true');
+      }
     }
   };
 
@@ -136,14 +370,14 @@ const App: React.FC = () => {
           } else if (question.type === 'single-choice' && question.options && question.options.length > 0) {
             defaults[question.id] = question.options[0];
           } else {
-            defaults[question.id] = ''; 
+            defaults[question.id] = '';
           }
         });
       });
     }
     return defaults;
   }, []);
-  
+
   const computeInitialDisplayFormState = useCallback((frameworkLocale: Framework['idLocale'] | Framework['enLocale'], currentTrueDefaults: Record<string, string | string[]>): Record<string, string | string[]> => {
     const formInitialDisplayState: Record<string, string | string[]> = {};
     if (frameworkLocale.interactiveDefinition) {
@@ -152,7 +386,7 @@ const App: React.FC = () => {
           const key = question.id;
           const trueDefaultValue = currentTrueDefaults[key];
           if (question.type === 'manual' && typeof trueDefaultValue === 'string' && trueDefaultValue.trim() !== '') {
-            formInitialDisplayState[key] = ''; 
+            formInitialDisplayState[key] = '';
           } else {
             formInitialDisplayState[key] = trueDefaultValue;
           }
@@ -165,9 +399,9 @@ const App: React.FC = () => {
   const isEffectivelyDefault = useCallback((
     currentValue: string | string[] | undefined,
     trueDefaultValue: string | string[] | undefined,
-    otherValueIfSelected?: string, 
+    otherValueIfSelected?: string,
     questionType?: InteractiveQuestionType,
-    questionOptions?: string[] 
+    questionOptions?: string[]
   ): boolean => {
     let currentValForCompare = currentValue;
     if (questionType === 'single-choice' && currentValue === 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
@@ -175,13 +409,13 @@ const App: React.FC = () => {
     }
 
     let defaultToCompare = trueDefaultValue;
-    if (questionType === 'single-choice' && 
-        (trueDefaultValue === undefined || (typeof trueDefaultValue === 'string' && trueDefaultValue.trim() === '')) && 
+    if (questionType === 'single-choice' &&
+        (trueDefaultValue === undefined || (typeof trueDefaultValue === 'string' && trueDefaultValue.trim() === '')) &&
         questionOptions && questionOptions.length > 0) {
-        if (currentValue !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') { 
+        if (currentValue !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
             defaultToCompare = questionOptions[0];
         } else {
-            defaultToCompare = ''; 
+            defaultToCompare = '';
         }
     }
 
@@ -193,8 +427,8 @@ const App: React.FC = () => {
     }
     if (currentValForCompare === undefined) return (defaultToCompare === undefined || (typeof defaultToCompare === 'string' && defaultToCompare.trim() === '') || (Array.isArray(defaultToCompare) && defaultToCompare.length === 0));
     if (defaultToCompare === undefined) return ((typeof currentValForCompare === 'string' && currentValForCompare.trim() === '') || (Array.isArray(currentValForCompare) && currentValForCompare.length === 0));
-    
-    return false; 
+
+    return false;
   }, []);
 
   const handleFrameworkSelect = (framework: Framework) => {
@@ -202,18 +436,18 @@ const App: React.FC = () => {
     const currentLocale = language === 'id' ? framework.idLocale : framework.enLocale;
     const calculatedTrueDefaults = getTrueInitialFrameworkDefaultsInternal(currentLocale);
     setTrueInitialDefaults(calculatedTrueDefaults);
-    setOtherInputValues({}); 
+    setOtherInputValues({});
 
     if (currentLocale.interactiveDefinition && currentLocale.interactiveDefinition.length > 0) {
-        setPromptComponents([]); 
+        setPromptComponents([]);
         setInteractiveFormValues(computeInitialDisplayFormState(currentLocale, calculatedTrueDefaults));
     } else if (currentLocale.components) {
-        setInteractiveFormValues({}); 
+        setInteractiveFormValues({});
         const initialComponents = currentLocale.components.map((componentDetail: FrameworkComponentDetail) => ({
           id: componentDetail.id,
-          value: '', 
-          label: componentDetail.id, 
-          example: componentDetail.example, 
+          value: '',
+          label: componentDetail.id,
+          example: componentDetail.example,
         }));
         setPromptComponents(initialComponents);
     } else {
@@ -222,11 +456,9 @@ const App: React.FC = () => {
     }
 
     setUserDefinedInteraction('');
-    setAiFeedback(null);
-    setAiError(null);
-    setAiFeedbackReceived(false);
+    clearAiStates();
     setHasCurrentPromptBeenCopied(false);
-    if (window.innerWidth < 768) { 
+    if (window.innerWidth < 768) {
       setIsInputPanelExpanded(true);
       setIsOutputPanelExpanded(true);
     }
@@ -242,17 +474,16 @@ const App: React.FC = () => {
   const handleCategorySelect = (category: 'text' | 'media' | 'music') => {
     if (selectedCategory !== category) {
       setSelectedCategory(category);
-      setSelectedFramework(null); 
+      setSelectedFramework(null);
       setPromptComponents([]);
       setUserDefinedInteraction('');
       setInteractiveFormValues({});
       setOtherInputValues({});
       setTrueInitialDefaults({});
-      setAiFeedback(null);
-      setAiError(null);
-      setAiFeedbackReceived(false);
+      clearAiStates();
       setHasCurrentPromptBeenCopied(false);
-      resetFrameworkSuggestionStates(); 
+      resetFrameworkSuggestionStates();
+      setFrameworkSearchTerm('');
     }
   };
 
@@ -284,31 +515,29 @@ const App: React.FC = () => {
       prevComponents.map(comp => ({ ...comp, value: '' }))
     );
     setUserDefinedInteraction('');
-    setOtherInputValues({}); 
+    setOtherInputValues({});
 
     if (selectedFramework && currentFrameworkLocale) {
-        const calculatedTrueDefaults = getTrueInitialFrameworkDefaultsInternal(currentFrameworkLocale); 
-        setTrueInitialDefaults(calculatedTrueDefaults); 
+        const calculatedTrueDefaults = getTrueInitialFrameworkDefaultsInternal(currentFrameworkLocale);
+        setTrueInitialDefaults(calculatedTrueDefaults);
         if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
             setInteractiveFormValues(computeInitialDisplayFormState(currentFrameworkLocale, calculatedTrueDefaults));
         } else {
-            setInteractiveFormValues({}); 
+            setInteractiveFormValues({});
         }
     } else {
         setInteractiveFormValues({});
         setTrueInitialDefaults({});
     }
 
-    setAiFeedback(null);
-    setAiError(null);
-    setAiFeedbackReceived(false);
+    clearAiStates();
     setHasCurrentPromptBeenCopied(false);
     resetFrameworkSuggestionStates();
   };
 
   const handleFetchFrameworkSuggestions = async () => {
     if (!aiClient || !userGoalForFramework.trim()) {
-      setFrameworkSuggestionError(apiKey ? t('emptyPromptError') : t('apiKeyMissingError'));
+      setFrameworkSuggestionError(t('aiFeatureRequiresSubscriptionTooltip')); 
       return;
     }
     setIsFetchingFrameworkSuggestions(true);
@@ -322,7 +551,7 @@ const App: React.FC = () => {
           const locale = language === 'id' ? fw.idLocale : fw.enLocale;
           return { id: fw.id, name: locale.name, description: locale.description, category: locale.category };
         })
-        .filter(fwInfo => fwInfo.category === selectedCategory); 
+        .filter(fwInfo => fwInfo.category === selectedCategory);
 
       const systemPrompt = t('geminiInstructionForFrameworkSuggestion', JSON.stringify(allFrameworksInfo));
       const userPrompt = `User goal: "${userGoalForFramework}". Suggest relevant framework IDs from the provided list that match the user's goal and the currently selected category: ${selectedCategory}.`;
@@ -360,230 +589,225 @@ const App: React.FC = () => {
       setIsFetchingFrameworkSuggestions(false);
     }
   };
-  
-  useEffect(() => {
-    let assembledPrompt = "";
-    let assembledPromptForCopy = "";
-    let formIsDirty = false; 
-    let standardFormIsPristine = true; 
 
-    const placeholderInstructionKey: TranslationKey = apiKey ? 'initialPromptAreaInstruction' : 'initialPromptAreaInstructionNoApiKey';
+  useEffect((): void => {
+    let assembledPrompt: string = "";
+    let assembledPromptForCopy: string = "";
+    let formIsDirty: boolean = false;
+    let standardFormIsPristine: boolean = true;
+    const placeholderInstructionKey: TranslationKey = 'initialPromptAreaInstruction';
 
-    if (!selectedFramework || !currentFrameworkLocale) {
-      setGeneratedPrompt(selectedCategory ? t('selectSpecificFrameworkOutputSummary') : t(placeholderInstructionKey));
-      setPromptToCopy('');
-      return;
-    }
-    
-    if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
-      if (Object.keys(trueInitialDefaults).length > 0) { 
-        currentFrameworkLocale.interactiveDefinition.forEach(section => {
-          if (formIsDirty) return; 
-          section.questions.forEach(question => {
+    if (selectedFramework && currentFrameworkLocale) {
+      if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
+        if (Object.keys(trueInitialDefaults).length > 0) {
+          currentFrameworkLocale.interactiveDefinition.forEach(section => {
             if (formIsDirty) return;
-            const key = question.id;
-            const currentValue = interactiveFormValues[key];
-            const otherValue = question.includeOtherOption ? otherInputValues[key] : undefined;
-            const trueDefault = trueInitialDefaults[key];
-            const effVal = effectiveValueToString(currentValue, otherValue);
-            
-            if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, question.type, question.options) && effVal.trim() !== '') {
-              formIsDirty = true;
-            }
+            section.questions.forEach(question => {
+              if (formIsDirty) return;
+              const key = question.id;
+              const currentValue = interactiveFormValues[key];
+              const otherValue = question.includeOtherOption ? otherInputValues[key] : undefined;
+              const trueDefault = trueInitialDefaults[key];
+              const effVal = effectiveValueToString(currentValue, otherValue);
+
+              if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, question.type, question.options) && effVal.trim() !== '') {
+                formIsDirty = true;
+              }
+            });
           });
-        });
-      }
+        }
 
         if (formIsDirty) {
-            const descriptiveSegments: string[] = [];
-            const technicalParamSegments: string[] = [];
-            
-            const createParamString = (
-                formKey: string,
-                paramPrefix: string,
-                valueTransformer: (val: string) => string = (v) => v.split(' ')[0], 
-                paramSuffix: string = ''
-            ): string => {
-                const questionDef = currentFrameworkLocale.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === formKey);
-                const currentValue = interactiveFormValues[formKey];
-                const otherValue = questionDef?.includeOtherOption ? otherInputValues[formKey] : undefined;
-                const trueDefault = trueInitialDefaults[formKey];
+          const descriptiveSegments: string[] = [];
+          const technicalParamSegments: string[] = [];
 
-                if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, questionDef?.type, questionDef?.options)) {
-                    const effectiveValStr = effectiveValueToString(currentValue, otherValue);
-                    if (effectiveValStr.trim() !== '') {
-                        const transformedValue = valueTransformer(effectiveValStr.trim());
-                        if (transformedValue.trim() !== '') return `${paramPrefix}${transformedValue}${paramSuffix}`;
-                    } else if (questionDef?.type === 'multiple-choice' && Array.isArray(currentValue) && currentValue.length > 0) {
-                        const joinedArrayValues = currentValue.join(', ').trim();
-                        if (joinedArrayValues) {
-                            const transformedArrayValue = valueTransformer(joinedArrayValues); 
-                            if(transformedArrayValue.trim() !== '') return `${paramPrefix}${transformedArrayValue}${paramSuffix}`;
-                        }
-                    }
+          const createParamString = (
+            formKey: string,
+            paramPrefix: string,
+            valueTransformer: (val: string) => string = (v) => v.split(' ')[0],
+            paramSuffix: string = ''
+          ): string => {
+            const questionDef = currentFrameworkLocale.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === formKey);
+            const currentValue = interactiveFormValues[formKey];
+            const otherValue = questionDef?.includeOtherOption ? otherInputValues[formKey] : undefined;
+            const trueDefault = trueInitialDefaults[formKey];
+
+            if (!isEffectivelyDefault(currentValue, trueDefault, otherValue, questionDef?.type, questionDef?.options)) {
+              const effectiveValStr = effectiveValueToString(currentValue, otherValue);
+              if (effectiveValStr.trim() !== '') {
+                const transformedValue = valueTransformer(effectiveValStr.trim());
+                if (transformedValue.trim() !== '') return `${paramPrefix}${transformedValue}${paramSuffix}`;
+              } else if (questionDef?.type === 'multiple-choice' && Array.isArray(currentValue) && currentValue.length > 0) {
+                const joinedArrayValues = currentValue.join(', ').trim();
+                if (joinedArrayValues) {
+                  const transformedArrayValue = valueTransformer(joinedArrayValues);
+                  if(transformedArrayValue.trim() !== '') return `${paramPrefix}${transformedArrayValue}${paramSuffix}`;
                 }
-                return '';
-            };
-            
-            currentFrameworkLocale.interactiveDefinition.forEach(section => {
-                section.questions.forEach(question => {
-                    const key = question.id;
-                    const currentValueInForm = interactiveFormValues[key];
-                    const currentOtherValue = question.includeOtherOption ? otherInputValues[key] : undefined;
-                    const trueDefaultForKey = trueInitialDefaults[key];
-                    
-                    const isDefault = isEffectivelyDefault(currentValueInForm, trueDefaultForKey, currentOtherValue, question.type, question.options);
-                    const effectiveValStr = effectiveValueToString(currentValueInForm, currentOtherValue).trim();
+              }
+            }
+            return '';
+          };
 
-                    if (!isDefault && effectiveValStr !== "") {
-                        let processedValue = effectiveValStr;
-                        const activeTemplateRefId = selectedFramework?.id; 
+          currentFrameworkLocale.interactiveDefinition.forEach(section => {
+            section.questions.forEach(question => {
+              const key = question.id;
+              const currentValueInForm = interactiveFormValues[key];
+              const currentOtherValue = question.includeOtherOption ? otherInputValues[key] : undefined;
+              const trueDefaultForKey = trueInitialDefaults[key];
 
-                        if (key === 'lighting' && activeTemplateRefId && ['leonardo_ai', 'adobe_firefly', 'ideogram_ai', 'pika_labs', 'openai_sora', 'playground_ai', 'canva_magic_media', 'kaiber_ai', 'nightcafe_creator', 'clipdrop_stability', 'midjourney', 'stable_diffusion', 'google_veo'].includes(activeTemplateRefId) ) {
-                            processedValue = effectiveValStr + " lighting";
-                        } else if (key === 'artist_influence' && activeTemplateRefId && ['leonardo_ai', 'adobe_firefly', 'ideogram_ai', 'pika_labs', 'openai_sora', 'playground_ai', 'canva_magic_media', 'kaiber_ai', 'nightcafe_creator', 'clipdrop_stability', 'midjourney', 'dalle3'].includes(activeTemplateRefId)) {
-                            processedValue = "in the style of " + effectiveValStr;
-                        } else if (key === 'artist_influences' && activeTemplateRefId === 'stable_diffusion') { 
-                            processedValue = "by " + effectiveValStr;
-                        } else if (key === 'lyrics_theme' && activeTemplateRefId === 'suno_ai' && !effectiveValStr.toLowerCase().startsWith('[verse]') && !effectiveValStr.toLowerCase().startsWith('[chorus]')) {
-                            processedValue = `Lyrical theme: ${effectiveValStr}`; 
-                        } else if (key === 'custom_lyrics_section' && activeTemplateRefId === 'suno_ai' && (effectiveValStr.toLowerCase().startsWith('[verse]') || effectiveValStr.toLowerCase().startsWith('[chorus]'))) {
-                            processedValue = `\n\n[Lyrics]\n${effectiveValStr}`;
-                        } else if (key === 'lyrical_theme_or_custom' && activeTemplateRefId && ['udio_ai', 'stable_audio', 'google_musicfx', 'mubert_ai'].includes(activeTemplateRefId) ) { 
-                            if (effectiveValStr.toLowerCase().startsWith('[verse]') || effectiveValStr.toLowerCase().startsWith('[chorus]')) {
-                            processedValue = `\nLyrics:\n${effectiveValStr}`;
-                            }
-                        }
-                        
-                        descriptiveSegments.push(processedValue);
-                    }
-                });
+              const isDefault = isEffectivelyDefault(currentValueInForm, trueDefaultForKey, currentOtherValue, question.type, question.options);
+              const effectiveValStr = effectiveValueToString(currentValueInForm, currentOtherValue).trim();
+
+              if (!isDefault && effectiveValStr !== "") {
+                let processedValue = effectiveValStr;
+                const activeTemplateRefId = selectedFramework.id; 
+
+                if (key === 'lighting' && activeTemplateRefId && ['leonardo_ai', 'adobe_firefly', 'ideogram_ai', 'pika_labs', 'openai_sora', 'playground_ai', 'canva_magic_media', 'kaiber_ai', 'nightcafe_creator', 'clipdrop_stability', 'midjourney', 'stable_diffusion', 'google_veo'].includes(activeTemplateRefId) ) {
+                  processedValue = effectiveValStr + " lighting";
+                } else if (key === 'artist_influence' && activeTemplateRefId && ['leonardo_ai', 'adobe_firefly', 'ideogram_ai', 'pika_labs', 'openai_sora', 'playground_ai', 'canva_magic_media', 'kaiber_ai', 'nightcafe_creator', 'clipdrop_stability', 'midjourney', 'dalle3'].includes(activeTemplateRefId)) {
+                  processedValue = "in the style of " + effectiveValStr;
+                } else if (key === 'artist_influences' && activeTemplateRefId === 'stable_diffusion') {
+                  processedValue = "by " + effectiveValStr;
+                } else if (key === 'lyrics_theme' && activeTemplateRefId === 'suno_ai' && !effectiveValStr.toLowerCase().startsWith('[verse]') && !effectiveValStr.toLowerCase().startsWith('[chorus]')) {
+                  processedValue = `Lyrical theme: ${effectiveValStr}`;
+                } else if (key === 'custom_lyrics_section' && activeTemplateRefId === 'suno_ai' && (effectiveValStr.toLowerCase().startsWith('[verse]') || effectiveValStr.toLowerCase().startsWith('[chorus]'))) {
+                  processedValue = `\n\n[Lyrics]\n${effectiveValStr}`;
+                } else if (key === 'lyrical_theme_or_custom' && activeTemplateRefId && ['udio_ai', 'stable_audio', 'google_musicfx', 'mubert_ai'].includes(activeTemplateRefId) ) {
+                  if (effectiveValStr.toLowerCase().startsWith('[verse]') || effectiveValStr.toLowerCase().startsWith('[chorus]')) {
+                    processedValue = `\nLyrics:\n${effectiveValStr}`;
+                  }
+                }
+                descriptiveSegments.push(processedValue);
+              }
             });
+          });
             
-            const activeFrameworkId = selectedFramework?.id;
-            if (activeFrameworkId === 'google_veo') { 
-                technicalParamSegments.push(createParamString('negative', ' --no ', v => v.trim()));
-            }
-            if (activeFrameworkId === 'midjourney') {
-                technicalParamSegments.push(createParamString('aspect_ratio', '--ar '));
-                const versionVal = effectiveValueToString(interactiveFormValues.version);
-                if (!isEffectivelyDefault(interactiveFormValues.version, trueInitialDefaults.version, undefined, 'single-choice', language === 'id' ? midjourneyVersionOptions : midjourneyVersionOptionsEn) && versionVal) {
-                    technicalParamSegments.push(versionVal.includes("niji") ? ` --niji ${versionVal.split(' ')[1]}` : ` --v ${versionVal.split(' ')[0]}`);
-                }
-                technicalParamSegments.push(createParamString('stylize', '--s ', v => v.trim()));
-                technicalParamSegments.push(createParamString('chaos', '--c ', v => v.trim()));
-                technicalParamSegments.push(createParamString('weird', '--weird ', v => v.trim()));
-                if (!isEffectivelyDefault(interactiveFormValues.tile, trueInitialDefaults.tile, undefined, 'single-choice') && effectiveValueToString(interactiveFormValues.tile) === (language === 'id' ? 'Ya' : 'Yes')) {
-                    technicalParamSegments.push('--tile');
-                }
-                technicalParamSegments.push(createParamString('image_weight', '--iw ', v => v.trim()));
-                if (!isEffectivelyDefault(interactiveFormValues.style_raw, trueInitialDefaults.style_raw, undefined, 'single-choice') && effectiveValueToString(interactiveFormValues.style_raw) === (language === 'id' ? 'Ya (untuk v5+)' : 'Yes (for v5+)')) {
-                    technicalParamSegments.push('--style raw');
-                }
-                technicalParamSegments.push(createParamString('other_params', '', v => v.trim(), ' ')); 
-            }
-            if (activeFrameworkId === 'stable_diffusion') {
-                let sdNegativeParts: string[] = [];
-                const negElementsArray = interactiveFormValues.negative_elements as string[] || [];
-                if (!isEffectivelyDefault(negElementsArray, trueInitialDefaults.negative_elements as string[], undefined, 'multiple-choice') && negElementsArray.length > 0) {
-                    sdNegativeParts.push(...negElementsArray.filter(el => el.trim() !== ''));
-                }
-                const customNegVal = effectiveValueToString(interactiveFormValues.custom_negative_prompt);
-                if (!isEffectivelyDefault(customNegVal, trueInitialDefaults.custom_negative_prompt, undefined, 'manual') && customNegVal.trim() !== '') {
-                    sdNegativeParts.push(customNegVal);
-                }
-                if (sdNegativeParts.length > 0) technicalParamSegments.push(`--neg ${sdNegativeParts.join(', ')}`);
-            }
+          const activeFrameworkId = selectedFramework.id;
 
-            if (activeFrameworkId && ['leonardo_ai', 'adobe_firefly', 'ideogram_ai', 'pika_labs', 'openai_sora', 'playground_ai', 'canva_magic_media', 'kaiber_ai', 'nightcafe_creator', 'clipdrop_stability'].includes(activeFrameworkId)) {
-                let detailedNegativeParts: string[] = [];
-                const customNegDetailedVal = effectiveValueToString(interactiveFormValues.custom_negative, otherInputValues.custom_negative).trim();
-                if (customNegDetailedVal !== "" && !isEffectivelyDefault(interactiveFormValues.custom_negative, trueInitialDefaults.custom_negative, otherInputValues.custom_negative, 'manual')) {
-                    detailedNegativeParts.push(customNegDetailedVal);
-                }
-                const negElementsArrayDetailed = interactiveFormValues.negative_prompt_elements as string[] || [];
-                if (!isEffectivelyDefault(negElementsArrayDetailed, trueInitialDefaults.negative_prompt_elements as string[], undefined, 'multiple-choice') && negElementsArrayDetailed.length > 0) {
-                    detailedNegativeParts.push(...negElementsArrayDetailed.filter(el => el.trim() !== ''));
-                }
-                if (detailedNegativeParts.length > 0) technicalParamSegments.push(`--no ${detailedNegativeParts.join(', ')}`);
-                
-                technicalParamSegments.push(createParamString('aspect_ratio', '--ar '));
-                technicalParamSegments.push(createParamString('other_tool_params', '', v => v.trim(), ' ')); 
+          if (activeFrameworkId === 'google_veo') {
+            technicalParamSegments.push(createParamString('negative', ' --no ', v => v.trim()));
+          }
+          if (activeFrameworkId === 'midjourney') {
+            technicalParamSegments.push(createParamString('aspect_ratio', '--ar '));
+            const versionVal = effectiveValueToString(interactiveFormValues.version);
+            if (!isEffectivelyDefault(interactiveFormValues.version, trueInitialDefaults.version, undefined, 'single-choice', language === 'id' ? midjourneyVersionOptions : midjourneyVersionOptionsEn) && versionVal) {
+              technicalParamSegments.push(versionVal.includes("niji") ? ` --niji ${versionVal.split(' ')[1]}` : ` --v ${versionVal.split(' ')[0]}`);
             }
-            
-            let descriptivePart = descriptiveSegments.join('. ');
-            if (descriptivePart.trim() !== '' && !descriptivePart.endsWith('.')) {
-                descriptivePart += '.';
+            technicalParamSegments.push(createParamString('stylize', '--s ', v => v.trim()));
+            technicalParamSegments.push(createParamString('chaos', '--c ', v => v.trim()));
+            technicalParamSegments.push(createParamString('weird', '--weird ', v => v.trim()));
+            if (!isEffectivelyDefault(interactiveFormValues.tile, trueInitialDefaults.tile, undefined, 'single-choice') && effectiveValueToString(interactiveFormValues.tile) === (language === 'id' ? 'Ya' : 'Yes')) {
+              technicalParamSegments.push('--tile');
             }
-            
-            const technicalPart = technicalParamSegments.filter(p => p.trim() !== '').join(' ');
-            
-            assembledPrompt = [descriptivePart, technicalPart].filter(p => p.trim() !== '').join(' ').trim();
-            
-            assembledPromptForCopy = assembledPrompt;
+            technicalParamSegments.push(createParamString('image_weight', '--iw ', v => v.trim()));
+            if (!isEffectivelyDefault(interactiveFormValues.style_raw, trueInitialDefaults.style_raw, undefined, 'single-choice') && effectiveValueToString(interactiveFormValues.style_raw) === (language === 'id' ? 'Ya (untuk v5+)' : 'Yes (for v5+)')) {
+              technicalParamSegments.push('--style raw');
+            }
+            technicalParamSegments.push(createParamString('other_params', '', v => v.trim(), ' '));
+          }
+          if (activeFrameworkId === 'stable_diffusion') {
+            let sdNegativeParts: string[] = [];
+            const negElementsArray = interactiveFormValues.negative_elements as string[] || [];
+            if (!isEffectivelyDefault(negElementsArray, trueInitialDefaults.negative_elements as string[], undefined, 'multiple-choice') && negElementsArray.length > 0) {
+              sdNegativeParts.push(...negElementsArray.filter(el => el.trim() !== ''));
+            }
+            const customNegVal = effectiveValueToString(interactiveFormValues.custom_negative_prompt);
+            if (!isEffectivelyDefault(customNegVal, trueInitialDefaults.custom_negative_prompt, undefined, 'manual') && customNegVal.trim() !== '') {
+              sdNegativeParts.push(customNegVal);
+            }
+            if (sdNegativeParts.length > 0) technicalParamSegments.push(`--neg ${sdNegativeParts.join(', ')}`);
+          }
+
+          if (activeFrameworkId && ['leonardo_ai', 'adobe_firefly', 'ideogram_ai', 'pika_labs', 'openai_sora', 'playground_ai', 'canva_magic_media', 'kaiber_ai', 'nightcafe_creator', 'clipdrop_stability'].includes(activeFrameworkId)) {
+            let detailedNegativeParts: string[] = [];
+            const customNegDetailedVal = effectiveValueToString(interactiveFormValues.custom_negative, otherInputValues.custom_negative).trim();
+            if (customNegDetailedVal !== "" && !isEffectivelyDefault(interactiveFormValues.custom_negative, trueInitialDefaults.custom_negative, otherInputValues.custom_negative, 'manual')) {
+              detailedNegativeParts.push(customNegDetailedVal);
+            }
+            const negElementsArrayDetailed = interactiveFormValues.negative_prompt_elements as string[] || [];
+            if (!isEffectivelyDefault(negElementsArrayDetailed, trueInitialDefaults.negative_prompt_elements as string[], undefined, 'multiple-choice') && negElementsArrayDetailed.length > 0) {
+                 detailedNegativeParts.push(...negElementsArrayDetailed.filter(el => el.trim() !== ''));
+            }
+            if (detailedNegativeParts.length > 0) technicalParamSegments.push(`--no ${detailedNegativeParts.join(', ')}`);
+
+            technicalParamSegments.push(createParamString('aspect_ratio', '--ar '));
+            technicalParamSegments.push(createParamString('other_tool_params', '', v => v.trim(), ' '));
+          }
+
+          let descriptivePart = descriptiveSegments.join('. ');
+          if (descriptivePart.trim() !== '' && !descriptivePart.endsWith('.')) {
+            descriptivePart += '.';
+          }
+
+          const technicalPart = technicalParamSegments.filter(p => p.trim() !== '').join(' ');
+
+          assembledPrompt = [descriptivePart, technicalPart].filter(p => p.trim() !== '').join(' ').trim();
+          assembledPromptForCopy = assembledPrompt;
         }
-    } else { // Standard text-based framework
-      standardFormIsPristine = !promptComponents.some(pc => pc.value.trim() !== '') && userDefinedInteraction.trim() === '';
-      if (!standardFormIsPristine) {
-        let displayValues: string[] = [];
-        let copyValues: string[] = [];
+      } else { 
+        standardFormIsPristine = !promptComponents.some(pc => pc.value.trim() !== '') && userDefinedInteraction.trim() === '';
+        if (!standardFormIsPristine) {
+          let displayValues: string[] = [];
+          let copyValues: string[] = [];
 
-        if (currentFrameworkLocale?.components) {
+          if (currentFrameworkLocale?.components) {
             promptComponents.forEach(component => {
             const value = component.value.trim();
             if (value) {
-                displayValues.push(value); 
-                copyValues.push(value);
+              displayValues.push(value);
+              copyValues.push(value);
             }
             });
-        }
+          }
 
-        if (userDefinedInteraction.trim()) {
+          if (userDefinedInteraction.trim()) {
             const interactionVal = userDefinedInteraction.trim();
-            displayValues.push(interactionVal); 
+            displayValues.push(interactionVal);
             copyValues.push(interactionVal);
+          }
+          assembledPrompt = displayValues.join('\n\n').trim();
+          assembledPromptForCopy = copyValues.join(', ').trim();
         }
-        assembledPrompt = displayValues.join('\n\n').trim(); 
-        assembledPromptForCopy = copyValues.join(', ').trim();
       }
-    }
 
-    const finalGeneratedPromptValue = assembledPrompt.trim();
-    const finalPromptToCopyValue = assembledPromptForCopy.trim();
+      const finalGeneratedPromptValue = assembledPrompt.trim();
+      const finalPromptToCopyValue = assembledPromptForCopy.trim();
 
-    let shouldShowInitialInstruction = false;
-    if (!selectedFramework) {
-        shouldShowInitialInstruction = true;
-    } else if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
-        if (!formIsDirty) { 
-            shouldShowInitialInstruction = true;
+      let shouldShowInitialInstruction = false;
+      if (currentFrameworkLocale.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0) {
+        if (!formIsDirty) {
+          shouldShowInitialInstruction = true;
         }
-    } else { 
-        if (standardFormIsPristine) { 
-            shouldShowInitialInstruction = true;
+      } else {
+        if (standardFormIsPristine) {
+          shouldShowInitialInstruction = true;
         }
-    }
+      }
 
-    if (shouldShowInitialInstruction) {
+      if (shouldShowInitialInstruction) {
         setGeneratedPrompt(t(placeholderInstructionKey));
         setPromptToCopy('');
-    } else if (finalGeneratedPromptValue === '') { 
+      } else if (finalGeneratedPromptValue === '') {
         setGeneratedPrompt(t(placeholderInstructionKey));
         setPromptToCopy('');
-    } else {
+      } else {
         setGeneratedPrompt(finalGeneratedPromptValue);
         setPromptToCopy(finalPromptToCopyValue);
+      }
+    } else { 
+      setGeneratedPrompt(selectedCategory ? t('selectSpecificFrameworkOutputSummary') : t(placeholderInstructionKey));
+      setPromptToCopy('');
     }
-
   }, [
-      promptComponents, userDefinedInteraction, selectedFramework, language, t, 
-      selectedCategory, currentFrameworkLocale, interactiveFormValues, otherInputValues, 
-      trueInitialDefaults, getTrueInitialFrameworkDefaultsInternal, computeInitialDisplayFormState, 
-      isEffectivelyDefault, apiKey 
+      promptComponents, userDefinedInteraction, selectedFramework, language, t,
+      selectedCategory, currentFrameworkLocale, interactiveFormValues, otherInputValues,
+      trueInitialDefaults, getTrueInitialFrameworkDefaultsInternal, computeInitialDisplayFormState,
+      isEffectivelyDefault 
   ]);
 
-  useEffect(() => {
+  useEffect((): void => {
     setHasCurrentPromptBeenCopied(false);
+    clearAiStates(); 
   }, [promptToCopy]);
 
   const handlePromptSuccessfullyCopied = () => {
@@ -592,78 +816,88 @@ const App: React.FC = () => {
 
   const translateText = useCallback(async (text: string, from: Language, to: Language): Promise<string> => {
     if (!aiClient || !text.trim() || from === to) {
-      return text; 
+      return text;
     }
     try {
-      const model = 'gemini-2.5-flash-preview-04-17'; 
+      const model = 'gemini-2.5-flash-preview-04-17';
       const prompt = `Translate the following text from ${from === 'id' ? 'Indonesian' : 'English'} to ${to === 'id' ? 'Indonesian' : 'English'}. Return only the translated text, without any introductory phrases or explanations: "${text}"`;
       const response: GenerateContentResponse = await aiClient.models.generateContent({
         model: model,
         contents: prompt,
-        config: { thinkingConfig: { thinkingBudget: 0 } } 
+        config: { thinkingConfig: { thinkingBudget: 0 } }
       });
       return response.text.trim();
     } catch (error) {
       console.error("Translation API error:", error);
-      throw new Error("Translation failed"); 
+      throw new Error("Translation failed");
     }
-  }, [aiClient]); 
+  }, [aiClient]);
 
   const handleLanguageToggle = async () => {
     const newLanguage = language === 'id' ? 'en' : 'id';
-    const currentPreviousLanguage = previousLanguageRef.current; 
+    const currentPreviousLanguage = previousLanguageRef.current;
 
-    previousLanguageRef.current = newLanguage; 
-    if (apiKey) resetFrameworkSuggestionStates();
+    previousLanguageRef.current = newLanguage;
+    resetFrameworkSuggestionStates(); 
+    clearAiStates();
 
-    if (!selectedFramework) { 
+    if (!selectedFramework) {
         setLanguage(newLanguage);
         return;
     }
-    
+
     const frameworkForNewLang = newLanguage === 'id' ? selectedFramework.idLocale : selectedFramework.enLocale;
     const newTrueDefaults = getTrueInitialFrameworkDefaultsInternal(frameworkForNewLang);
 
-    if (!aiClient) { 
+    if (!apiKeyAvailable) { 
         setLanguage(newLanguage);
         setTrueInitialDefaults(newTrueDefaults);
-        setOtherInputValues({}); 
+        setOtherInputValues({});
         if (frameworkForNewLang.interactiveDefinition && frameworkForNewLang.interactiveDefinition.length > 0) {
             setInteractiveFormValues(computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults));
         } else if (frameworkForNewLang.components) {
-             const updatedComponents = frameworkForNewLang.components.map((compDetail: FrameworkComponentDetail) => {
-                const existingCompState = promptComponents.find(pc => pc.id === compDetail.id); 
+            const oldLocaleComponents = (currentPreviousLanguage === 'id' ? selectedFramework.idLocale.components : selectedFramework.enLocale.components) || [];
+            const newLocaleComponentsDetails = frameworkForNewLang.components || [];
+            const updatedComponents = newLocaleComponentsDetails.map((newCompDetail, index) => {
+                const existingCompState = promptComponents[index];
                 return {
-                    id: compDetail.id,
+                    id: newCompDetail.id,
                     value: existingCompState?.value || '', 
-                    label: compDetail.id, 
-                    example: compDetail.example
+                    label: newCompDetail.id, 
+                    example: newCompDetail.example
                 };
             });
             setPromptComponents(updatedComponents);
         }
         return;
     }
-
     setIsTranslating(true);
     setTranslationError(null);
     let translationOccurredError = false;
 
     try {
-      if (promptComponents.length > 0 && selectedFramework?.idLocale.components) { 
+      if (promptComponents.length > 0 && selectedFramework?.idLocale.components) {
+        const newLocaleFrameworkComponents = frameworkForNewLang.components || [];
+
         const translatedPromptComponents = await Promise.all(
-          promptComponents.map(async (pc) => {
-            let translatedValue = pc.value;
-            if (pc.value.trim() !== '') {
+          newLocaleFrameworkComponents.map(async (newCompDetail, index) => {
+            const existingCompState = promptComponents[index]; 
+            let translatedValue = existingCompState?.value || '';
+
+            if (translatedValue.trim() !== '') {
               try {
-                translatedValue = await translateText(pc.value, currentPreviousLanguage, newLanguage);
+                translatedValue = await translateText(translatedValue, currentPreviousLanguage, newLanguage);
               } catch (error) {
-                console.warn(`Translation failed for component value ${pc.id}:`, error);
+                console.warn(`Translation failed for component value (new ID: ${newCompDetail.id}):`, error);
                 translationOccurredError = true;
               }
             }
-            const componentDetailForExample = frameworkForNewLang?.components?.find(compDet => compDet.id === pc.id);
-            return { ...pc, value: translatedValue, example: componentDetailForExample?.example || pc.example, label: pc.id };
+            return {
+              id: newCompDetail.id, 
+              value: translatedValue,
+              label: newCompDetail.id, 
+              example: newCompDetail.example 
+            };
           })
         );
         setPromptComponents(translatedPromptComponents);
@@ -671,47 +905,48 @@ const App: React.FC = () => {
 
       if (Object.keys(interactiveFormValues).length > 0 && selectedFramework?.idLocale.interactiveDefinition) {
         const translatedInteractiveValues: Record<string, string | string[]> = {};
-        const translatedOtherInputValues: Record<string, string> = {...otherInputValues}; 
+        const translatedOtherInputValues: Record<string, string> = {...otherInputValues};
 
         const frameworkLocaleForOldLang = currentPreviousLanguage === 'id' ? selectedFramework.idLocale : selectedFramework.enLocale;
-        
+
         for (const key in interactiveFormValues) {
           const currentValue = interactiveFormValues[key];
-          const originalOtherValue = otherInputValues[key]; 
-          const trueDefaultOldLang = trueInitialDefaults[key];  
-          const questionDef = frameworkLocaleForOldLang.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === key);
+          const originalOtherValue = otherInputValues[key];
+          const trueDefaultOldLang = trueInitialDefaults[key];
+          const questionDefOldLang = frameworkLocaleForOldLang.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === key);
+          const questionDefNewLang = frameworkForNewLang.interactiveDefinition?.flatMap(s => s.questions).find(q => q.id === key);
 
-          const effectivelyDefaultInOldLang = isEffectivelyDefault(currentValue, trueDefaultOldLang, originalOtherValue, questionDef?.type, questionDef?.options);
-          
-          if (questionDef?.includeOtherOption && currentValue === 'LAINNYA_INTERAKTIF_PLACEHOLDER' && originalOtherValue && originalOtherValue.trim() !== '') {
+
+          const effectivelyDefaultInOldLang = isEffectivelyDefault(currentValue, trueDefaultOldLang, originalOtherValue, questionDefOldLang?.type, questionDefOldLang?.options);
+
+          if (questionDefOldLang?.includeOtherOption && currentValue === 'LAINNYA_INTERAKTIF_PLACEHOLDER' && originalOtherValue && originalOtherValue.trim() !== '') {
             try {
               translatedOtherInputValues[key] = await translateText(originalOtherValue, currentPreviousLanguage, newLanguage);
-              translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER'; 
+              translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER';
             } catch (error) {
               console.warn(`Translation failed for interactive 'other' value ${key}:`, error);
               translationOccurredError = true;
-              translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER'; 
+              translatedInteractiveValues[key] = 'LAINNYA_INTERAKTIF_PLACEHOLDER';
             }
-          } else if (effectivelyDefaultInOldLang) {
-             const displayDefault = computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults);
-             translatedInteractiveValues[key] = displayDefault[key];
-             if (questionDef?.includeOtherOption && displayDefault[key] !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
+          } else if (effectivelyDefaultInOldLang && questionDefNewLang) {
+             const displayDefaultNewLang = computeInitialDisplayFormState(frameworkForNewLang, newTrueDefaults);
+             translatedInteractiveValues[key] = displayDefaultNewLang[key];
+             if (questionDefNewLang?.includeOtherOption && displayDefaultNewLang[key] !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
                 translatedOtherInputValues[key] = '';
              }
-
           } else if (typeof currentValue === 'string' && currentValue.trim() !== '' && currentValue !== 'LAINNYA_INTERAKTIF_PLACEHOLDER') {
              try { translatedInteractiveValues[key] = await translateText(currentValue, currentPreviousLanguage, newLanguage); }
              catch (e) { translatedInteractiveValues[key] = currentValue; translationOccurredError = true; }
-          } else if (Array.isArray(currentValue)) { 
+          } else if (Array.isArray(currentValue)) {
              const translatedArray = await Promise.all(currentValue.map(async item => {
-                if(item.trim() !== '') { 
+                if(item.trim() !== '') {
                     try { return await translateText(item, currentPreviousLanguage, newLanguage); }
-                    catch (e) { translationOccurredError = true; return item; } 
+                    catch (e) { translationOccurredError = true; return item; }
                 } return item;
              }));
              translatedInteractiveValues[key] = translatedArray;
-          } else { 
-             translatedInteractiveValues[key] = currentValue; 
+          } else {
+             translatedInteractiveValues[key] = currentValue;
           }
         }
         setInteractiveFormValues(translatedInteractiveValues);
@@ -722,11 +957,8 @@ const App: React.FC = () => {
         try { setUserDefinedInteraction(await translateText(userDefinedInteraction, currentPreviousLanguage, newLanguage)); }
         catch (e) { translationOccurredError = true;  }
       }
-      if (aiFeedback && aiFeedback.trim() !== '') {
-        try { setAiFeedback(await translateText(aiFeedback, currentPreviousLanguage, newLanguage)); }
-        catch (e) { translationOccurredError = true;  }
-      }
-      if (apiKey && userGoalForFramework.trim() !== '') { 
+
+      if (userGoalForFramework.trim() !== '') { 
          try { setUserGoalForFramework(await translateText(userGoalForFramework, currentPreviousLanguage, newLanguage)); }
          catch (e) { translationOccurredError = true;  }
       }
@@ -734,11 +966,11 @@ const App: React.FC = () => {
       if (translationOccurredError) {
         setTranslationError(t('translationGeneralError'));
       }
-    } catch (error) { 
+    } catch (error) {
         console.error("General translation process error:", error);
         setTranslationError(t('translationGeneralError'));
     } finally {
-        setLanguage(newLanguage); 
+        setLanguage(newLanguage);
         setTrueInitialDefaults(newTrueDefaults);
         setIsTranslating(false);
     }
@@ -746,16 +978,16 @@ const App: React.FC = () => {
 
   const fetchAiFeedback = async () => {
     if (!aiClient || !promptToCopy.trim()) {
-      setAiError(apiKey ? t('emptyPromptError') : t('apiKeyMissingError'));
+      setAiError(t('aiFeatureRequiresSubscriptionTooltip')); 
       return;
     }
     setIsFetchingAiFeedback(true);
     setAiError(null);
-    setAiFeedback(null); 
+    setAiFeedback(null);
     setAiFeedbackReceived(false);
 
     try {
-      const model = 'gemini-2.5-flash-preview-04-17'; 
+      const model = 'gemini-2.5-flash-preview-04-17';
       const systemInstruction = t('geminiPromptInstruction');
       const fullPromptForAi = `${promptToCopy}`;
 
@@ -775,25 +1007,57 @@ const App: React.FC = () => {
       setIsFetchingAiFeedback(false);
     }
   };
-  
+
+  const fetchDetailedAiAnalysis = async () => {
+    if (!aiClient || !promptToCopy.trim()) {
+      setDetailedAnalysisError(t('aiFeatureRequiresSubscriptionTooltip')); 
+      return;
+    }
+    setIsFetchingDetailedAnalysis(true);
+    setDetailedAnalysisError(null);
+    setDetailedAiAnalysis(null);
+    setDetailedAiAnalysisReceived(false);
+
+    try {
+      const model = 'gemini-2.5-flash-preview-04-17';
+      const systemInstruction = t('geminiDetailedAnalysisInstruction');
+      const userPromptContent = promptToCopy;
+
+      const response: GenerateContentResponse = await aiClient.models.generateContent({
+        model: model,
+        contents: userPromptContent,
+        config: { systemInstruction: systemInstruction }
+      });
+
+      setDetailedAiAnalysis(response.text);
+      setDetailedAiAnalysisReceived(true);
+    } catch (e: any) { 
+      console.error("Detailed AI analysis API error:", e);
+      const detailMessage = (e && typeof e.message === 'string') ? e.message : String(e);
+      setDetailedAnalysisError(t('aiDetailedAnalysisError') + (detailMessage ? ` (${detailMessage})` : ''));
+    } finally {
+      setIsFetchingDetailedAnalysis(false);
+    }
+  };
+
   const fetchSuggestionsForField = async (componentName: string, frameworkNameForSuggestion: string, currentValueForSuggestion: string): Promise<string[]> => {
-    if (!aiClient) {
-      throw new Error(t('apiKeyMissingError'));
+    if (!aiClient) { 
+      throw new Error(t('aiFeatureRequiresSubscriptionTooltip'));
     }
     try {
-      const model = 'gemini-2.5-flash-preview-04-17'; 
+      const model = 'gemini-2.5-flash-preview-04-17';
       const systemPrompt = t('geminiInstructionForAutocomplete', componentName, frameworkNameForSuggestion, currentValueForSuggestion);
       const response = await aiClient.models.generateContent({
         model: model,
-        contents: "Suggest continuations based on the system instruction.", 
-        config: { systemInstruction: systemPrompt, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } } 
+        contents: "Suggest continuations based on the system instruction.",
+        config: { systemInstruction: systemPrompt, responseMimeType: "application/json", thinkingConfig: { thinkingBudget: 0 } }
       });
 
       let jsonStr = response.text.trim();
-      const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s; 
+      const fenceRegex = /^```(\w*)?\s*\n?(.*?)\n?\s*```$/s;
       const match = jsonStr.match(fenceRegex);
       if (match && match[2]) {
-        jsonStr = match[2].trim(); 
+        jsonStr = match[2].trim();
       }
 
       const suggestionsArray = JSON.parse(jsonStr);
@@ -803,23 +1067,42 @@ const App: React.FC = () => {
       return [];
     } catch (e) {
       console.error("AI suggestion API error:", e);
-      throw new Error(t('suggestionsError')); 
+      throw new Error(t('suggestionsError'));
     }
   };
 
   const currentYear = new Date().getFullYear();
-  const selectedFrameworksForCategory = frameworks.filter(fw => fw.idLocale.category === selectedCategory);
-  
-  const langToggleAriaLabel = language === 'id' 
-    ? `Switch to ${t('languageEN')}` 
+
+  const filteredFrameworksForCategory = frameworks
+    .filter(fw => fw.idLocale.category === selectedCategory)
+    .filter(fw => {
+      if (!frameworkSearchTerm.trim()) return true;
+      const locale = language === 'id' ? fw.idLocale : fw.enLocale;
+      const searchTermLower = frameworkSearchTerm.toLowerCase();
+      return locale.name.toLowerCase().includes(searchTermLower) || locale.description.toLowerCase().includes(searchTermLower);
+    })
+    .sort((a, b) => {
+      const aIsFavorite = favoriteFrameworkIds.includes(a.id);
+      const bIsFavorite = favoriteFrameworkIds.includes(b.id);
+      if (aIsFavorite && !bIsFavorite) return -1;
+      if (!aIsFavorite && bIsFavorite) return 1;
+      const aLocale = language === 'id' ? a.idLocale : a.enLocale;
+      const bLocale = language === 'id' ? b.idLocale : b.enLocale;
+      return aLocale.name.localeCompare(bLocale.name);
+    });
+
+  const langToggleAriaLabel = language === 'id'
+    ? `Switch to ${t('languageEN')}`
     : `Switch to ${t('languageID')}`;
 
-  const canEnhanceCurrentPrompt = !!apiKey && promptToCopy.trim().length > 0 && !isFetchingAiFeedback;
+  const canEnhanceCurrentPrompt = apiKeyAvailable && promptToCopy.trim().length > 0 && !isFetchingAiFeedback;
+  const canAnalyzeCurrentPrompt = apiKeyAvailable && promptToCopy.trim().length > 0 && !isFetchingDetailedAnalysis;
   const isInteractiveFrameworkSelected = selectedFramework && currentFrameworkLocale?.interactiveDefinition && currentFrameworkLocale.interactiveDefinition.length > 0;
+  const isPromptSavable = promptToCopy.trim().length > 0 && !!selectedFramework;
 
   const baseTitleKey = `${selectedCategory}FrameworksTitle` as TranslationKey;
-  const baseTitle = t(baseTitleKey); 
-  const frameworkWord = t('frameworkWord'); 
+  const baseTitle = t(baseTitleKey);
+  const frameworkWord = t('frameworkWord');
   let frameworkListTitle = baseTitle;
 
   if (selectedFramework && currentFrameworkLocale) {
@@ -839,35 +1122,44 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
+      {toastMessage && (
+        <div
+          className={`fixed top-5 right-5 z-[200] p-3 rounded-md shadow-lg text-sm font-medium
+            ${toastMessage.type === 'success' ? 'bg-green-500 text-white' : 'bg-rose-500 text-white'}`}
+          role={toastMessage.type === 'error' ? 'alert' : 'status'}
+        >
+          {toastMessage.message}
+        </div>
+      )}
       <header className="sticky top-0 z-30 bg-slate-900/80 backdrop-blur-sm shadow-md">
         <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-y-2 gap-x-4">
-            
+
             <div className="flex flex-col items-center sm:items-start w-full sm:w-auto">
               <div className="flex items-center">
                 <div className="flex items-center header-glowing-frame p-2 rounded-lg shrink-0">
-                  <AppLogoIcon className="w-8 h-8 sm:w-10 sm:h-10 mr-2 text-teal-600" />
+                  <AppLogoIcon className="w-8 h-8 sm:w-10 sm:h-10 mr-2 text-teal-600" animatedAsAiIndicator={false} />
                   <div className="flex items-center">
                     <span className="text-3xl sm:text-4xl font-bold text-teal-600 dark:text-teal-500">Prompt</span>
                     <span className="text-3xl sm:text-4xl font-bold text-teal-400 dark:text-teal-300 ml-1.5">Matrix</span>
-                    {apiKey && (
-                       <span
-                          className="ml-3 text-2xl sm:text-3xl font-bold api-status-indicator text-purple-400 dark:text-purple-300"
-                          aria-label={t('aiFeaturesActiveIndicator')}
-                          title={t('aiFeaturesActiveIndicator')}
-                        >
-                          AI
-                        </span>
-                    )}
                   </div>
                 </div>
-                <div className="ml-4 hidden md:flex items-center"> 
+                 <div className="ml-3 flex items-center space-x-2">
+                    <span 
+                      className={`plan-badge plan-badge-animated plan-badge-sway ${apiKeyAvailable ? 'plan-badge-premium plan-badge-glow-premium' : 'plan-badge-free plan-badge-glow-free'}`}
+                      title={apiKeyAvailable ? t('premiumPlanTooltip') : t('freePlanTooltip')}
+                    >
+                        <BadgeCheckIcon />
+                        {apiKeyAvailable ? t('premiumPlanBadge') : t('freePlanBadge')}
+                    </span>
+                </div>
+                <div className="ml-4 hidden md:flex items-center">
                   <p className="text-base font-semibold text-slate-300 subtitle-3d-effect">
                     {t('appSubtitle')}
                   </p>
                 </div>
               </div>
-              <div className="mt-1 md:hidden text-center sm:text-left w-full flex justify-center items-center"> 
+              <div className="mt-1 md:hidden text-center sm:text-left w-full flex justify-center items-center">
                 <p className="text-sm font-semibold text-slate-300 subtitle-3d-effect">
                   {t('appSubtitle')}
                 </p>
@@ -876,15 +1168,23 @@ const App: React.FC = () => {
 
             <div className="flex items-center self-center sm:self-auto gap-x-2 sm:gap-x-3 mt-2 sm:mt-0 shrink-0">
               <div className="text-xs">
-                  {isTranslating && ( <span className="text-slate-300 animate-pulse">{t('translationInProgress')}</span> )}
+                  {isTranslating && !globalActivityMessage && ( <span className="text-slate-300 animate-pulse">{t('translationInProgress')}</span> )}
                   {translationError && !isTranslating && ( <span className="text-rose-400" title={translationError}>{t('translationGeneralError').split('.')[0]}</span> )}
               </div>
+              <button
+                onClick={() => setShowSubscriptionInfoModal(true)}
+                className="button-header-3d px-2.5 py-1 sm:px-3 sm:py-1.5 text-purple-300 hover:text-yellow-300 transition-colors rounded-md hover:bg-purple-700/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm flex items-center"
+                title={t('subscriptionInfoModalTitle')}
+              >
+                 <StarIcon className="w-3.5 h-3.5 mr-1 text-yellow-400" />
+                <span className="button-text-content">{t('subscriptionInfoButtonText')}</span>
+              </button>
               <button
                 onClick={() => {
                   setShowHowToUse(true);
                   setIsHowToUseModalShownAutomatically(false);
                 }}
-                className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm"
+                className="button-header-3d px-2.5 py-1 sm:px-3 sm:py-1.5 text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm"
                 title={t('howToUseAppTitle')}
                 aria-label={t('howToUseAppTitle')}
               >
@@ -892,16 +1192,17 @@ const App: React.FC = () => {
               </button>
               <button
                 onClick={handleLanguageToggle}
-                className="px-2 py-1 sm:px-3 sm:py-1.5 text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm"
+                className="button-header-3d px-2 py-1 sm:px-3 sm:py-1.5 text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700/80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 font-semibold text-xs sm:text-sm"
                 title={langToggleAriaLabel}
                 aria-label={langToggleAriaLabel}
-                disabled={isTranslating}
+                disabled={isTranslating || !apiKeyAvailable} 
               >
                 {language === 'id' ? 'EN' : 'ID'}
               </button>
             </div>
           </div>
         </div>
+        <GlobalActivityIndicator activityMessage={globalActivityMessage} />
       </header>
 
       <main className="flex-grow container mx-auto px-2 sm:px-4 py-4 sm:py-6">
@@ -956,32 +1257,64 @@ const App: React.FC = () => {
                 <h2 className="text-lg sm:text-xl font-semibold mb-2 text-teal-600 dark:text-teal-500 flex items-center">
                   {frameworkListTitle}
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 max-h-[60vh] sm:max-h-[calc(100vh-280px)] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)' }}>
-                  {selectedFrameworksForCategory.map((framework) => {
+                 <input
+                    type="text"
+                    placeholder={t('searchFrameworksPlaceholder')}
+                    value={frameworkSearchTerm}
+                    onChange={(e) => setFrameworkSearchTerm(e.target.value)}
+                    className="w-full p-2 mb-2.5 bg-slate-600/70 dark:bg-slate-700/60 border border-slate-500 rounded-md focus:ring-1 focus:ring-teal-500 focus:border-teal-500 outline-none text-xs text-slate-100 placeholder-slate-400/70 non-copyable-input-field"
+                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 max-h-[calc(60vh-40px)] sm:max-h-[calc(100vh-320px)] overflow-y-auto pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)' }}>
+                  {filteredFrameworksForCategory.length > 0 ? filteredFrameworksForCategory.map((framework) => {
                     const locale = language === 'id' ? framework.idLocale : framework.enLocale;
                     const isSuggested = suggestedFrameworkIds.includes(framework.id);
+                    const isFavorite = favoriteFrameworkIds.includes(framework.id);
                     return (
                       <button
                         key={framework.id}
                         onClick={() => handleFrameworkSelect(framework)}
-                        className={`w-full text-left p-2.5 sm:p-3 rounded-md transition-all duration-150 ease-in-out relative focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800
+                        className={`w-full text-left p-2.5 sm:p-3 rounded-md transition-all duration-150 ease-in-out relative group focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800
                                       ${selectedFramework?.id === framework.id
                                         ? 'bg-teal-600 border border-teal-500 text-white shadow-lg scale-102'
-                                        : 'bg-slate-600 dark:bg-slate-700 hover:bg-teal-700 dark:hover:bg-slate-600 text-slate-100 dark:text-slate-200 shadow-sm'
+                                        : `bg-slate-600 dark:bg-slate-700 hover:bg-teal-700 dark:hover:bg-slate-600 text-slate-100 dark:text-slate-200 shadow-sm ${isSuggested && apiKeyAvailable ? 'ring-2 ring-purple-400 dark:ring-purple-300' : ''} ${isFavorite ? 'ring-2 ring-yellow-400 dark:ring-yellow-300' : ''}`
                                       }`}
                         title={locale.description}
                         aria-pressed={selectedFramework?.id === framework.id}
                       >
                         <span className="button-text-content text-xs sm:text-sm font-medium">{locale.name}</span>
-                        {isSuggested && (
-                            <StarIcon 
-                                className="w-3.5 h-3.5 sm:w-4 sm:h-4 absolute top-1 right-1 text-yellow-400 dark:text-yellow-300"
+                        {isSuggested && apiKeyAvailable && ( 
+                            <AppLogoIcon
+                                animatedAsAiIndicator
+                                className="w-3.5 h-3.5 sm:w-4 sm:h-4 absolute top-1.5 right-1.5 text-purple-400 dark:text-purple-300"
                                 title={t('suggestedFrameworkTooltip')}
                             />
                         )}
+                         <button
+                            onClick={(e) => { e.stopPropagation(); toggleFavoriteFramework(framework.id); }}
+                            className={`absolute p-0.5 rounded-full
+                                        ${selectedFramework?.id === framework.id
+                                            ? 'top-1 right-1'
+                                            : 'top-1.5 right-1.5 group-hover:bg-slate-500/50'
+                                        }
+                                        focus:outline-none focus:ring-1 focus:ring-yellow-400`}
+                            aria-label={isFavorite ? t('favoriteFrameworkTooltipRemove') : t('favoriteFrameworkTooltipAdd')}
+                            aria-pressed={isFavorite}
+                          >
+                            <StarIcon
+                              className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors duration-150
+                                          ${isFavorite
+                                              ? 'text-yellow-400 dark:text-yellow-300'
+                                              : 'text-slate-500 dark:text-slate-400 group-hover:text-yellow-400 dark:group-hover:text-yellow-300'
+                                          }`
+                                      }
+                              title={isFavorite ? t('favoriteFrameworkTooltipRemove') : t('favoriteFrameworkTooltipAdd')}
+                            />
+                          </button>
                       </button>
                     );
-                  })}
+                  }) : (
+                     <p className="col-span-full text-xs text-center text-slate-400 py-3">{t('noFrameworksFoundError')}</p>
+                  )}
                 </div>
                  {!selectedFramework && <p className="mt-3 text-xs text-center text-slate-400">{t('selectSpecificFrameworkInputSummary')}</p>}
               </div>
@@ -989,44 +1322,49 @@ const App: React.FC = () => {
           </div>
 
           <div className="md:col-span-2 space-y-4 sm:space-y-6">
-            {apiKey && selectedCategory && (
-                <div className="bg-slate-700/40 dark:bg-slate-800/50 p-3 sm:p-4 rounded-lg border border-purple-600/50 shadow-sm">
-                    <h4 className="relative text-md font-semibold text-purple-400 dark:text-purple-300 mb-2 flex items-center">
+            {selectedCategory && (
+                <div className={`bg-slate-700/40 dark:bg-slate-800/50 p-3 sm:p-4 rounded-lg border ${apiKeyAvailable ? 'border-purple-600/50' : 'border-slate-600/50'} shadow-sm`}>
+                    <h4 className={`relative text-md font-semibold ${apiKeyAvailable ? 'text-purple-400 dark:text-purple-300' : 'text-slate-400'} mb-2 flex items-center`}>
                         <AppLogoIcon
-                            animatedAsAiIndicator={true}
-                            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 opacity-[0.08] -z-10"
+                            animatedAsAiIndicator={apiKeyAvailable}
+                            className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 opacity-[0.08] -z-10 ${apiKeyAvailable ? '' : 'grayscale opacity-[0.06]'}`}
                             aria-hidden="true"
                         />
                         {t('frameworkSuggestionsTitle')}
-                        {apiKey && <AppLogoIcon animatedAsAiIndicator className="w-4 h-4 ml-2 api-status-indicator shrink-0" />}
+                        {apiKeyAvailable && <AppLogoIcon animatedAsAiIndicator className="w-4 h-4 ml-2 shrink-0" />}
                     </h4>
-                    <p className="text-xs text-slate-400 mb-2">{t('frameworkSuggestionInstruction')}</p>
+                    <p className="text-xs text-slate-400 mb-2">
+                        {apiKeyAvailable ? t('frameworkSuggestionInstruction') : t('aiFeaturesRequireSubscriptionMessage')}
+                    </p>
                     <textarea
                         value={userGoalForFramework}
                         onChange={(e) => setUserGoalForFramework(e.target.value)}
                         placeholder={t('userGoalInputPlaceholder')}
                         rows={2}
-                        className="w-full p-2 bg-slate-600/70 dark:bg-slate-700/60 border border-slate-500 rounded-md focus:ring-1 focus:ring-purple-500 focus:border-purple-500 outline-none text-sm text-slate-100 placeholder-slate-400/70 ai-suggestion-textarea non-copyable-input-field"
+                        className={`w-full p-2 bg-slate-600/70 dark:bg-slate-700/60 border ${apiKeyAvailable ? 'border-slate-500 focus:ring-purple-500 focus:border-purple-500' : 'border-slate-500 cursor-not-allowed'} rounded-md focus:ring-1 outline-none text-sm text-slate-100 placeholder-slate-400/70 ai-suggestion-textarea non-copyable-input-field`}
+                        disabled={!apiKeyAvailable}
+                        title={!apiKeyAvailable ? t('aiFeatureRequiresSubscriptionTooltip') : undefined}
                     />
                     <button
                         onClick={handleFetchFrameworkSuggestions}
                         className={`w-full mt-2 py-2 px-3 text-xs font-semibold rounded-md transition-colors duration-150 flex items-center justify-center space-x-1.5
-                        ${userGoalForFramework.trim() && !isFetchingFrameworkSuggestions
+                        ${apiKeyAvailable && userGoalForFramework.trim() && !isFetchingFrameworkSuggestions
                             ? 'bg-purple-600 hover:bg-purple-500 text-white focus:ring-1 focus:ring-purple-400'
                             : 'bg-slate-500 text-slate-300 cursor-not-allowed'
                         }`}
-                        disabled={!userGoalForFramework.trim() || isFetchingFrameworkSuggestions}
-                        aria-label={t('getFrameworkSuggestionsButtonAria')}
+                        disabled={!apiKeyAvailable || !userGoalForFramework.trim() || isFetchingFrameworkSuggestions}
+                        aria-label={!apiKeyAvailable ? t('aiFeatureRequiresSubscriptionTooltip') : t('getFrameworkSuggestionsButtonAria')}
+                        title={!apiKeyAvailable ? t('aiFeatureRequiresSubscriptionTooltip') : t('getFrameworkSuggestionsButtonAria')}
                     >
                         <span className="button-text-content">{isFetchingFrameworkSuggestions ? t('frameworkSuggestionsLoading') : t('getFrameworkSuggestionsButton')}</span>
-                        <AppLogoIcon animatedAsAiIndicator className={`w-4 h-4 api-status-indicator ml-1.5 ${isFetchingFrameworkSuggestions ? 'opacity-70 animate-pulse' : ''}`} />
+                         <AppLogoIcon animatedAsAiIndicator={apiKeyAvailable} className={`w-4 h-4 ml-1.5 ${isFetchingFrameworkSuggestions ? 'opacity-70 animate-pulse' : ''} ${!apiKeyAvailable ? 'grayscale' : ''}`} />
                     </button>
                     {frameworkSuggestionError && <p className="text-xs text-rose-400 mt-1.5">{frameworkSuggestionError}</p>}
                 </div>
             )}
 
             <div className="bg-[var(--bg-secondary)] dark:bg-slate-800/70 rounded-xl shadow-lg border border-[var(--border-color)] dark:border-slate-700/50">
-              <div 
+              <div
                 className="flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 border-b border-[var(--border-color)] dark:border-slate-700/50 cursor-pointer hover:bg-slate-700/40 transition-colors"
                 onClick={() => setIsInputPanelExpanded(!isInputPanelExpanded)}
                 role="button"
@@ -1055,12 +1393,9 @@ const App: React.FC = () => {
                         otherInputValues={otherInputValues}
                         onOtherInputChange={handleOtherInputChange}
                         language={language}
-                        fetchSuggestions={apiKey ? fetchSuggestionsForField : undefined}
-                        apiKeyAvailable={!!apiKey}
+                        fetchSuggestions={fetchSuggestionsForField} 
+                        apiKeyAvailable={apiKeyAvailable}
                         frameworkName={currentFrameworkLocale.name}
-                        onEnhancePrompt={apiKey ? fetchAiFeedback : undefined}
-                        canEnhancePrompt={canEnhanceCurrentPrompt}
-                        isFetchingEnhancement={isFetchingAiFeedback}
                       />
                     ) : currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 ? (
                       promptComponents.map(component => (
@@ -1076,14 +1411,14 @@ const App: React.FC = () => {
                           description={t('inputFieldDescription', t(component.id as TranslationKey, component.label), currentFrameworkLocale.shortName)}
                           predefinedOptions={currentFrameworkLocale.predefinedOptions?.[component.id]}
                           isVisible={isInputPanelExpanded}
-                          fetchSuggestions={apiKey ? fetchSuggestionsForField : undefined} 
+                          fetchSuggestions={fetchSuggestionsForField} 
                           frameworkName={currentFrameworkLocale.name}
-                          apiKeyAvailable={!!apiKey}
+                          apiKeyAvailable={apiKeyAvailable}
                           exampleText={component.example}
                         />
                       ))
                     ) : (
-                      null 
+                      null
                     )}
                   </>
                 ) : (
@@ -1102,6 +1437,7 @@ const App: React.FC = () => {
                     isTextarea
                     rows={3}
                     isVisible={isInputPanelExpanded}
+                    apiKeyAvailable={apiKeyAvailable} 
                   />
                 )}
 
@@ -1134,48 +1470,68 @@ const App: React.FC = () => {
                 isFetchingAiFeedback={isFetchingAiFeedback}
                 aiError={aiError}
                 onEnhanceWithAI={fetchAiFeedback}
-                apiKeyAvailable={!!apiKey} 
+                detailedAiAnalysis={detailedAiAnalysis}
+                isFetchingDetailedAnalysis={isFetchingDetailedAnalysis}
+                detailedAnalysisError={detailedAnalysisError}
+                onAnalyzeWithAI={fetchDetailedAiAnalysis}
+                apiKeyAvailable={apiKeyAvailable}
                 aiFeedbackReceived={aiFeedbackReceived}
+                detailedAiAnalysisReceived={detailedAiAnalysisReceived}
                 hasCurrentPromptBeenCopied={hasCurrentPromptBeenCopied}
                 onPromptSuccessfullyCopied={handlePromptSuccessfullyCopied}
+                onSavePrompt={handleSavePrompt}
+                isPromptSavable={isPromptSavable}
               />
             </div>
+
+            <PromptStashPanel
+                savedPrompts={savedPrompts}
+                onLoadPrompt={handleLoadPrompt}
+                onDeletePrompt={handleDeletePrompt}
+                onRenamePrompt={handleRenamePrompt}
+                isLoading={isDBLoading}
+                dbError={dbError}
+                showToast={showToast}
+                reloadPrompts={loadPromptsFromDB}
+                appVersion={APP_VERSION}
+            />
+
           </div>
         </div>
       </main>
 
       <footer className="text-center py-3 sm:py-4 border-t border-[var(--border-color)] dark:border-slate-700/50 bg-slate-900/80 backdrop-blur-sm">
         <p className="text-xs text-slate-400 dark:text-slate-500">
-          <span className="animated-signature">PromptMatrix</span>{'\u00A9'} V5.0 - {currentYear}
+          <span className="animated-signature">PromptMatrix</span>{'\u00A9'} {APP_VERSION} - {currentYear}
         </p>
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
           {t('footerOptimize')}
         </p>
         <div className="flex justify-center items-center space-x-4 mt-2">
-            <a 
-              href="mailto:si.sigitadi@gmail.com" 
-              title="Email Sigit Adi" 
-              aria-label="Email Sigit Adi" 
+            <a
+              href="mailto:si.sigitadi@gmail.com"
+              title="Email Sigit Adi"
+              aria-label="Email Sigit Adi"
               className="text-slate-400 hover:text-teal-500 dark:text-slate-500 dark:hover:text-teal-400 transition-colors"
             >
               <GmailIcon className="w-5 h-5" />
             </a>
-            <a 
-              href="https://github.com/sisigitadi" 
-              title="GitHub Profile Sigit Adi" 
-              aria-label="GitHub Profile Sigit Adi" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://github.com/sisigitadi"
+              title="GitHub Profile Sigit Adi"
+              aria-label="GitHub Profile Sigit Adi"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-slate-400 hover:text-teal-500 dark:text-slate-500 dark:hover:text-teal-400 transition-colors"
             >
               <GithubIcon className="w-5 h-5" />
             </a>
-            <a 
-              href="https://medium.com/@si.sigitadi" 
-              title="Medium Profile Sigit Adi" 
-              aria-label="Medium Profile Sigit Adi" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://medium.com/@si.sigitadi"
+              title="Medium Profile Sigit Adi"
+              aria-label="Medium Profile Sigit Adi"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-slate-400 hover:text-teal-500 dark:text-slate-500 dark:hover:text-teal-400 transition-colors"
             >
               <MediumIcon className="w-5 h-5" />
@@ -1184,10 +1540,18 @@ const App: React.FC = () => {
       </footer>
 
       <DisclaimerModal isOpen={showDisclaimer} onClose={handleDisclaimerAcknowledge} />
-      <HowToUseModal 
-        isOpen={showHowToUse} 
+      <HowToUseModal
+        isOpen={showHowToUse}
         onClose={handleHowToUseClose}
         isShownAutomatically={isHowToUseModalShownAutomatically}
+      />
+      <SubscriptionInfoModal 
+        isOpen={showSubscriptionInfoModal} 
+        onClose={() => setShowSubscriptionInfoModal(false)} 
+      />
+      <TeaserPopupModal 
+        isOpen={showTeaserPopup} 
+        onClose={() => setShowTeaserPopup(false)} 
       />
     </div>
   );

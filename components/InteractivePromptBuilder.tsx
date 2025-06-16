@@ -16,9 +16,10 @@ interface InteractivePromptBuilderProps {
   fetchSuggestions?: (componentName: string, frameworkName: string, currentValue: string) => Promise<string[]>;
   apiKeyAvailable?: boolean;
   frameworkName?: string;
-  onEnhancePrompt?: () => void;
-  canEnhancePrompt?: boolean;
-  isFetchingEnhancement?: boolean;
+  // Props for the removed button are now also removed:
+  // onEnhancePrompt?: () => void;
+  // canEnhancePrompt?: boolean;
+  // isFetchingEnhancement?: boolean;
 }
 
 const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
@@ -31,9 +32,7 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
   fetchSuggestions,
   apiKeyAvailable,
   frameworkName,
-  onEnhancePrompt,
-  canEnhancePrompt,
-  isFetchingEnhancement,
+  // Removed props are no longer destructured
 }) => {
   const { t } = useLanguage();
   const [currentValues, setCurrentValues] = useState<Record<string, string | string[]>>(initialValues);
@@ -398,10 +397,6 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
     }
   };
 
-  const enhanceButtonTitle = !apiKeyAvailable 
-    ? t('apiKeyMissingError') 
-    : t('enhanceButtonTitle');
-
   return (
     <div className="space-y-4">
       {sections.map((section, sectionIndex) => (
@@ -421,28 +416,7 @@ const InteractivePromptBuilder: React.FC<InteractivePromptBuilderProps> = ({
           </div>
         </div>
       ))}
-
-      {apiKeyAvailable && onEnhancePrompt && (
-        <div className="mt-4 pt-4 border-t border-slate-700">
-          <button
-            onClick={onEnhancePrompt}
-            title={enhanceButtonTitle}
-            className={`w-full py-2.5 px-4 text-sm font-semibold rounded-md transition-all duration-200 ease-in-out flex items-center justify-center space-x-2
-                        transform active:scale-95 shadow-md
-                        ${canEnhancePrompt && !isFetchingEnhancement
-                            ? 'bg-purple-600 hover:bg-purple-500 text-white focus:ring-1 focus:ring-purple-400 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800'
-                            : 'bg-slate-600 text-slate-400 cursor-not-allowed focus:ring-slate-500 opacity-70'
-                        }`}
-            aria-label={t('enhanceButtonAria')}
-            disabled={!canEnhancePrompt || isFetchingEnhancement}
-          >
-            <span className="button-text-content">
-              {isFetchingEnhancement ? t('enhanceButtonLoadingText') : t('enhanceButtonText')}
-            </span>
-            <AppLogoIcon animatedAsAiIndicator className={`w-5 h-5 api-status-indicator ml-2 ${isFetchingEnhancement ? 'opacity-70 animate-pulse' : '' }`} />
-          </button>
-        </div>
-      )}
+      {/* Removed the overall "Get AI Suggestions" button from here */}
     </div>
   );
 };
