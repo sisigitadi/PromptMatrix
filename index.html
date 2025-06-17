@@ -457,19 +457,29 @@
       animation: badgeGlowFreeAnimation 2.8s infinite ease-in-out;
     }
 
-    @keyframes badgeSwayAnimation {
-      0%, 100% { transform: rotate(0deg) translateY(0px); }
-      25% { transform: rotate(-1.5deg) translateY(-1px); }
-      75% { transform: rotate(1.5deg) translateY(-1px); }
+    @keyframes badgeSwayAnimation { /* Renamed to badgeBounceAnimation internally, but keep name for CSS class */
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2px); } /* Subtle bounce up, removed rotate */
     }
-    .plan-badge-sway { /* Common class for sway */
-      animation-name: badgeSwayAnimation;
-      animation-duration: 4.5s;
+    .plan-badge-sway { /* Common class for sway/bounce */
+      animation-name: badgeSwayAnimation; /* Will use the modified keyframes */
+      animation-duration: 3s; /* Adjusted duration for bounce */
       animation-timing-function: ease-in-out;
       animation-iteration-count: infinite;
     }
     .plan-badge-animated { /* Base class to combine animations */
         /* Add other base styles for animated badges if needed */
+    }
+
+    /* AI Icon Animations */
+    @keyframes aiIconSwayAnimation {
+      0%, 100% { transform: rotate(0deg) translateY(0px) scale(1); }
+      25% { transform: rotate(-2.5deg) translateY(-0.5px) scale(1.015); }
+      75% { transform: rotate(2.5deg) translateY(-0.5px) scale(1.015); }
+    }
+    .ai-icon-sway-glow-effect {
+      animation: aiIconSwayAnimation 3.5s infinite ease-in-out;
+      filter: drop-shadow(0 0 3px var(--badge-premium-glow)) drop-shadow(0 0 5px var(--badge-premium-glow));
     }
 
   </style>
@@ -487,7 +497,7 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/promptmatrix/assets/index-CcA56a77.js"></script>
+  <script type="module" crossorigin src="/promptmatrix/assets/index-BvcqdbLE.js"></script>
 </head>
 <body class="antialiased theme-dark">
   <div id="root"></div>
