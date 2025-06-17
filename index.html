@@ -30,20 +30,21 @@
       --text-anim-accent-bg-hover: #F0FDFA; /* teal-50 */
       --text-anim-accent-bg-active: #CCFBF1; /* teal-100 */
       
-      /* Colors for Plan Badges */
+      /* Colors for Plan Badges & AI Icon Glow */
       --badge-premium-bg-start: #8B5CF6; /* purple-500 */
       --badge-premium-bg-end: #6D28D9;   /* purple-700 */
       --badge-premium-border: #A78BFA;   /* purple-400 */
       --badge-premium-icon: #FACC15;   /* yellow-400 */
       --badge-premium-text: #FFFFFF;
-      --badge-premium-glow: rgba(167, 139, 250, 0.7); /* purple-400 with alpha */
+      /* Adjusted glow for AI icons - brighter */
+      --badge-premium-glow: rgba(192, 132, 252, 0.85); /* purple-300 with higher alpha */
 
 
       --badge-free-bg: #334155;       /* slate-700 */
       --badge-free-border: #475569;   /* slate-600 */
       --badge-free-icon: #2DD4BF;     /* teal-400 */
       --badge-free-text: #E2E8F0;     /* slate-200 */
-      --badge-free-glow: rgba(45, 212, 191, 0.6); /* teal-400 with alpha */
+      --badge-free-glow: rgba(45, 212, 191, 0.7); /* teal-400 with increased alpha for consistency */
     }
 
     body {
@@ -71,6 +72,11 @@
     }
     ::-webkit-scrollbar-thumb:hover {
       background: var(--text-accent-hover);
+    }
+
+    .text-xxs { /* Added for dev toggle info text */
+      font-size: 0.65rem; /* Roughly 10.4px */
+      line-height: 0.9rem; /* Roughly 14.4px */
     }
 
     @keyframes pulse-bg-intensified {
@@ -472,14 +478,18 @@
     }
 
     /* AI Icon Animations */
-    @keyframes aiIconSwayAnimation {
-      0%, 100% { transform: rotate(0deg) translateY(0px) scale(1); }
-      25% { transform: rotate(-2.5deg) translateY(-0.5px) scale(1.015); }
-      75% { transform: rotate(2.5deg) translateY(-0.5px) scale(1.015); }
+    @keyframes aiIconSwayAnimation { /* Name kept, behavior changed to bounce */
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-2.5px); /* Bounce up */
+      }
     }
-    .ai-icon-sway-glow-effect {
+    .ai-icon-sway-glow-effect { /* Class name kept for simplicity, applies bounce */
       animation: aiIconSwayAnimation 3.5s infinite ease-in-out;
-      filter: drop-shadow(0 0 3px var(--badge-premium-glow)) drop-shadow(0 0 5px var(--badge-premium-glow));
+      /* Increased glow intensity and spread */
+      filter: drop-shadow(0 0 5px var(--badge-premium-glow)) drop-shadow(0 0 10px var(--badge-premium-glow));
     }
 
   </style>
@@ -491,13 +501,13 @@
     "react": "https://esm.sh/react@^19.1.0",
     "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
     "react/": "https://esm.sh/react@^19.1.0/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.5.1",
+    "@google/genai": "https://esm.sh/@google/genai@0.12.0",
     "vite": "https://esm.sh/vite@^6.3.5",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2"
   }
 }
 </script>
-  <script type="module" crossorigin src="/promptmatrix/assets/index-BvcqdbLE.js"></script>
+  <script type="module" crossorigin src="/promptmatrix/assets/index-BA9dKwW7.js"></script>
 </head>
 <body class="antialiased theme-dark">
   <div id="root"></div>
