@@ -1,20 +1,21 @@
-import { TranslationSet, TranslationKey } from './types'; // Ensure TranslationKey is imported
+
+import { TranslationSet, TranslationKey } from './types'; 
 
 export const translations: TranslationSet = {
   en: {
     appTitle: "PromptMatrix",
     appSubtitle: "Your guide to understanding & crafting effective AI prompts.",
-    textFrameworksTitle: "2. Text Prompt Framework",
-    mediaFrameworksTitle: "2. Image & Video Prompt Framework",
-    musicFrameworksTitle: "2. Music Prompt Framework",
+    textFrameworksTitle: "Text Frameworks", 
+    mediaFrameworksTitle: "Image & Video Frameworks", 
+    musicFrameworksTitle: "Music Frameworks", 
     inputComponentsTitle: "3. Components:",
     clearInputsButton: "Clear Inputs",
     clearInputsButtonAria: "Clear all input fields for the current framework",
     generatedPromptTitle: "Prompt Preview:",
     footerOptimize: "Made by engineer, not coder.",
     footerContactMe: "",
-    initialPromptAreaInstruction: "Your structured prompt will appear here, ready to be copied to your AI tool. You can also get AI feedback on it!",
-    initialPromptAreaInstructionNoApiKey: "Your structured prompt will appear here, ready to be copied to your AI tool.",
+    initialPromptAreaInstruction: "Your structured prompt will appear here. Full AI features (Framework Suggester & Researcher, Per-Field Suggestions, Overall Prompt Feedback, Detailed Prompt Analysis, AI Web Research) are part of our upcoming Premium Plan.",
+    initialPromptAreaInstructionNoApiKey: "Your structured prompt will appear here, ready to be copied to your AI tool. Full AI features (Framework Suggester & Researcher, Per-Field Suggestions, Overall Prompt Feedback, Detailed Prompt Analysis, AI Web Research) are part of our upcoming Premium Plan and will require a subscription.",
     selectFrameworkPromptAreaInstruction: "Begin by selecting a framework category, then choose a specific framework to understand its structure and build your prompt.",
     nothingToCopyMessage: "Nothing to copy. Construct your prompt first!",
     noInputComponents: "This framework has no structured input components. Use its description as a general guide to understand its principles.",
@@ -43,8 +44,8 @@ export const translations: TranslationSet = {
     
     disclaimerTitle: "About PromptMatrix",
     disclaimerPoint1: "Learn to build & understand structured AI prompts with guided frameworks.",
-    disclaimerPoint2: "This is an educational aid. It does not execute prompts with external AI models. Optional AI-powered suggestion features require an AI API key (user-provided, not stored by this tool) to function.",
-    disclaimerPoint3: "Free, 'as is', & respects your privacy. No personal data collected. Ad-free & promotion-free.",
+    disclaimerPoint2: "This is an educational aid. Core prompt building (framework selection, input fields, prompt preview, copy, save/load) is free. Advanced AI-powered features (AI Framework Finder & Researcher, AI Per-Field Input Suggestions, AI Overall Prompt Feedback, AI Detailed Prompt Analysis, AI Web Research) are premium and will require a future subscription.",
+    disclaimerPoint3: "Free core features are provided 'as is' & respect your privacy. No personal data collected for core use. Ad-free & promotion-free.",
     disclaimerContactPrompt: "Feedback & Questions:",
     disclaimerModalAcknowledgeButton: "Acknowledge & Continue",
 
@@ -55,11 +56,12 @@ export const translations: TranslationSet = {
     howToUseAppTitle: "How to Use PromptMatrix",
     howToUseAppTitleShort: "How To Use",
     howToUseStep1: "Choose a Category (Text, Media, Music) to explore prompt structures.",
-    howToUseStep2: "Select a specific Framework. Optionally, use the 'AI Framework Suggester' by describing your goal.",
-    howToUseStep3: "Fill in the 'Components'. Use 💡 for AI suggestions per field (API key needed).",
+    howToUseStep2: "Select a specific Framework. Optionally, use the 'AI Framework Finder & Researcher' (Premium Feature - Subscription Coming Soon).",
+    howToUseStep3: "Fill in the 'Components'. Use 💡 for AI suggestions per field (Premium Feature - Subscription Coming Soon).",
     howToUseStep4: "Review your complete prompt in 'Prompt Preview' as it updates live.",
-    howToUseStep5: "Optionally, click 'Get AI Suggestions 💡' for overall prompt feedback from AI (API key needed).",
-    howToUseStep6: "Click 'Copy Prompt', then 'Launch AI Tool' to use it on your chosen AI platform.",
+    howToUseStep5: "Optionally, click 'Get AI Suggestions 💡' for overall prompt feedback (Premium Feature - Subscription Coming Soon).",
+    howToUseStep5b: "For deeper insights, click 'Detailed Analysis' 📊 for a structured review (Premium Feature - Subscription Coming Soon).",
+    howToUseStep6: "Click 'Copy Prompt', then 'Launch AI Tool' to use it on your chosen AI platform. Save your work using 'Save Prompt'.",
     howToUseTip: "Explore different framework, switch languages (ID/EN) using the button in the header, and master prompt engineering!",
     howToUseSwitchToEnglish: "View in English",
     howToUseSwitchToIndonesian: "Lihat dalam Bahasa Indonesia",
@@ -75,23 +77,23 @@ export const translations: TranslationSet = {
     textFrameworksCategoryTooltip: "Framework for understanding and crafting textual prompts (e.g., for chatbots, writing assistants).",
     mediaFrameworksCategoryTooltip: "Framework for understanding and building prompts for image and video generation AIs.",
     musicFrameworksCategoryTooltip: "Framework for understanding and constructing prompts for music and audio generation AIs.",
-    selectCategoryTitle: "1. Category",
+    selectCategoryTitle: "1. Category & Search", 
     selectCategoryInstruction: "Select a framework category above to explore structures and start building your understanding of effective prompts.",
     selectSpecificFrameworkInputSummary: "Choose a framework from the grid to see its components and start building your prompt. Each component will provide an example.",
-    selectSpecificFrameworkOutputSummary: "Your structured prompt will appear here, ready to be copied to your AI tool. You can also get AI feedback on it!",
-    clickToExpandInputPanel: (frameworkName: string) => `Tampilkan komponen '${frameworkName}' & contoh`,
-    clickToExpandOutputPanel: "Tampilkan prompt Anda dan tindakan",
-    selectOptionTooltip: "Select option",
+    selectSpecificFrameworkOutputSummary: "Your structured prompt will appear here. AI feedback & analysis are premium features (subscription coming soon).",
+    clickToExpandInputPanel: (frameworkName: string) => `Show '${frameworkName}' components & examples`,
+    clickToExpandOutputPanel: "Show your prompt and actions",
+    selectOptionTooltip: "Selected",
 
     enhanceButtonText: "Get AI Suggestions",
     enhanceButtonLoadingText: "Getting Suggestions...",
-    enhanceButtonTitle: "Get AI-powered suggestions for your prompt (requires AI API key)",
+    enhanceButtonTitle: "Get AI-powered suggestions for your prompt",
     enhanceButtonAria: "Get AI suggestions for the prompt",
     aiFeedbackTitle: "AI Feedback & Suggestions (Overall Prompt)", 
     aiFeedbackTitleTextOnly: "AI Feedback & Suggestions (Overall Prompt)", 
     aiFeedbackLoading: "Getting feedback from AI...",
     aiEnhancementError: "Sorry, an error occurred while fetching AI feedback. Please try again.",
-    apiKeyMissingError: "AI API Key not configured. This feature is unavailable.",
+    apiKeyMissingError: "Premium Feature: Subscription Required (Coming Soon). This feature needs an active premium plan.", // General message
     emptyPromptError: "Please construct a prompt before requesting AI suggestions.",
     geminiPromptInstruction: `Act as a friendly, cheerful, and highly experienced prompt engineering mentor. You're like an academic guide and a helpful friend combined, passionate about sharing your extensive experience to teach users prompt engineering from foundational basics to expert levels. Your dedication is to empower them to master this skill quickly through your point of view.
 Analyze the user's prompt provided below...
@@ -104,13 +106,14 @@ Maintain an encouraging, engaging, and deeply informative tone. Your goal is to 
 User's prompt:`,
     aiFeedbackReceivedIndicatorTooltip: "AI feedback successfully loaded", 
     promptHasBeenCopiedIndicatorTooltip: "This prompt has been copied.", 
+    initialFeedbackInstruction: "Click 'Get AI Suggestions' for overall prompt feedback. (Premium Feature - Subscription Coming Soon)",
     
     aiFeedbackStrengthsTitle: "Strengths:",
     aiFeedbackWeaknessesTitle: "Weaknesses:",
     aiFeedbackReasoningTitle: "Reasoning:",
     aiFeedbackActionableSuggestionsTitle: "Actionable Suggestions:", 
 
-    suggestButtonTitle: "Get AI suggestions for this field (requires API Key)",
+    suggestButtonTitle: "Get AI suggestions for this field",
     suggestionsLoading: "Getting suggestions...",
     suggestionsError: "Error fetching suggestions.",
     noSuggestionsFound: "No suggestions found.",
@@ -131,109 +134,156 @@ User's prompt:`,
     frameworkSuggestionsError: "Error fetching framework suggestions. Please try again.",
     suggestedFrameworkTooltip: "AI Suggested Framework",
     noFrameworkSuggestionsFound: "No specific framework suggestions found for your goal. Try rephrasing or explore the categories below.",
-    frameworkSuggestionInstruction: "Describe your goal. AI will suggest matching frameworks.",
-    frameworkSuggestionsTitle: "AI Framework Finder",
-    aiPoweredFeatureTooltip: "AI Powered Feature (Requires API Key)", 
-    aiFeaturesActiveIndicator: "AI features enabled (API Key detected)", 
+    frameworkSuggestionInstruction: "Describe your goal. AI will suggest matching frameworks. You can also research new techniques from the web.",
+    frameworkSuggestionsTitle: "AI Framework Finder & Researcher", 
+    aiPoweredFeatureTooltip: "Premium AI Feature. Subscription coming soon!", 
+    aiFeaturesActiveIndicator: "Premium Plan Active", 
+    aiFeaturesDisconnectedIndicator: "Free Plan", 
     geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => `You are an AI assistant specialized in recommending prompt engineering framework. Based on the user's goal, you must suggest the most relevant framework IDs from the provided list. The list of available framework (including their ID, name, description, and category) is: ${frameworksInfoJson}. Respond ONLY with a JSON object containing a single key "suggestedFrameworkIds", which should be an array of strings (the IDs of the suggested framework). If no framework seem relevant, return an empty array for "suggestedFrameworkIds". Do not add any explanations or introductory text outside the JSON object.`,
+    
+    researchWebButtonText: "Research Web",
+    researchWebButtonAria: "Research new prompt techniques from the web using AI",
+    webResearchLoading: "Researching web...",
+    webResearchError: "Error during web research. Please try again.",
+    noWebResearchFoundError: "No new techniques found from web research for your goal.",
+    webResearchSummaryTitle: "AI Web Research Findings:", 
+    webResearchSourcesTitle: "Sources:",
+    geminiInstructionForWebResearch: (userGoal: string) => `You are an AI assistant helping a user research new or advanced prompt engineering techniques related to their specific goal: "${userGoal}".
+Use Google Search to find relevant articles, blog posts, academic papers, or discussions.
+Focus on identifying techniques, methodologies, or tips that are not commonly listed or are emerging.
+Summarize these findings concisely. If multiple techniques are found, list them.
+The summary should be informative and directly applicable to prompt engineering for the user's goal.
+Do not invent techniques. Stick to information found through search.
+Return ONLY the summary. Do not include introductory or concluding phrases like "Here's a summary..." or "I hope this helps!".`,
+    activityFetchingWebResearch: "Researching web...", 
+    webResearchSectionTitle: "AI Web Research",
+    initialWebResearchInstruction: "Click 'Research Web' to discover new prompting techniques from the internet. (Premium Feature - Subscription Coming Soon)",
+    webResearchReceivedIndicatorTooltip: "Web research results successfully loaded.",
 
-    // Labels for Interactive Prompt Assembly (New section for clarity)
-    promptLabel_subject: "Subject",
-    promptLabel_action_details: "Action/Details",
-    promptLabel_art_style: "Art Style",
-    promptLabel_art_medium: "Art Medium",
-    promptLabel_artist_influence: "Artist Influence",
-    promptLabel_artist_influences: "Artist Influences", // For Stable Diffusion
-    promptLabel_composition: "Composition",
-    promptLabel_lighting: "Lighting Style",
-    promptLabel_color_palette: "Color Palette",
-    promptLabel_detail_level: "Detail Level",
-    promptLabel_aspect_ratio: "Aspect Ratio",
-    promptLabel_negative_prompt_elements: "Negative Elements",
-    promptLabel_custom_negative: "Custom Negative",
-    promptLabel_other_tool_params: "Other Parameters",
-    promptLabel_environment: "Environment",
-    promptLabel_atmosphere: "Atmosphere",
-    promptLabel_version: "Version",
-    promptLabel_stylize: "Stylize",
-    promptLabel_chaos: "Chaos",
-    promptLabel_weird: "Weird",
-    promptLabel_tile: "Tile",
-    promptLabel_image_weight: "Image Weight",
-    promptLabel_style_raw: "Style Raw",
-    promptLabel_other_params: "Other Params", // Midjourney specific "other"
-    promptLabel_scene_description: "Scene Description", // DALL-E 3
-    promptLabel_specific_details: "Specific Details", // DALL-E 3
-    promptLabel_color_focus: "Color Focus", // DALL-E 3
-    promptLabel_lighting_mood: "Lighting/Mood", // DALL-E 3, Stable Diffusion
-    promptLabel_composition_angle: "Composition/Angle", // DALL-E 3
-    promptLabel_aspect_ratio_dalle: "Aspect Ratio", // DALL-E 3
-    promptLabel_main_subject: "Main Subject", // Stable Diffusion
-    promptLabel_key_details: "Key Details", // Stable Diffusion
-    promptLabel_quality_descriptors: "Quality Descriptors", // Stable Diffusion
-    promptLabel_art_style_medium: "Art Style/Medium", // Stable Diffusion
-    promptLabel_technical_aspects: "Technical Aspects", // Stable Diffusion
-    promptLabel_camera_shot: "Camera Shot", // Stable Diffusion
-    promptLabel_lighting_style: "Lighting Style", // Stable Diffusion (can reuse, context should be clear)
-    promptLabel_custom_negative_prompt: "Custom Negative Prompt", // Stable Diffusion
-    promptLabel_param_info: "Parameters Note", // Stable Diffusion
-    promptLabel_subjek: "Subject", // Veo (ID specific, ensure EN matches)
-    promptLabel_aksi: "Action", // Veo
-    promptLabel_lokasi: "Location", // Veo
-    promptLabel_gaya: "Style", // Veo
-    promptLabel_mood: "Mood", // Veo, Music
-    promptLabel_warna: "Color Palette", // Veo (ID specific, ensure EN matches)
-    promptLabel_shot: "Shot Type", // Veo
-    promptLabel_angle: "Camera Angle", // Veo
-    promptLabel_movement: "Camera Movement", // Veo
-    promptLabel_cahaya: "Lighting", // Veo (ID specific, ensure EN matches)
-    promptLabel_kualitas: "Quality", // Veo (ID specific, ensure EN matches)
-    promptLabel_elemen_spesifik: "Specific Elements", // Veo
-    promptLabel_negative: "Negative Prompt", // Veo custom negative
-    promptLabel_scene_subject: "Scene/Subject", // Runway
-    promptLabel_subject_action: "Subject Action", // Runway
-    promptLabel_camera_movement: "Camera/Movement", // Runway
-    promptLabel_visual_style: "Visual Style", // Runway
-    promptLabel_lighting_atmosphere: "Lighting/Atmosphere", // Runway
-    promptLabel_environment_action: "Environment Action", // Runway
-    promptLabel_sound_design_note: "Sound Design Note", // Runway
-    promptLabel_duration_note: "Duration Note", // Runway
-    promptLabel_genre: "Genre", // Suno, Detailed Music
-    promptLabel_subgenre_modifiers: "Subgenre/Modifiers", // Suno
-    promptLabel_main_instruments: "Main Instruments", // Suno, Detailed Music
-    promptLabel_vocal_style: "Vocal Style", // Suno, Detailed Music
-    promptLabel_tempo: "Tempo", // Suno, Detailed Music
-    promptLabel_rhythm_description: "Rhythm/Groove", // Suno
-    promptLabel_song_structure: "Song Structure", // Suno
-    promptLabel_lyrics_theme: "Lyrical Theme", // Suno
-    promptLabel_custom_lyrics_section: "Custom Lyrics", // Suno
-    promptLabel_main_genre: "Main Genre", // Detailed Music
-    promptLabel_subgenre_style: "Subgenre/Style", // Detailed Music
-    promptLabel_song_structure_desc: "Song Structure", // Detailed Music
-    promptLabel_duration_or_specifics: "Duration/Specifics", // Detailed Music
-    promptLabel_lyrical_theme_or_custom: "Lyrics", // Detailed Music
+    aiFeatureRequiresSubscriptionTooltip: "Premium Feature: Subscription Required (Coming Soon).",
+    aiFeaturesRequireSubscriptionMessage: "(Premium AI Feature - Subscription Coming Soon!)",
+    freePlanBadge: "Free",
+    premiumPlanBadge: "Premium",
+    freePlanTooltip: "You are on the Free Plan. Core features are available. AI-powered enhancements are part of our upcoming Premium Plan.",
+    premiumPlanTooltip: "Premium Plan Active (Simulated). AI features are enabled for demonstration. A subscription model is coming soon!",
+    subscriptionInfoModalTitle: "PromptMatrix Premium (Coming Soon!)",
+    subscriptionInfoButtonText: "Learn about Premium",
+    switchToEnglish: "Switch to English",
+    switchToIndonesian: "Switch to Indonesian",
+    subscriptionModalIntro: "PromptMatrix offers powerful AI-driven features to supercharge your prompt engineering skills. These will be available through an upcoming subscription, allowing us to maintain and expand this tool without relying on user-provided API keys for these advanced capabilities.",
+    subscriptionModalFreeFeaturesTitle: "Free Core Features (Always Available):",
+    subscriptionModalFreeFeature1: "Access all prompt construction frameworks.",
+    subscriptionModalFreeFeature2: "Save, load, and manage your prompts locally in 'Saved Prompts'.",
+    subscriptionModalFreeFeature3: "Export and import your entire prompt stash.",
+    subscriptionModalFreeFeature4: "Bilingual interface (EN/ID) and dark theme.",
+    subscriptionModalPremiumFeaturesTitle: "Upcoming Premium AI Features (Subscription-Based):",
+    subscriptionModalPremiumFeature1: "AI Framework Finder & Researcher: Get framework suggestions based on your goals or research new prompting techniques from the web.",
+    subscriptionModalPremiumFeature2: "AI Per-Field Input Suggestions: Autocomplete and contextual ideas for specific input fields.",
+    subscriptionModalPremiumFeature3: "AI Overall Prompt Feedback: Receive strengths, weaknesses, and general advice on your generated prompt.",
+    subscriptionModalPremiumFeature4: "AI Detailed Prompt Analysis: Get an in-depth, structured review with scores and diagnostics for your prompt.",
+    subscriptionModalComingSoon: "Stay tuned for our easy subscription options! This will allow us to provide robust, integrated AI assistance without requiring you to manage personal API keys for premium features.",
 
-    // New keys for category button labels
+    teaserPopupTitle: "Unlock AI Superpowers!",
+    teaserPopupMessage: "PromptMatrix Premium is coming soon! Get ready for advanced AI assistance to craft even better prompts, all seamlessly integrated.",
+
+    promptLabel_lyrical_theme_or_custom: "Lyrics", 
+
     categoryLabelImage: "Image",
     categoryLabelVideo: "Video",
-    categoryLabelMusic: "Music",
-    categoryLabelText: "Text",
+    categoryLabelMusic: "Music", 
+    categoryLabelText: "Text", 
     frameworkWord: "Framework",
+
+    promptStashTitle: "Saved Prompts",
+    promptStashDescription: "Load, manage, and backup your crafted prompts.",
+    savePromptButton: "Save Prompt",
+    savePromptButtonAria: "Save current prompt to stash",
+    loadPromptButton: "Load",
+    deletePromptButton: "Delete",
+    renamePromptButton: "Rename",
+    promptNameInputPlaceholder: "Enter title for your prompt...",
+    defaultSavePromptTitle: "My Custom Title",
+    noSavedPrompts: "No prompts saved yet. Create a prompt and click 'Save Prompt'!",
+    confirmDeletePromptTitle: "Confirm Delete",
+    confirmDeletePromptMessage: (promptName: string) => `Are you sure you want to delete the prompt "${promptName}"? This action cannot be undone.`,
+    confirmButton: "Confirm",
+    cancelButton: "Cancel",
+    promptSavedSuccess: "Prompt saved!",
+    promptLoadedSuccess: "Prompt loaded!",
+    promptDeletedSuccess: "Prompt deleted!",
+    promptRenamedSuccess: "Prompt renamed!",
+    errorSavingPrompt: "Error saving prompt.",
+    errorLoadingPrompts: "Error loading prompts.",
+    errorDeletingPrompt: "Error deleting prompt.",
+    errorRenamingPrompt: "Error renaming prompt.",
+    errorUnsupportedBrowserDB: "Your browser does not support the necessary storage features for this. Please try a different browser.",
+    exportPromptsButton: "Export All",
+    exportPromptsButtonAria: "Export all saved prompts to a JSON file",
+    importPromptsButton: "Import from File",
+    importPromptsButtonAria: "Import prompts from a JSON file",
+    promptsExportedSuccess: "Prompts exported successfully!",
+    promptsImportedSuccess: (count: number) => `${count} prompts imported successfully!`,
+    errorExportingPrompts: "Error exporting prompts.",
+    errorImportingPrompts: "Error importing prompts. Invalid file or format.",
+    selectJsonFile: "Select JSON file to import",
+    searchInStashPlaceholder: "Search in your saved prompts...",
+
+    searchFrameworksPlaceholder: "Search frameworks...",
+    noFrameworksFoundError: "No frameworks match your search.",
+    globalSearchResultsTitle: "Search Results", 
+    searchResultsInCategoryTitle: (categoryName: string) => `Search Results in ${categoryName}`, 
+
+
+    favoriteFrameworkTooltipAdd: "Add to Favorites",
+    favoriteFrameworkTooltipRemove: "Remove from Favorites",
+    favoriteFrameworksSectionTitle: "Favorite Frameworks", 
+
+    analyzeButtonText: "Detailed Analysis",
+    analyzeButtonLoadingText: "Analyzing...",
+    analyzeButtonTitle: "Get detailed AI analysis of your prompt",
+    analyzeButtonAria: "Get detailed AI analysis for the prompt",
+    detailedAnalysisTitle: "Detailed AI Analysis", 
+    detailedAnalysisLoading: "Getting detailed analysis from AI...",
+    aiDetailedAnalysisError: "Sorry, an error occurred while fetching detailed AI analysis. Please try again.",
+    detailedAnalysisReceivedIndicatorTooltip: "Detailed AI analysis successfully loaded",
+    geminiDetailedAnalysisInstruction: `You are an expert prompt engineering diagnostician. Your tone is constructive and helpful.
+Analyze the user's prompt provided below.
+Provide your feedback structured with the following clearly delineated sections. Each section MUST start with its exact title as shown:
+
+Clarity Score (1-10): [Your score and brief justification for the score. Be specific about what makes it clear or unclear.]
+Specificity Score (1-10): [Your score and brief justification. How well does it define the desired output?]
+Potential Ambiguities: [Describe any parts of the prompt that could be misinterpreted by an AI, or areas lacking detail. If none, state "No significant ambiguities found."]
+Actionable Suggestions: [Provide 2-3 concrete, actionable suggestions for improvement. Focus on clarity, specificity, or effectiveness. If the prompt is already excellent, state that and briefly explain why.]
+Overall Assessment: [A brief (1-2 sentences) overall assessment of the prompt's quality and potential effectiveness.]
+
+User's prompt:`,
+    initialDetailedAnalysisInstruction: "Click 'Detailed Analysis' to get an in-depth review. (Premium Feature - Subscription Coming Soon)",
+    detailedAnalysisClarityScoreTitle: "Clarity Score (1-10):",
+    detailedAnalysisSpecificityScoreTitle: "Specificity Score (1-10):",
+    detailedAnalysisAmbiguitiesTitle: "Potential Ambiguities:",
+    detailedAnalysisSuggestionsTitle: "Actionable Suggestions:",
+    detailedAnalysisOverallAssessmentTitle: "Overall Assessment:",
+
+    activityFetchingSuggestions: "Finding frameworks...",
+    activityTranslatingContent: "Translating content...",
+    activityAnalyzingPrompt: "Analyzing prompt...",
+    activityGettingFeedback: "Getting AI feedback...",
+    premiumFeatureTitleSuffix: "", 
   },
   id: {
     appTitle: "PromptMatrix",
     appSubtitle: "Panduan Anda memahami & membuat prompt AI yang efektif.",
-    textFrameworksTitle: "2. Kerangka Kerja Prompt Teks",
-    mediaFrameworksTitle: "2. Kerangka Kerja Prompt Gambar & Video",
-    musicFrameworksTitle: "2. Kerangka Kerja Prompt Musik",
+    textFrameworksTitle: "Kerangka Kerja Teks", 
+    mediaFrameworksTitle: "Kerangka Kerja Gambar & Video", 
+    musicFrameworksTitle: "Kerangka Kerja Musik", 
     inputComponentsTitle: "3. Komponen:",
     clearInputsButton: "Bersihkan Isian",
     clearInputsButtonAria: "Bersihkan semua kolom isian untuk kerangka kerja saat ini",
     generatedPromptTitle: "Pratinjau Prompt:",
     footerOptimize: "Dibuat oleh insinyur, bukan programmer.",
     footerContactMe: "",
-    initialPromptAreaInstruction: "Prompt terstruktur Anda akan muncul di sini, siap disalin ke alat AI Anda. Anda juga bisa mendapatkan masukan AI tentangnya!",
-    initialPromptAreaInstructionNoApiKey: "Prompt terstruktur Anda akan muncul di sini, siap disalin ke alat AI Anda.",
+    initialPromptAreaInstruction: "Prompt terstruktur Anda akan muncul di sini. Fitur AI lengkap (Pencari & Periset Kerangka Kerja, Saran Per-Isian, Masukan Prompt Keseluruhan, Analisis Prompt Detail, Riset Web AI) adalah bagian dari Paket Premium kami yang akan datang.",
+    initialPromptAreaInstructionNoApiKey: "Prompt terstruktur Anda akan muncul di sini, siap disalin ke alat AI Anda. Fitur AI lengkap (Pencari & Periset Kerangka Kerja, Saran Per-Isian, Masukan Prompt Keseluruhan, Analisis Prompt Detail, Riset Web AI) adalah bagian dari Paket Premium kami yang akan datang dan akan memerlukan langganan.",
     selectFrameworkPromptAreaInstruction: "Mulailah dengan memilih kategori kerangka kerja, lalu pilih kerangka kerja spesifik untuk memahami strukturnya dan membangun prompt Anda.",
     nothingToCopyMessage: "Belum ada yang disalin. Susun prompt Anda terlebih dahulu!",
     noInputComponents: "Kerangka kerja ini tidak memiliki komponen input terstruktur. Gunakan deskripsinya sebagai panduan umum untuk memahami prinsipnya.",
@@ -262,8 +312,8 @@ User's prompt:`,
     
     disclaimerTitle: "Tentang PromptMatrix",
     disclaimerPoint1: "Pelajari cara membuat & memahami prompt AI terstruktur dengan kerangka kerja terpandu.",
-    disclaimerPoint2: "Ini adalah alat bantu edukasi. Tidak menjalankan prompt dengan model AI eksternal. Fitur saran opsional bertenaga AI memerlukan kunci API AI (disediakan pengguna, tidak disimpan alat ini) agar berfungsi.",
-    disclaimerPoint3: "Gratis, 'apa adanya', & menghargai privasi Anda. Tidak ada data pribadi yang dikumpulkan. Bebas iklan & promosi.",
+    disclaimerPoint2: "Ini adalah alat bantu edukasi. Fitur inti pembuatan prompt (pemilihan kerangka kerja, isian input, pratinjau prompt, salin, simpan/muat) gratis. Fitur canggih berbasis AI (Pencari & Periset Kerangka Kerja AI, Saran Input AI per Isian, Masukan Prompt AI Keseluruhan, Analisis Prompt AI Detail, Riset Web AI) adalah premium dan akan memerlukan langganan di masa mendatang.",
+    disclaimerPoint3: "Fitur inti gratis disediakan 'apa adanya' & menghargai privasi Anda. Tidak ada data pribadi yang dikumpulkan untuk penggunaan inti. Bebas iklan & promosi.",
     disclaimerContactPrompt: "Masukan & Pertanyaan:",
     disclaimerModalAcknowledgeButton: "Pahami & Lanjutkan",
 
@@ -274,11 +324,12 @@ User's prompt:`,
     howToUseAppTitle: "Cara Menggunakan PromptMatrix",
     howToUseAppTitleShort: "Cara Pakai",
     howToUseStep1: "Pilih Kategori (Teks, Media, Musik) untuk menjelajahi struktur prompt.",
-    howToUseStep2: "Pilih Kerangka Kerja spesifik. Opsional, gunakan 'Penyaran Kerangka Kerja AI' dengan menjelaskan tujuan Anda.",
-    howToUseStep3: "Isi 'Komponen'. Gunakan 💡 untuk saran AI per isian (perlu kunci API).",
+    howToUseStep2: "Pilih Kerangka Kerja spesifik. Opsional, gunakan 'Pencari & Periset Kerangka Kerja AI' (Fitur Premium - Langganan Segera Hadir).",
+    howToUseStep3: "Isi 'Komponen'. Gunakan 💡 untuk saran AI per isian (Fitur Premium - Langganan Segera Hadir).",
     howToUseStep4: "Tinjau 'Pratinjau Prompt' Anda yang diperbarui secara langsung saat Anda mengetik.",
-    howToUseStep5: "Opsional, klik 'Minta Saran AI 💡' untuk masukan prompt keseluruhan dari AI (perlu kunci API).",
-    howToUseStep6: "Klik 'Salin Prompt', lalu 'Luncurkan Alat AI' untuk digunakan di platform AI pilihan Anda.",
+    howToUseStep5: "Opsional, klik 'Minta Saran AI 💡' untuk masukan prompt keseluruhan (Fitur Premium - Langganan Segera Hadir).",
+    howToUseStep5b: "Untuk wawasan lebih dalam, klik 'Analisis Detail' 📊 untuk ulasan terstruktur (Fitur Premium - Langganan Segera Hadir).",
+    howToUseStep6: "Klik 'Salin Prompt', lalu 'Luncurkan Alat AI' untuk digunakan di platform AI pilihan Anda. Simpan pekerjaan Anda menggunakan 'Simpan Prompt'.",
     howToUseTip: "Jelajahi berbagai kerangka kerja, ganti bahasa (ID/EN) menggunakan tombol di header, dan kuasai rekayasa prompt!",
     howToUseSwitchToEnglish: "Lihat dalam Bahasa Inggris",
     howToUseSwitchToIndonesian: "Ganti ke Bahasa Indonesia",
@@ -294,23 +345,23 @@ User's prompt:`,
     textFrameworksCategoryTooltip: "Kerangka kerja untuk memahami dan menyusun prompt tekstual (misalnya, untuk chatbot, asisten menulis).",
     mediaFrameworksCategoryTooltip: "Kerangka kerja untuk memahami dan membangun prompt untuk AI penghasil gambar dan video.",
     musicFrameworksCategoryTooltip: "Kerangka kerja untuk memahami dan menyusun prompt untuk AI penghasil musik dan audio.",
-    selectCategoryTitle: "1. Kategori",
+    selectCategoryTitle: "1. Kategori & Pencarian", 
     selectCategoryInstruction: "Pilih kategori kerangka kerja di atas untuk menjelajahi struktur dan mulai membangun pemahaman Anda tentang prompt yang efektif.",
     selectSpecificFrameworkInputSummary: "Pilih kerangka kerja dari petak untuk melihat komponennya dan mulai membangun prompt Anda. Setiap komponen akan memberikan contoh.",
-    selectSpecificFrameworkOutputSummary: "Prompt terstruktur Anda akan muncul di sini, siap disalin ke alat AI Anda. Anda juga bisa mendapatkan masukan AI tentangnya!",
+    selectSpecificFrameworkOutputSummary: "Prompt terstruktur Anda akan muncul di sini. Masukan & analisis AI adalah fitur premium (langganan segera hadir).",
     clickToExpandInputPanel: (frameworkName: string) => `Tampilkan komponen '${frameworkName}' & contoh`,
     clickToExpandOutputPanel: "Tampilkan prompt Anda dan tindakan",
-    selectOptionTooltip: "Pilih opsi",
+    selectOptionTooltip: "Terpilih",
 
     enhanceButtonText: "Minta Saran AI",
     enhanceButtonLoadingText: "Meminta Saran...",
-    enhanceButtonTitle: "Dapatkan saran dari AI untuk prompt Anda (membutuhkan kunci API AI)",
+    enhanceButtonTitle: "Dapatkan saran dari AI untuk prompt Anda",
     enhanceButtonAria: "Minta saran AI untuk prompt",
     aiFeedbackTitle: "Masukan & Saran AI (Prompt Keseluruhan)", 
     aiFeedbackTitleTextOnly: "Masukan & Saran AI (Prompt Keseluruhan)", 
     aiFeedbackLoading: "Mendapatkan masukan dari AI...",
     aiEnhancementError: "Maaf, terjadi kesalahan saat mengambil masukan AI. Silakan coba lagi.",
-    apiKeyMissingError: "Kunci API AI tidak terkonfigurasi. Fitur ini tidak tersedia.",
+    apiKeyMissingError: "Fitur Premium: Langganan Diperlukan (Segera Hadir). Fitur ini memerlukan paket premium aktif.", // Pesan umum
     emptyPromptError: "Harap buat prompt terlebih dahulu sebelum meminta saran AI.",
     geminiPromptInstruction: `Bertindaklah sebagai mentor rekayasa prompt yang ramah, ceria, dan sangat berpengalaman. Anda adalah gabungan antara pemandu akademis dan teman yang suportif, bersemangat membagikan pengalaman luas Anda untuk mengajarkan pengguna rekayasa prompt dari dasar hingga tingkat ahli. Dedikasi Anda adalah memberdayakan mereka agar cepat menguasai keahlian ini melalui sudut pandang Anda.
 Analisis prompt pengguna yang disediakan di bawah...
@@ -323,13 +374,14 @@ Pertahankan nada yang memberi semangat, menarik, dan sangat informatif. Tujuan A
 Prompt pengguna:`,
     aiFeedbackReceivedIndicatorTooltip: "Masukan AI berhasil dimuat", 
     promptHasBeenCopiedIndicatorTooltip: "Prompt ini telah disalin.", 
+    initialFeedbackInstruction: "Klik 'Minta Saran AI' untuk masukan prompt keseluruhan. (Fitur Premium - Langganan Segera Hadir)",
     
     aiFeedbackStrengthsTitle: "Kelebihan:",
     aiFeedbackWeaknessesTitle: "Kekurangan:",
     aiFeedbackReasoningTitle: "Alasan:",
     aiFeedbackActionableSuggestionsTitle: "Saran Tindak Lanjut:", 
 
-    suggestButtonTitle: "Dapatkan saran AI untuk isian ini (membutuhkan Kunci API)",
+    suggestButtonTitle: "Dapatkan saran AI untuk isian ini",
     suggestionsLoading: "Mendapatkan saran...",
     suggestionsError: "Gagal mengambil saran.",
     noSuggestionsFound: "Tidak ada saran ditemukan.",
@@ -348,94 +400,142 @@ Prompt pengguna:`,
     getFrameworkSuggestionsButtonAria: "Dapatkan saran kerangka kerja berbasis AI sesuai tujuan Anda",
     frameworkSuggestionsLoading: "Mendapatkan saran kerangka kerja...",
     frameworkSuggestionsError: "Gagal mengambil saran kerangka kerja. Silakan coba lagi.",
-    suggestedFrameworkTooltip: "Kerangka Kerja yang Disarankan AI",
+    suggestedFrameworkTooltip: "Kerangka Kerja Disarankan AI",
     noFrameworkSuggestionsFound: "Tidak ada saran kerangka kerja spesifik yang ditemukan untuk tujuan Anda. Coba ubah frasa atau jelajahi kategori di bawah.",
-    frameworkSuggestionInstruction: "Jelaskan tujuan Anda. AI akan sarankan kerangka kerja yang cocok.",
-    frameworkSuggestionsTitle: "Pencari Kerangka Kerja AI",
-    aiPoweredFeatureTooltip: "Fitur Ditenagai AI (Membutuhkan Kunci API)", 
-    aiFeaturesActiveIndicator: "Fitur AI aktif (Kunci API terdeteksi)", 
+    frameworkSuggestionInstruction: "Jelaskan tujuan Anda. AI akan sarankan kerangka kerja yang cocok. Anda juga bisa meriset teknik baru dari web.",
+    frameworkSuggestionsTitle: "Pencari & Periset Kerangka Kerja AI", 
+    aiPoweredFeatureTooltip: "Fitur AI Premium. Langganan segera hadir!", 
+    aiFeaturesActiveIndicator: "Premium Aktif", 
+    aiFeaturesDisconnectedIndicator: "Gratis", 
     geminiInstructionForFrameworkSuggestion: (frameworksInfoJson: string) => `Anda adalah asisten AI yang berspesialisasi dalam merekomendasikan kerangka kerja rekayasa prompt. Berdasarkan tujuan pengguna, Anda harus menyarankan ID kerangka kerja yang paling relevan dari daftar yang disediakan. Daftar kerangka kerja yang tersedia (termasuk ID, nama, deskripsi, dan kategori) adalah: ${frameworksInfoJson}. Balas HANYA dengan objek JSON yang berisi satu kunci "suggestedFrameworkIds", yang seharusnya berupa array string (ID dari kerangka kerja yang disarankan). Jika tidak ada kerangka kerja yang tampak relevan, kembalikan array kosong untuk "suggestedFrameworkIds". Jangan tambahkan penjelasan atau teks pengantar apa pun di luar objek JSON.`,
 
-    // Labels for Interactive Prompt Assembly (New section for clarity)
-    promptLabel_subject: "Subjek",
-    promptLabel_action_details: "Aksi/Detail",
-    promptLabel_art_style: "Gaya Seni",
-    promptLabel_art_medium: "Medium Seni",
-    promptLabel_artist_influence: "Pengaruh Seniman",
-    promptLabel_artist_influences: "Pengaruh Seniman", // For Stable Diffusion
-    promptLabel_composition: "Komposisi",
-    promptLabel_lighting: "Gaya Pencahayaan",
-    promptLabel_color_palette: "Palet Warna",
-    promptLabel_detail_level: "Tingkat Detail",
-    promptLabel_aspect_ratio: "Rasio Aspek",
-    promptLabel_negative_prompt_elements: "Elemen Negatif",
-    promptLabel_custom_negative: "Negatif Kustom",
-    promptLabel_other_tool_params: "Parameter Lain",
-    promptLabel_environment: "Lingkungan",
-    promptLabel_atmosphere: "Atmosfer",
-    promptLabel_version: "Versi",
-    promptLabel_stylize: "Stylize",
-    promptLabel_chaos: "Chaos",
-    promptLabel_weird: "Weird",
-    promptLabel_tile: "Tile",
-    promptLabel_image_weight: "Bobot Gambar",
-    promptLabel_style_raw: "Style Raw",
-    promptLabel_other_params: "Parameter Lain", // Midjourney specific "other"
-    promptLabel_scene_description: "Deskripsi Adegan", // DALL-E 3
-    promptLabel_specific_details: "Detail Spesifik", // DALL-E 3
-    promptLabel_color_focus: "Fokus Warna", // DALL-E 3
-    promptLabel_lighting_mood: "Pencahayaan/Mood", // DALL-E 3, Stable Diffusion
-    promptLabel_composition_angle: "Komposisi/Sudut", // DALL-E 3
-    promptLabel_aspect_ratio_dalle: "Rasio Aspek", // DALL-E 3
-    promptLabel_main_subject: "Subjek Utama", // Stable Diffusion
-    promptLabel_key_details: "Detail Kunci", // Stable Diffusion
-    promptLabel_quality_descriptors: "Deskriptor Kualitas", // Stable Diffusion
-    promptLabel_art_style_medium: "Gaya Seni/Medium", // Stable Diffusion
-    promptLabel_technical_aspects: "Aspek Teknis", // Stable Diffusion
-    promptLabel_camera_shot: "Shot Kamera", // Stable Diffusion
-    promptLabel_lighting_style: "Gaya Pencahayaan", // Stable Diffusion (can reuse, context should be clear)
-    promptLabel_custom_negative_prompt: "Prompt Negatif Kustom", // Stable Diffusion
-    promptLabel_param_info: "Catatan Parameter", // Stable Diffusion
-    promptLabel_subjek: "Subjek", // Veo
-    promptLabel_aksi: "Aksi", // Veo
-    promptLabel_lokasi: "Lokasi", // Veo
-    promptLabel_gaya: "Gaya", // Veo
-    promptLabel_mood: "Mood", // Veo, Musik
-    promptLabel_warna: "Palet Warna", // Veo
-    promptLabel_shot: "Jenis Shot", // Veo
-    promptLabel_angle: "Sudut Kamera", // Veo
-    promptLabel_movement: "Gerakan Kamera", // Veo
-    promptLabel_cahaya: "Pencahayaan", // Veo
-    promptLabel_kualitas: "Kualitas", // Veo
-    promptLabel_elemen_spesifik: "Elemen Spesifik", // Veo
-    promptLabel_negative: "Prompt Negatif", // Veo custom negative
-    promptLabel_scene_subject: "Adegan/Subjek", // Runway
-    promptLabel_subject_action: "Aksi Subjek", // Runway
-    promptLabel_camera_movement: "Kamera/Gerakan", // Runway
-    promptLabel_visual_style: "Gaya Visual", // Runway
-    promptLabel_lighting_atmosphere: "Pencahayaan/Atmosfer", // Runway
-    promptLabel_environment_action: "Aksi Lingkungan", // Runway
-    promptLabel_sound_design_note: "Catatan Suara", // Runway
-    promptLabel_duration_note: "Catatan Durasi", // Runway
-    promptLabel_genre: "Genre", // Suno, Detailed Music
-    promptLabel_subgenre_modifiers: "Subgenre/Modifier", // Suno
-    promptLabel_main_instruments: "Instrumen Utama", // Suno, Detailed Music
-    promptLabel_vocal_style: "Gaya Vokal", // Suno, Detailed Music
-    promptLabel_tempo: "Tempo", // Suno, Detailed Music
-    promptLabel_rhythm_description: "Ritme/Groove", // Suno
-    promptLabel_song_structure: "Struktur Lagu", // Suno
-    promptLabel_lyrics_theme: "Tema Lirik", // Suno
-    promptLabel_custom_lyrics_section: "Lirik Kustom", // Suno
-    promptLabel_main_genre: "Genre Utama", // Detailed Music
-    promptLabel_subgenre_style: "Subgenre/Gaya", // Detailed Music
-    promptLabel_song_structure_desc: "Struktur Lagu", // Detailed Music
-    promptLabel_duration_or_specifics: "Durasi/Spesifik", // Detailed Music
-    promptLabel_lyrical_theme_or_custom: "Lirik", // Detailed Music
+    researchWebButtonText: "Riset Web",
+    researchWebButtonAria: "Riset teknik prompt baru dari web menggunakan AI",
+    webResearchLoading: "Meriset web...",
+    webResearchError: "Gagal saat riset web. Silakan coba lagi.",
+    noWebResearchFoundError: "Tidak ada teknik baru ditemukan dari riset web untuk tujuan Anda.",
+    webResearchSummaryTitle: "Temuan Riset Web AI:", 
+    webResearchSourcesTitle: "Sumber:",
+    geminiInstructionForWebResearch: (userGoal: string) => `Anda adalah asisten AI yang membantu pengguna meriset teknik rekayasa prompt baru atau lanjutan terkait tujuan spesifik mereka: "${userGoal}".
+Gunakan Google Search untuk menemukan artikel, posting blog, makalah akademis, atau diskusi yang relevan.
+Fokus pada identifikasi teknik, metodologi, atau kiat yang tidak umum tercantum atau sedang berkembang.
+Rangkum temuan ini secara ringkas. Jika beberapa teknik ditemukan, sebutkan.
+Ringkasan harus informatif dan dapat diterapkan langsung pada rekayasa prompt untuk tujuan pengguna.
+Jangan menciptakan teknik. Berpegang pada informasi yang ditemukan melalui pencarian.
+Kembalikan HANYA ringkasan. Jangan sertakan frasa pembuka atau penutup seperti "Berikut ringkasannya..." atau "Semoga ini membantu!".`,
+    activityFetchingWebResearch: "Meriset web...", 
+    webResearchSectionTitle: "Riset Web AI",
+    initialWebResearchInstruction: "Klik 'Riset Web' untuk menemukan teknik prompting baru dari internet. (Fitur Premium - Langganan Segera Hadir)",
+    webResearchReceivedIndicatorTooltip: "Hasil riset web berhasil dimuat.",
+
+    aiFeatureRequiresSubscriptionTooltip: "Fitur Premium: Langganan Diperlukan (Segera Hadir).",
+    aiFeaturesRequireSubscriptionMessage: "(Fitur AI Premium - Langganan Segera Hadir!)",
+    freePlanBadge: "Gratis",
+    premiumPlanBadge: "Premium",
+    freePlanTooltip: "Anda menggunakan Paket Gratis. Fitur inti tersedia. Peningkatan berbasis AI adalah bagian dari Paket Premium kami yang akan datang.",
+    premiumPlanTooltip: "Paket Premium Aktif (Simulasi). Fitur AI diaktifkan untuk demonstrasi. Model langganan segera hadir!",
+    subscriptionInfoModalTitle: "PromptMatrix Premium (Segera Hadir!)",
+    subscriptionInfoButtonText: "Info Fitur Premium",
+    switchToEnglish: "Ganti ke Bahasa Inggris",
+    switchToIndonesian: "Ganti ke Bahasa Indonesia",
+    subscriptionModalIntro: "PromptMatrix menawarkan fitur canggih berbasis AI untuk memaksimalkan keahlian rekayasa prompt Anda. Fitur ini akan tersedia melalui langganan mendatang, memungkinkan kami untuk memelihara dan mengembangkan alat ini tanpa bergantung pada kunci API yang disediakan pengguna untuk kemampuan tingkat lanjut ini.",
+    subscriptionModalFreeFeaturesTitle: "Fitur Inti Gratis (Selalu Tersedia):",
+    subscriptionModalFreeFeature1: "Akses semua kerangka kerja konstruksi prompt.",
+    subscriptionModalFreeFeature2: "Simpan, muat, dan kelola prompt Anda secara lokal di 'Prompt Tersimpan'.",
+    subscriptionModalFreeFeature3: "Ekspor dan impor seluruh simpanan prompt Anda.",
+    subscriptionModalFreeFeature4: "Antarmuka dwibahasa (ID/EN) dan tema gelap.",
+    subscriptionModalPremiumFeaturesTitle: "Fitur AI Premium Mendatang (Berbasis Langganan):",
+    subscriptionModalPremiumFeature1: "Pencari & Periset Kerangka Kerja AI: Dapatkan saran kerangka kerja berdasarkan tujuan Anda atau riset teknik prompting baru dari web.",
+    subscriptionModalPremiumFeature2: "Saran Input AI per Isian: Pelengkapan otomatis dan ide kontekstual untuk isian input spesifik.",
+    subscriptionModalPremiumFeature3: "Masukan Prompt AI Keseluruhan: Terima info kelebihan, kekurangan, dan saran umum untuk prompt yang Anda hasilkan.",
+    subscriptionModalPremiumFeature4: "Analisis Prompt AI Detail: Dapatkan ulasan terstruktur mendalam dengan skor dan diagnostik untuk prompt Anda.",
+    subscriptionModalComingSoon: "Nantikan opsi langganan mudah dari kami! Ini akan memungkinkan kami menyediakan bantuan AI yang tangguh dan terintegrasi tanpa mengharuskan Anda mengelola kunci API pribadi untuk fitur premium.",
+    
+    teaserPopupTitle: "Buka Kekuatan Super AI!",
+    teaserPopupMessage: "PromptMatrix Premium segera hadir! Bersiaplah untuk bantuan AI canggih untuk membuat prompt yang lebih hebat lagi, semuanya terintegrasi dengan mulus.",
+
+    promptLabel_lyrical_theme_or_custom: "Lirik",
 
     categoryLabelImage: "Gambar",
     categoryLabelVideo: "Video",
     categoryLabelMusic: "Musik",
     categoryLabelText: "Teks",
     frameworkWord: "Kerangka Kerja",
+
+    promptStashTitle: "Prompt Tersimpan",
+    promptStashDescription: "Muat, kelola, dan cadangkan prompt yang telah Anda buat.",
+    savePromptButton: "Simpan Prompt",
+    savePromptButtonAria: "Simpan prompt saat ini ke simpanan",
+    loadPromptButton: "Muat",
+    deletePromptButton: "Hapus",
+    renamePromptButton: "Ubah Nama",
+    promptNameInputPlaceholder: "Masukkan judul untuk prompt Anda...",
+    defaultSavePromptTitle: "Judul Prompt Kustom Saya",
+    noSavedPrompts: "Belum ada prompt yang disimpan. Buat prompt dan klik 'Simpan Prompt'!",
+    confirmDeletePromptTitle: "Konfirmasi Hapus",
+    confirmDeletePromptMessage: (promptName: string) => `Anda yakin ingin menghapus prompt "${promptName}"? Tindakan ini tidak dapat dibatalkan.`,
+    confirmButton: "Konfirmasi",
+    cancelButton: "Batal",
+    promptSavedSuccess: "Prompt berhasil disimpan!",
+    promptLoadedSuccess: "Prompt berhasil dimuat!",
+    promptDeletedSuccess: "Prompt berhasil dihapus!",
+    promptRenamedSuccess: "Prompt berhasil diubah namanya!",
+    errorSavingPrompt: "Gagal menyimpan prompt.",
+    errorLoadingPrompts: "Gagal memuat prompt.",
+    errorDeletingPrompt: "Gagal menghapus prompt.",
+    errorRenamingPrompt: "Gagal mengubah nama prompt.",
+    errorUnsupportedBrowserDB: "Browser Anda tidak mendukung fitur penyimpanan yang diperlukan untuk ini. Silakan coba browser lain.",
+    exportPromptsButton: "Ekspor Semua",
+    exportPromptsButtonAria: "Ekspor semua prompt tersimpan ke file JSON",
+    importPromptsButton: "Impor dari File",
+    importPromptsButtonAria: "Impor prompt dari file JSON",
+    promptsExportedSuccess: "Prompt berhasil diekspor!",
+    promptsImportedSuccess: (count: number) => `${count} prompt berhasil diimpor!`,
+    errorExportingPrompts: "Gagal mengekspor prompt.",
+    errorImportingPrompts: "Gagal mengimpor prompt. File atau format tidak valid.",
+    selectJsonFile: "Pilih file JSON untuk diimpor",
+    searchInStashPlaceholder: "Cari di prompt tersimpan Anda...",
+
+    searchFrameworksPlaceholder: "Cari kerangka kerja...",
+    noFrameworksFoundError: "Tidak ada kerangka kerja yang cocok dengan pencarian Anda.",
+    globalSearchResultsTitle: "Hasil Pencarian Global", 
+    searchResultsInCategoryTitle: (categoryName: string) => `Hasil Pencarian di ${categoryName}`, 
+
+
+    favoriteFrameworkTooltipAdd: "Tambahkan ke Favorit",
+    favoriteFrameworkTooltipRemove: "Hapus dari Favorit",
+    favoriteFrameworksSectionTitle: "Kerangka Kerja Favorit",
+
+    analyzeButtonText: "Analisis Detail",
+    analyzeButtonLoadingText: "Menganalisis...",
+    analyzeButtonTitle: "Dapatkan analisis AI detail untuk prompt Anda",
+    analyzeButtonAria: "Dapatkan analisis AI detail untuk prompt",
+    detailedAnalysisTitle: "Analisis AI Detail", 
+    detailedAnalysisLoading: "Mendapatkan analisis detail dari AI...",
+    aiDetailedAnalysisError: "Maaf, terjadi kesalahan saat mengambil analisis AI detail. Silakan coba lagi.",
+    detailedAnalysisReceivedIndicatorTooltip: "Analisis AI detail berhasil dimuat",
+    geminiDetailedAnalysisInstruction: `Anda adalah seorang ahli diagnostik rekayasa prompt. Nada bicara Anda konstruktif dan membantu.
+Analisis prompt pengguna yang disediakan di bawah.
+Berikan masukan Anda secara terstruktur dengan bagian-bagian yang jelas berikut ini. Setiap bagian HARUS dimulai dengan judul persis seperti yang ditunjukkan:
+
+Skor Kejelasan (1-10): [Skor Anda dan justifikasi singkat untuk skor tersebut. Jelaskan secara spesifik apa yang membuatnya jelas atau tidak jelas.]
+Skor Spesifisitas (1-10): [Skor Anda dan justifikasi singkat. Seberapa baik prompt tersebut mendefinisikan output yang diinginkan?]
+Potensi Ambiguitas: [Jelaskan bagian mana pun dari prompt yang dapat disalahartikan oleh AI, atau area yang kurang detail. Jika tidak ada, nyatakan "Tidak ditemukan ambiguitas signifikan."]
+Saran Tindak Lanjut: [Berikan 2-3 saran konkret yang dapat ditindaklanjuti untuk perbaikan. Fokus pada kejelasan, spesifisitas, atau efektivitas. Jika prompt sudah sangat baik, nyatakan itu dan jelaskan alasannya secara singkat.]
+Penilaian Keseluruhan: [Penilaian keseluruhan singkat (1-2 kalimat) tentang kualitas dan potensi efektivitas prompt.]
+
+Prompt pengguna:`,
+    initialDetailedAnalysisInstruction: "Klik 'Analisis Detail' untuk ulasan mendalam. (Fitur Premium - Langganan Segera Hadir)",
+    detailedAnalysisClarityScoreTitle: "Skor Kejelasan (1-10):",
+    detailedAnalysisSpecificityScoreTitle: "Skor Spesifisitas (1-10):",
+    detailedAnalysisAmbiguitiesTitle: "Potensi Ambiguitas:",
+    detailedAnalysisSuggestionsTitle: "Saran Tindak Lanjut:",
+    detailedAnalysisOverallAssessmentTitle: "Penilaian Keseluruhan:",
+
+    activityFetchingSuggestions: "Mencari kerangka kerja...",
+    activityTranslatingContent: "Menerjemahkan konten...",
+    activityAnalyzingPrompt: "Menganalisis prompt...",
+    activityGettingFeedback: "Meminta saran AI...",
+    premiumFeatureTitleSuffix: "", 
   }
 };

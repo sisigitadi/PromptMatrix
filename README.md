@@ -1,76 +1,91 @@
 
-# PromptMatrix V5.0
+# PromptMatrix V6.2.0
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An intuitive web application designed to help users **understand prompt engineering principles** and **construct effective, well-structured prompts** for various AI models. PromptMatrix V5.0 is your enhanced guide and toolkit for mastering AI communication, offering structured and interactive framework for text, image, video, and music generation. This tool is **not an AI itself**, but a powerful assistant for building and learning about prompts.
+An intuitive web application designed to help users **understand prompt engineering principles** and **construct effective, well-structured prompts** for various AI models. PromptMatrix V6.2.0 is your enhanced guide and toolkit for mastering AI communication, offering structured and interactive framework for text, image, video, and music generation. This tool is **not an AI itself**, but a powerful assistant for building and learning about prompts.
+
+**Note on Versioning:** Starting with V5.5.0, PromptMatrix adopts Semantic Versioning (SemVer: `MAJOR.MINOR.PATCH`).
 
 **[➡️ Live Demo (GitHub Pages) Link: https://sisigitadi.github.io/promptmatrix/](#)**
 
-## ✨ What's New in V5.0 (Big Update!)
+## ✨ What's New in V6.2.0 (Current Version - UI/UX Fixes)
 
-PromptMatrix V5.0 introduces a suite of major enhancements focusing on a more interactive user experience, deeper AI integration, and refined UI/UX:
+This iteration of V6.2.0 focuses on UI/UX bug fixes and polish based on user feedback.
 
-*   **🚀 Revolusi Pembuatan Prompt Interaktif:**
-    *   Semua framework untuk **Image, Video, dan Music** kini menggunakan **Prompt Studio Interaktif** yang baru. Ini memandu pengguna langkah demi langkah dengan jenis input yang beragam:
-        *   **Isian Manual**: Untuk deskripsi bebas dan detail.
-        *   **Pilihan Tunggal (Dropdown)**: Untuk parameter dengan opsi umum, kini disajikan sebagai dropdown yang ramping, lengkap dengan opsi "Lainnya..." yang memunculkan input teks manual jika dipilih.
-        *   **Pilihan Ganda (Checkbox Kolapsibel)**: Untuk elemen dengan beberapa pilihan, kini disajikan sebagai daftar checkbox yang dapat diciutkan/diperluas, menghemat ruang dan menjaga antarmuka tetap bersih.
-    *   Pengalaman ini dirancang untuk menjadi lebih intuitif, membantu pengguna memahami setiap komponen prompt, dan menghasilkan output yang lebih terstruktur dan relevan dengan alat AI spesifik.
+*   **UI/UX Bug Fixes & Polish:**
+    *   **Mobile Subtitle:** Fixed an issue where the app subtitle in the header could be truncated on mobile devices by ensuring proper text wrapping.
+    *   **Teaser Popup:** Addressed a bug where the "Premium Teaser Popup" might not appear reliably as intended on initial load after disclaimer/how-to-use modals. The visibility and animation logic has been refined.
+    *   **Category & Framework Toggles:** Reviewed existing hover effects for category and framework selection buttons. Confirmed they already provide unique and informative feedback (icon scaling, button lift, background/text color changes on hover) as per recent requests, so no structural changes were needed for these elements.
+*   **Documentation:** Updated `updates.md` and `README.md` to reflect these fixes.
+*   **Version:** Maintained at `V6.2.0` as these are primarily bug fixes and minor polish to existing V6.2.0 features.
 
-*   **🧠 Maksimalkan Kecerdasan AI (Membutuhkan API Key Google Gemini):**
-    *   **BARU: Saran Kerangka Kerja Berbasis AI**: Pengguna kini dapat mendeskripsikan tujuan atau jenis konten yang ingin mereka buat. AI akan menganalisis deskripsi ini dan merekomendasikan kerangka kerja yang paling relevan dari daftar yang tersedia, yang akan ditandai secara visual (<img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/20/solid/star.svg" width="14" height="14" style="filter: invert(93%) sepia(38%) saturate(2235%) hue-rotate(336deg) brightness(103%) contrast(101%);"> icon) di antarmuka.
-    *   **BARU: Saran AI untuk Isian "Lainnya..."**: Bantuan AI kontekstual saat pengguna memilih opsi "Lainnya..." pada pilihan tunggal (dropdown) di mode interaktif. Sebuah tombol <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14"> akan muncul untuk meminta saran.
-    *   **Fitur AI yang Ada Ditingkatkan**: Saran per-isian standar (<img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14">) dan peningkatan prompt keseluruhan ("Get AI Suggestions" <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14">) tetap tersedia dan telah dioptimalkan.
-    *   Semua fitur AI secara visual dan fungsional dinonaktifkan jika API Key tidak terdeteksi, dengan informasi yang jelas kepada pengguna.
+## ✨ What's New in V6.2.0 (Initial Release - Premium Preparation & UI Polish)
 
-*   **🎨 Peningkatan UI/UX & Informasi:**
-    *   **Indikator Status API Key Dinamis**: Header aplikasi kini menampilkan teks "AI Inside" (dengan animasi halus berwarna teal) jika API Key Google Gemini terdeteksi dan tersedia. Jika tidak, akan tampil teks "Disconnected" (berwarna merah, dengan animasi serupa) untuk memberi tahu pengguna bahwa fitur AI tidak aktif.
-    *   **Floating Action Buttons (FABs)**: Tombol "Ganti Bahasa" dan "Cara Pakai" kini menjadi tombol aksi mengambang di pojok kanan bawah untuk aksesibilitas yang lebih baik dan antarmuka yang lebih bersih.
-    *   **Bingkai Header Berpendar**: Logo dan judul aplikasi ("PromptMatrix") kini dibingkai dengan efek pendaran yang halus dan elegan, memberikan tampilan yang lebih premium.
-    *   **Pratinjau Prompt Konsisten**: "Prompt Preview" kini selalu menampilkan teks instruksional awal hingga ada input pengguna yang signifikan, berlaku untuk framework standar (teks) maupun framework interaktif (media & musik). Ini menciptakan pengalaman yang lebih prediktif.
-    *   **"Info Teks" pada Placeholder**: Semua teks panduan di kolom input kini berfungsi sebagai placeholder murni (tampil miring, tidak dapat diedit, dan hilang saat pengguna mulai mengetik), memastikan pengguna tidak perlu menghapus teks contoh secara manual.
-    *   **Perakitan Prompt Lebih Cerdas**: Logika perakitan prompt untuk mode interaktif telah disempurnakan secara signifikan untuk menghasilkan output yang lebih bersih dan rapi di "Prompt Preview", terutama saat ada field opsional atau pilihan ganda yang tidak diisi. Sisa-sisa label atau tanda baca yang tidak perlu kini diminimalkan.
+This version focuses on clearly articulating the freemium model, preparing the UI for future premium features, and enhancing visual consistency.
 
-*   **⚙️ Perbaikan Logika & Stabilitas:**
-    *   Optimalisasi logika `formIsDirty` untuk penanganan state yang lebih akurat dalam menentukan kapan pengguna telah berinteraksi dengan formulir.
-    *   Penyederhanaan `interactivePromptTemplate` di `frameworks.ts` dan pemindahan semua logika kondisional perakitan prompt ke `App.tsx` untuk pemrosesan yang lebih robust dan pemeliharaan kode yang lebih mudah.
+*   **Premium Feature Preparation:**
+    *   **Visual Distinction:** AI-powered features (Framework Finder & Researcher, Per-Field Suggestions, Overall Feedback, Detailed Analysis, AI Web Research) now use the `AiTextIcon` which changes appearance (color, animation) based on `apiKeyAvailable` (simulating premium status). When `apiKeyAvailable` is false, icons are desaturated, and animations are disabled.
+    *   **Clearer User Communication:**
+        *   Tooltips for disabled AI features consistently state: "Premium Feature: Subscription Required (Coming Soon)."
+        *   Content in `SubscriptionInfoModal` and `TeaserPopupModal` updated to clearly explain the freemium model and the "premium features coming soon" status.
+*   **UI/UX Enhancements:**
+    *   The `AiTextIcon` is now the standard indicator for AI-powered functionalities, providing consistent visual feedback.
+    *   Improved handling of "Other..." option in interactive single-choice dropdowns for a smoother user flow.
+    *   General styling refinements for modals and interactive elements.
+*   **Content Update:**
+    *   Added the "AIDA" framework to the Text Prompt Frameworks.
+*   **Code Cleanup:**
+    *   Removed the unused `FavTextIcon.tsx` component and its imports.
+*   **Version Update:** Application version updated to `V6.2.0`.
 
-## ✨ Features (Core & Enhanced in V5.0)
+## ✨ What's New in V6.1.7 (Maintenance & Info Update)
+
+This version focused on refining existing informational content, ensuring version consistency, and maintaining code integrity.
+
+*   **Version Update & Consistency:** Application version updated to `V6.1.7`.
+*   **Informational Content Review:** Updated content within Disclaimer, How To Use, and Learn About Premium modals.
+*   **API Key Security:** Re-confirmed adherence to best practices.
+*   **Code Cleanup:** Removed unused `FavTextIcon.tsx` (initial step).
+
+## ✨ Features (Core & Enhanced in V6.2.0)
 
 *   **Educational Focus:** Learn the "why" and "how" behind effective prompts.
-*   **Multi-Framework Support:** Explore diverse prompting framework, plus **newly interactive framework** for image, video, and music.
-*   **Interactive Prompt Studio (NEW for Media/Music):** Step-by-step guidance with dropdowns, collapsible checkboxes, and "Other..." options.
+*   **Multi-Framework Support:** Explore diverse prompting framework, plus **interactive framework** for image, video, and music.
+*   **Interactive Prompt Studio (for Media/Music):** Step-by-step guidance with dropdowns, collapsible checkboxes, and "Other..." options.
 *   **Structured Input Guidance (Text Frameworks):** Dynamically updating input fields with examples.
-*   **AI-Powered Framework Suggestions (NEW - API Key Req.):** Get AI recommendations for the best framework based on your goal.
-*   **AI-Powered "Other..." Suggestions (NEW - API Key Req.):** Contextual AI help for custom inputs in interactive mode.
-*   **AI-Powered Overall Prompt Feedback & Per-Field Suggestions (API Key Req.):** Existing AI features, now clearly disabled if no API key.
-*   **Dynamic API Key Status Indicator (NEW):** "AI Inside" or "Disconnected" text in the header.
+*   **AI-Powered Features (Premium - Subscription Coming Soon):**
+    *   **AI Framework Finder & Researcher**: Get framework suggestions from the internal list OR request AI to research new techniques from the web (summaries & source links provided). Visually indicated as premium.
+    *   **AI Suggestions for "Other..." Inputs & Per-Field Suggestions**: Contextual AI help, visually indicated as premium.
+    *   **AI Overall Prompt Feedback & Detailed Prompt Analysis**: Visually indicated as premium.
+*   **Dynamic Plan Badges:** "Free Plan" or "Premium Plan" (dev/demo active) displayed in the header.
+*   **Subscription Info Modal & Teaser Popup.**
 *   **Bilingual Interface:** Supports English (EN) and Indonesian (ID).
-*   **Real-Time Prompt Construction & Consistent Preview (ENHANCED):** See your prompt evolve; preview always shows instructions until significant input.
-*   **Floating Action Buttons (FABs - NEW):** For "Translate" and "How To Use".
+*   **Real-Time Prompt Construction & Consistent Preview.**
 *   **Easy Copy-to-Clipboard & Launch AI Tool.**
+*   **Prompt Stash:** Save, load, rename, delete, export, and import your prompts locally using IndexedDB.
+*   **Framework Search/Filter:** Easily find the framework you need.
 *   **Responsive Design & Modern Dark Theme.**
-*   **Free, 'as is', respects privacy. No personal data collected. Ad-free.**
+*   **Free Core Features, 'as is', respects privacy. No personal data collected. Ad-free.**
 
 ## 🖼️ Screenshots
 
-<!-- TODO: Update screenshots for V5.0, showcasing the new interactive studio, AI features, and UI enhancements. -->
+<!-- TODO: Update screenshots for V6.2.0, showcasing the AiTextIcon states and premium feature indications. -->
 **Example Screenshot Placeholder (Replace this):**
-![PromptMatrix V5.0 Screenshot](https://via.placeholder.com/800x450.png?text=PromptMatrix+V5.0+App+Screenshot+Here)
+![PromptMatrix V6.2.0 Screenshot](https://via.placeholder.com/800x450.png?text=PromptMatrix+V6.2.0+UI+Fixes)
 
 ## 🛠️ Framework Supported
 
-PromptMatrix V5.0 provides structured inputs and guidance for understanding and using the following framework:
+PromptMatrix V6.2.0 provides structured inputs and guidance for understanding and using the following framework:
 
 ### 📜 Text Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/pencil.svg" width="16" height="16"> icon):
 
 (Uses standard component-based input. Used for crafting prompts for AI like ChatGPT, Gemini, Claude, etc.)
-*   RTF, CARE, CO-STAR, BAB, TAG, AIDA, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, IDEATE, PACT. *(26 Framework)*
+*   RTF, AIDA, CARE, CO-STAR, BAB, TAG, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, IDEATE, PACT, Chain-of-Thought (CoT), Zero-shot CoT, Self-Consistency, Generated Knowledge, Least-to-Most Prompting, Self-Refine, Tree of Thoughts (ToT), Prompt Ensembling, Factive Prompting, EmotionPrompt, Prompt Chaining, Instruction Tuning Basics, Role Prompting, Few-Shot Prompting. *(Now 27 Text Frameworks)*
 
 ### 🖼️ Image & Video Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/camera.svg" width="16" height="16"> icon):
 
-**(ALL NEWLY INTERACTIVE IN V5.0!)** (Used for crafting prompts for AI like Midjourney, DALL-E, Stable Diffusion, Runway, Pika, etc.)
+**(INTERACTIVE)** (Used for crafting prompts for AI like Midjourney, DALL-E, Stable Diffusion, Runway, Pika, etc.)
 *   Midjourney (Interactive)
 *   DALL-E 3 (Interactive)
 *   Stable Diffusion (Interactive)
@@ -88,7 +103,7 @@ PromptMatrix V5.0 provides structured inputs and guidance for understanding and 
 *   Clipdrop (Stability AI - Detailed Interactive)
 
 ### 🎵 Music Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/musical-note.svg" width="16" height="16"> icon):
-**(ALL NEWLY INTERACTIVE IN V5.0!)** (Used for crafting prompts for AI like Suno, Udio, Google MusicFX, etc.)
+**(INTERACTIVE)** (Used for crafting prompts for AI like Suno, Udio, Google MusicFX, etc.)
 *   Suno AI Music (Interactive)
 *   Udio AI Music (Detailed Interactive)
 *   Google MusicFX (Detailed Interactive)
@@ -100,27 +115,37 @@ PromptMatrix V5.0 provides structured inputs and guidance for understanding and 
 *   **Frontend:** React, TypeScript
 *   **Styling:** Tailwind CSS (via CDN and custom CSS for theme variables & animations)
 *   **Build Tool:** Vite
-*   **AI Integration:** `@google/genai` for Google Gemini API (optional AI features, requires user-provided API key).
+*   **AI Integration (for Premium Features):** `@google/genai` for Google Gemini API (including Google Search grounding). (Note: Future subscription will abstract this from the user).
+*   **Local Storage:** IndexedDB (for Prompt Stash), `localStorage` (for user preferences).
 *   **State Management:** React Context API (language), React `useState` & `useCallback`.
 *   **Deployment:** GitHub Pages.
 
-## 🧑‍💻 How to Use PromptMatrix V5.0
+## 🧑‍💻 How to Use PromptMatrix V6.2.0
 
-PromptMatrix V5.0 is designed to help you *learn* and *build* with enhanced guidance and AI assistance.
+PromptMatrix V6.2.0 offers core features for free, with advanced AI assistance planned as premium subscription features.
 
-1.  **Check API Key Status:** Look at the header. "AI Inside" means AI features are active. "Disconnected" means you need to configure an API Key for AI features.
-2.  **Select a Language:** Use the FAB (<img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/20/solid/language.svg" width="14" height="14" style="filter: invert(1);">) to toggle between English (EN) or Indonesian (ID).
+1.  **Check Your Plan:** The header displays your current plan ("Free Plan" or "Premium Plan" for dev/demo).
+2.  **Select a Language:** Use the language toggle (EN/ID) in the header.
 3.  **Explore Framework Category:** Click a category (Text, Media, Music).
-4.  **Optional: Get AI Framework Suggestions (API Key Req.):** In the "AI Framework Suggester" section within "Prompt Studio," describe your goal and click "Get Framework Suggestions." Recommended framework in the current category will be highlighted with a <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/20/solid/star.svg" width="14" height="14" style="filter: invert(93%) sepia(38%) saturate(2235%) hue-rotate(336deg) brightness(103%) contrast(101%);">.
+4.  **Optional: AI Framework Finder & Researcher (Premium Feature - Subscription Coming Soon):** 
+    *   The "AI Framework Finder & Researcher" section allows you to describe your goal.
+    *   Click "Get Framework Suggestions" for AI to suggest relevant frameworks from the app's internal list.
+    *   Click "Research Web" for AI to search the internet for new techniques related to your goal, providing summaries and source links.
+    *   These features are marked with the <AiTextIcon isAiFeatureActive={true} /> icon and will require a subscription when launched.
 5.  **Choose a Specific Framework:** Click a framework from the grid. Read its description.
 6.  **Construct Your Prompt in "Prompt Studio":**
-    *   **Text Framework:** Fill in component fields. Use <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14"> for per-field AI suggestions (API Key Req.).
-    *   **Media & Music Framework (Interactive):** Follow the step-by-step "wizard-like" sections. Use dropdowns for single choices (select "Lainnya..." for custom input, with optional <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14"> AI suggestions for it - API Key Req.). Use collapsible checkbox groups for multiple choices.
-    *   Use "Additional Notes & Instructions" for standard framework if needed.
-7.  **Review "Prompt Preview":** Your prompt updates live. It will show instructions until you make significant input.
-8.  **Optional: Get Overall AI Feedback (API Key Req.):** Click "Get AI Suggestions" <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/sparkles.svg" width="14" height="14"> for your entire prompt.
+    *   **Text Framework:** Fill in component fields.
+    *   **Media & Music Framework (Interactive):** Follow the step-by-step sections.
+    *   AI suggestions per field (<AiTextIcon isAiFeatureActive={true} /> icon) are premium and will require a subscription.
+7.  **Review "Prompt Preview":** Your prompt updates live.
+8.  **Optional: AI Feedback & Analysis (Premium Features - Subscription Coming Soon):**
+    *   "Get AI Suggestions" (<AiTextIcon isAiFeatureActive={true} />) for overall prompt feedback.
+    *   "Detailed Analysis" (<AiTextIcon isAiFeatureActive={true} />) for a structured review (scores, ambiguities, etc.).
+    *   These buttons are marked as premium and will require a subscription.
 9.  **Copy & Launch:** Click "Copy Prompt," then "Launch AI Tool" to go to the platform or your custom URL.
-10. **Learn & Iterate:** Experiment! Use the "How To Use" FAB (<img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/20/solid/question-mark-circle.svg" width="14" height="14" style="filter: invert(1);">) for a detailed guide.
+10. **Save Your Work:** Use "Save Prompt" to store your creations in the "Saved Prompts" panel.
+11. **Learn About Premium:** Click "Learn about Premium" in the header to see details about free and upcoming premium features.
+12. **Learn & Iterate:** Experiment! Use the "How To Use" button in the header for a detailed guide.
 
 ## 💡 Contributing
 

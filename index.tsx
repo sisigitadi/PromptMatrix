@@ -17,3 +17,5 @@ root.render(
     </LanguageProvider>
   </React.StrictMode>
 );
+
+export {}; // Explicitly mark as an ES module

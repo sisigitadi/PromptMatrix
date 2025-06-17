@@ -93,92 +93,74 @@ const ToolLinkSelectorModal: React.FC<ToolLinkSelectorModalProps> = ({ isOpen, o
       if (!urlToOpen.startsWith('http://') && !urlToOpen.startsWith('https://')) {
         urlToOpen = 'https://' + urlToOpen;
       }
-      try {
-        new URL(urlToOpen); 
-        window.open(urlToOpen, '_blank', 'noopener,noreferrer');
-        onClose();
-      } catch (e) {
-        console.error("Invalid URL:", urlToOpen);
-        alert("Please enter a valid URL (e.g., https://example.com)");
-        customUrlInputRef.current?.focus();
-      }
-    } else {
-        customUrlInputRef.current?.focus();
+      window.open(urlToOpen, '_blank', 'noopener,noreferrer');
+      onClose();
     }
   };
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="tool-selector-title"
-      onClick={onClose} 
+      aria-labelledby="tool-selector-modal-title"
+      onClick={onClose}
     >
       <div
         ref={modalRef}
-        className="bg-[var(--bg-secondary)] text-[var(--text-primary)] rounded-xl border border-[var(--border-color)] shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 max-h-[90vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()} 
-        tabIndex={-1} 
+        className="bg-[var(--bg-secondary)] text-[var(--text-primary)] rounded-xl border border-[var(--border-color)] shadow-2xl w-full max-w-md p-5 sm:p-6 space-y-4 max-h-[90vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+        tabIndex={-1}
       >
-        <div className="flex justify-between items-center pb-2 border-b border-[var(--border-color)]">
-          <h2 id="tool-selector-title" className="text-xl sm:text-2xl font-semibold text-teal-600 dark:text-teal-500">{title}</h2>
-          <button
-            onClick={onClose}
-            className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors p-1 rounded-full hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
-            aria-label="Close tool selector"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div className="flex-grow overflow-y-auto space-y-3 pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)' }}>
+        <h2 id="tool-selector-modal-title" className="text-lg sm:text-xl font-semibold text-teal-600 dark:text-teal-500 pb-2 border-b border-[var(--border-color)]">
+          {title}
+        </h2>
+        
+        <div className="flex-grow overflow-y-auto space-y-2 pr-1" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)' }}>
           {links.map((link) => (
             <button
-              key={link.name}
+              key={link.url}
               onClick={() => handleLinkClick(link.url)}
-              className="w-full flex items-center justify-between text-left px-3 py-2.5 sm:px-4 sm:py-3 bg-slate-700/70 hover:bg-teal-700/80 dark:hover:bg-teal-700/70 rounded-lg transition-all duration-150 ease-in-out group focus:outline-none focus:ring-2 focus:ring-[var(--ring-color)] focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)]"
+              className="w-full flex items-center justify-between text-left p-2.5 sm:p-3 bg-slate-600/70 hover:bg-teal-700 dark:bg-slate-700/60 dark:hover:bg-teal-700/80 text-slate-100 hover:text-white rounded-md transition-colors duration-150 shadow-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
             >
-              <span className="button-text-content text-slate-100 group-hover:text-white text-sm sm:text-base font-medium">{link.name}</span>
-              <ExternalLinkIcon className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500 dark:text-teal-400 group-hover:text-teal-300 dark:group-hover:text-teal-200 transition-colors" />
+              <span className="button-text-content text-sm">{link.name}</span>
+              <ExternalLinkIcon className="w-4 h-4 shrink-0 ml-2" />
             </button>
           ))}
         </div>
 
-        <div className="pt-3 border-t border-[var(--border-color)] space-y-3">
-          <div>
-            <label htmlFor="custom-tool-url" className="block text-sm font-medium text-teal-600 dark:text-teal-500 mb-1.5">
-              {t('customToolUrlInputLabel')}
-            </label>
-            <div className="flex space-x-2">
-              <input
-                ref={customUrlInputRef}
-                type="url"
-                id="custom-tool-url"
-                value={customUrl}
-                onChange={handleCustomUrlChange}
-                placeholder={t('customToolUrlInputPlaceholder')}
-                className="flex-grow p-2.5 bg-slate-700/50 border border-slate-600 rounded-lg focus:ring-2 focus:ring-[var(--ring-color)] focus:border-[var(--ring-color)] outline-none transition-all duration-150 text-slate-100 placeholder-slate-400/80 shadow-sm text-sm"
-              />
-              <button
-                onClick={handleOpenCustomUrl}
-                className="px-4 py-2 bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-colors duration-150 ease-in-out font-medium text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)]"
-                aria-label={t('customToolUrlButtonAria')}
-              >
-                <span className="button-text-content">{t('customToolUrlButtonText')}</span>
-              </button>
-            </div>
+        <div className="pt-3 border-t border-[var(--border-color)] space-y-2">
+           <label htmlFor="custom-tool-url" className="block text-xs text-slate-400">
+            {t('customToolUrlInputLabel')}
+          </label>
+          <div className="flex items-center space-x-2">
+            <input
+              ref={customUrlInputRef}
+              id="custom-tool-url"
+              type="url"
+              value={customUrl}
+              onChange={handleCustomUrlChange}
+              onKeyDown={(e) => e.key === 'Enter' && handleOpenCustomUrl()}
+              placeholder={t('customToolUrlInputPlaceholder')}
+              className="flex-grow p-2 text-sm bg-slate-600 border-slate-500 rounded-md focus:ring-1 focus:ring-teal-500 focus:border-teal-500 outline-none text-slate-100 placeholder-slate-400/70 non-copyable-input-field"
+            />
+            <button
+              onClick={handleOpenCustomUrl}
+              disabled={!customUrl.trim()}
+              className="p-2 bg-sky-600 hover:bg-sky-500 text-white rounded-md text-sm font-semibold transition-colors duration-150 disabled:bg-slate-500 disabled:opacity-70 disabled:cursor-not-allowed focus:outline-none focus:ring-1 focus:ring-sky-400"
+              aria-label={t('customToolUrlButtonAria')}
+            >
+              <ExternalLinkIcon className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
-         <button
-            onClick={onClose}
-            className="mt-4 w-full px-4 py-2.5 bg-teal-700 hover:bg-teal-600 text-white rounded-lg transition-colors duration-150 ease-in-out font-medium text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)]"
-          >
-            <span className="button-text-content">Close</span>
-          </button>
+        <button
+          onClick={onClose}
+          className="mt-3 w-full px-4 py-2.5 rounded-lg transition-colors duration-150 font-semibold text-sm bg-rose-600 hover:bg-rose-500 text-white focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)]"
+        >
+          <span className="button-text-content">{t('cancelButton')}</span>
+        </button>
       </div>
     </div>
   );

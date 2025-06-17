@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { WorkflowDiagramIcon } from './icons/WorkflowDiagramIcon';
@@ -180,7 +181,8 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownA
             <li>{t('howToUseStep3')}</li>
             <li>{t('howToUseStep4')}</li>
             <li>{t('howToUseStep5')}</li>
-            <li>{t('howToUseStep6')}</li>
+            <li>{t('howToUseStep5b')}</li> 
+            <li>{t('howToUseStep6')}</li> 
           </ol>
           <p className="mt-3 text-teal-400 dark:text-teal-300 font-semibold text-xs italic pl-1">{t('howToUseTip')}</p>
         </div>

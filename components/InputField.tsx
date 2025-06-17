@@ -2,7 +2,7 @@
 import React, { useLayoutEffect, useRef, useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { XCircleIcon } from './icons/XCircleIcon';
-import { AppLogoIcon } from './icons/AppLogoIcon'; // Changed from SparklesIcon
+import { AiTextIcon } from './icons/AiTextIcon'; 
 
 interface InputFieldProps {
   id: string;
@@ -51,18 +51,18 @@ const InputField: React.FC<InputFieldProps> = ({
   const [focusedSuggestionIndex, setFocusedSuggestionIndex] = useState(-1);
   
   const hasClearButton = !!value;
-  const showSuggestButton = !!fetchSuggestions && !!frameworkName && !!apiKeyAvailable;
+  const showSuggestButtonIcon = !!fetchSuggestions && !!frameworkName; 
   let prClass = 'pr-2.5'; 
-  if (hasClearButton && showSuggestButton) {
+  if (hasClearButton && showSuggestButtonIcon) {
     prClass = 'pr-16 sm:pr-16'; 
-  } else if (hasClearButton || showSuggestButton) {
+  } else if (hasClearButton || showSuggestButtonIcon) {
     prClass = 'pr-8 sm:pr-8'; 
   }
 
   const actualPlaceholder = exampleText || placeholder || t('inputFieldPlaceholder', label);
 
   const effectiveSuggestButtonTitle = !apiKeyAvailable 
-    ? t('apiKeyMissingError') 
+    ? t('aiFeatureRequiresSubscriptionTooltip') 
     : t('suggestButtonTitle');
 
   useLayoutEffect(() => {
@@ -155,7 +155,7 @@ const InputField: React.FC<InputFieldProps> = ({
   };
 
   const handleSuggest = async () => {
-    if (!fetchSuggestions || !frameworkName || !apiKeyAvailable) return;
+    if (!fetchSuggestions || !frameworkName || !apiKeyAvailable) return; 
 
     setIsFetchingSuggestions(true);
     setSuggestionError(null);
@@ -276,18 +276,19 @@ const InputField: React.FC<InputFieldProps> = ({
           />
         )}
         <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-0"> 
-            {showSuggestButton && (
+            {showSuggestButtonIcon && (
                  <button
                     type="button"
-                    onClick={handleSuggest}
-                    className="p-1 text-purple-400 hover:text-purple-200 active:text-purple-500 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button" 
+                    onClick={apiKeyAvailable ? handleSuggest : undefined} 
+                    className={`p-1 ${apiKeyAvailable ? 'text-purple-400 hover:text-purple-200 active:text-purple-500' : 'text-slate-500 opacity-50 cursor-not-allowed'} transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button`} 
                     title={effectiveSuggestButtonTitle}
                     aria-label={t('suggestButtonTitle')}
-                    disabled={isFetchingSuggestions} 
+                    disabled={!apiKeyAvailable || isFetchingSuggestions} 
                 >
-                    <AppLogoIcon 
-                        animatedAsAiIndicator
-                        className={`w-4 h-4 api-status-indicator ${isFetchingSuggestions ? 'opacity-70 animate-pulse' : ''}`} 
+                    <AiTextIcon 
+                        isAiFeatureActive={!!apiKeyAvailable}
+                        enableSwayAndGlow={!!apiKeyAvailable && !isFetchingSuggestions}
+                        isLoading={isFetchingSuggestions}
                     /> 
                 </button>
             )}
@@ -303,7 +304,7 @@ const InputField: React.FC<InputFieldProps> = ({
             )}
         </div>
       </div>
-      {showSuggestions && (isFetchingSuggestions || suggestionError || suggestions.length > 0) && (
+      {showSuggestions && apiKeyAvailable && (isFetchingSuggestions || suggestionError || suggestions.length > 0) && ( 
         <div className="absolute z-10 w-full mt-0.5 bg-[var(--bg-tertiary)] dark:bg-slate-700 border border-[var(--border-color)] dark:border-slate-600 rounded-md shadow-lg max-h-52 overflow-y-auto" id={`${id}-suggestions`} role="listbox"> 
           {isFetchingSuggestions && (
             <div className="px-2.5 py-1.5 text-xs text-slate-400 animate-pulse">{t('suggestionsLoading')}</div>

@@ -631,11 +631,6 @@ export const detailedImageVideoTemplate = `{{subject}}, {{action_details}}, {{ar
 // CLEANED TEMPLATE
 export const detailedMusicTemplate = `{{main_genre}}, {{subgenre_style}}, {{mood}}, {{tempo}}, {{main_instruments}}, {{vocal_style}}, {{song_structure_desc}}, {{duration_or_specifics}}.{{detailed_music_lyrics_block}}`;
 
-// ... (Sisa definisi framework teks standar tetap sama seperti sebelumnya) ...
-// Pastikan semua framework teks (RTF, TRACE, CTI, TAG, RISE, RODE, APE, COPE, CARE, SPARE, CoT, Zero-shot CoT, Self-Consistency, GenKnowledge, Least-to-Most, Self-Refine, ToT, Prompt Ensembling, Factive, EmotionPrompt, Prompt Chaining, Instruction Basics, RolePlay, Few-Shot, PACT)
-// memiliki `genericToolLinks: mergeAndSortTextToolLinks([])` atau toolLink spesifik jika ada.
-
-// Example of how a text framework might look (keep your existing text framework as they are)
 export const frameworks: Framework[] = [
   {
     id: 'rtf',
@@ -644,9 +639,9 @@ export const frameworks: Framework[] = [
       shortName: 'RTF',
       description: 'Kerangka kerja RTF membantu menstrukturkan prompt dengan mendefinisikan Peran AI, Tugas yang harus dilakukan, dan Format output yang diinginkan.',
       components: [
-        { id: 'Peran', example: 'Seorang pakar strategi pemasaran digital dengan pengalaman 10 tahun di industri e-commerce B2C, mampu menghasilkan ide kampanye yang inovatif dan terukur.' },
-        { id: 'Tugas', example: 'Buatlah rencana peluncuran produk baru untuk sepatu lari ramah lingkungan, target audiens Gen Z. Rencana harus mencakup strategi media sosial, influencer, dan konten blog selama 3 bulan pertama.' },
-        { id: 'Format', example: 'Dokumen strategi komprehensif dalam format PDF, termasuk timeline, estimasi anggaran per saluran, dan metrik keberhasilan (KPI) yang jelas untuk setiap fase.' }
+        { id: 'Peran', label: 'Peran', example: 'Seorang pakar strategi pemasaran digital dengan pengalaman 10 tahun di industri e-commerce B2C, mampu menghasilkan ide kampanye yang inovatif dan terukur.' },
+        { id: 'Tugas', label: 'Tugas', example: 'Buatlah rencana peluncuran produk baru untuk sepatu lari ramah lingkungan, target audiens Gen Z. Rencana harus mencakup strategi media sosial, influencer, dan konten blog selama 3 bulan pertama.' },
+        { id: 'Format', label: 'Format', example: 'Dokumen strategi komprehensif dalam format PDF, termasuk timeline, estimasi anggaran per saluran, dan metrik keberhasilan (KPI) yang jelas untuk setiap fase.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -656,9 +651,38 @@ export const frameworks: Framework[] = [
       shortName: 'RTF',
       description: 'The RTF framework helps structure prompts by defining the AI\'s Role, the Task to be performed, and the desired output Format.',
       components: [
-        { id: 'Role', example: 'A seasoned digital marketing strategist with 10 years of experience in B2C e-commerce, capable of generating innovative and measurable campaign ideas.' },
-        { id: 'Task', example: 'Develop a new product launch plan for eco-friendly running shoes, targeting Gen Z. The plan should cover social media strategy, influencer collaborations, and blog content for the first 3 months.' },
-        { id: 'Format', example: 'A comprehensive strategy document in PDF format, including a timeline, estimated budget per channel, and clear Key Performance Indicators (KPIs) for each phase.' }
+        { id: 'Role', label: 'Role', example: 'A seasoned digital marketing strategist with 10 years of experience in B2C e-commerce, capable of generating innovative and measurable campaign ideas.' },
+        { id: 'Task', label: 'Task', example: 'Develop a new product launch plan for eco-friendly running shoes, targeting Gen Z. The plan should cover social media strategy, influencer collaborations, and blog content for the first 3 months.' },
+        { id: 'Format', label: 'Format', example: 'A comprehensive strategy document in PDF format, including a timeline, estimated budget per channel, and clear Key Performance Indicators (KPIs) for each phase.' }
+      ],
+      category: 'text',
+      genericToolLinks: mergeAndSortTextToolLinks([])
+    }
+  },
+  {
+    id: 'aida',
+    idLocale: {
+      name: 'AIDA (Perhatian, Minat, Keinginan, Tindakan)',
+      shortName: 'AIDA',
+      description: 'Kerangka kerja AIDA adalah model klasik dalam pemasaran dan periklanan untuk memandu calon pelanggan melalui beberapa tahapan kognitif.',
+      components: [
+        { id: 'Perhatian', label: 'Perhatian', example: 'Judul Utama: Buka Rahasia Produktivitas Tanpa Usaha!' },
+        { id: 'Minat', label: 'Minat', example: 'Jelaskan secara singkat masalah inti yang dihadapi audiens Anda dan berikan petunjuk tentang solusi unik Anda. "Lelah mengatur banyak aplikasi dan masih merasa tidak terorganisir?"' },
+        { id: 'Keinginan', label: 'Keinginan', example: 'Tonjolkan manfaat, tampilkan bukti sosial, atau gambarkan kondisi "setelah" menggunakan. "Bayangkan mengelola semua tugas Anda dengan mudah, berkolaborasi tanpa hambatan, dan mendapatkan kembali jam-jam berharga Anda. Bergabunglah dengan ribuan pengguna yang puas..."' },
+        { id: 'Tindakan', label: 'Tindakan', example: 'Ajakan bertindak yang jelas. "Daftar untuk uji coba gratis hari ini!", "Unduh e-book kami sekarang!", "Jadwalkan demo."' }
+      ],
+      category: 'text',
+      genericToolLinks: mergeAndSortTextToolLinks([])
+    },
+    enLocale: {
+      name: 'AIDA (Attention, Interest, Desire, Action)',
+      shortName: 'AIDA',
+      description: 'The AIDA framework is a classic model in marketing and advertising for guiding potential customers through cognitive stages.',
+      components: [
+        { id: 'Attention', label: 'Attention', example: 'Headline: Unlock the Secret to Effortless Productivity!' },
+        { id: 'Interest', label: 'Interest', example: 'Briefly explain the core problem your audience faces and hint at your unique solution. "Tired of juggling multiple apps and still feeling disorganized?"' },
+        { id: 'Desire', label: 'Desire', example: 'Highlight benefits, showcase social proof, or paint a picture of the "after" state. "Imagine effortlessly managing all your tasks, collaborating seamlessly, and reclaiming hours of your day. Join thousands of satisfied users..."' },
+        { id: 'Action', label: 'Action', example: 'Clear call to action. "Sign up for a free trial today!", "Download our e-book now!", "Schedule a demo."' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -671,11 +695,11 @@ export const frameworks: Framework[] = [
       shortName: 'TRACE',
       description: 'TRACE menyediakan struktur komprehensif untuk prompt yang kompleks dengan merinci Tugas, Permintaan spesifik, Aksi yang diharapkan, Konteks relevan, dan Contoh output.',
       components: [
-        { id: 'Tugas Utama (Task)', example: 'Menganalisis sentimen pelanggan terhadap produk X berdasarkan ulasan online dari 3 platform e-commerce utama selama 6 bulan terakhir.' },
-        { id: 'Permintaan Detail (Request)', example: 'Identifikasi tema sentimen positif dan negatif utama. Kuantifikasi persentase masing-masing. Berikan kutipan representatif untuk setiap tema. Visualisasikan tren sentimen dari waktu ke waktu.' },
-        { id: 'Aksi AI (Action)', example: 'Proses data ulasan, lakukan analisis sentimen, klasterisasi tema, hitung statistik, hasilkan grafik tren, dan susun laporan ringkas.' },
-        { id: 'Konteks Tambahan (Context)', example: 'Produk X baru saja mengalami pembaruan fitur signifikan 3 bulan lalu. Perhatikan apakah ada perubahan sentimen yang berkorelasi dengan pembaruan tersebut. Pesaing utama, Produk Y, juga meluncurkan kampanye baru bersamaan.' },
-        { id: 'Contoh Output (Example)', example: 'Format laporan: 1. Ringkasan Eksekutif. 2. Sentimen Positif Utama (dengan persentase dan kutipan). 3. Sentimen Negatif Utama (dengan persentase dan kutipan). 4. Grafik Tren Sentimen Bulanan. 5. Analisis Dampak Pembaruan Fitur.' }
+        { id: 'Tugas Utama (Task)', label: 'Tugas Utama (Task)', example: 'Menganalisis sentimen pelanggan terhadap produk X berdasarkan ulasan online dari 3 platform e-commerce utama selama 6 bulan terakhir.' },
+        { id: 'Permintaan Detail (Request)', label: 'Permintaan Detail (Request)', example: 'Identifikasi tema sentimen positif dan negatif utama. Kuantifikasi persentase masing-masing. Berikan kutipan representatif untuk setiap tema. Visualisasikan tren sentimen dari waktu ke waktu.' },
+        { id: 'Aksi AI (Action)', label: 'Aksi AI (Action)', example: 'Proses data ulasan, lakukan analisis sentimen, klasterisasi tema, hitung statistik, hasilkan grafik tren, dan susun laporan ringkas.' },
+        { id: 'Konteks Tambahan (Context)', label: 'Konteks Tambahan (Context)', example: 'Produk X baru saja mengalami pembaruan fitur signifikan 3 bulan lalu. Perhatikan apakah ada perubahan sentimen yang berkorelasi dengan pembaruan tersebut. Pesaing utama, Produk Y, juga meluncurkan kampanye baru bersamaan.' },
+        { id: 'Contoh Output (Example)', label: 'Contoh Output (Example)', example: 'Format laporan: 1. Ringkasan Eksekutif. 2. Sentimen Positif Utama (dengan persentase dan kutipan). 3. Sentimen Negatif Utama (dengan persentase dan kutipan). 4. Grafik Tren Sentimen Bulanan. 5. Analisis Dampak Pembaruan Fitur.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -685,11 +709,11 @@ export const frameworks: Framework[] = [
       shortName: 'TRACE',
       description: 'TRACE provides a comprehensive structure for complex prompts by detailing the Task, specific Requests, expected Actions, relevant Context, and an Example of the output.',
       components: [
-        { id: 'Main Task', example: 'Analyze customer sentiment towards Product X based on online reviews from 3 major e-commerce platforms over the last 6 months.' },
-        { id: 'Detailed Request', example: 'Identify key positive and negative sentiment themes. Quantify the percentage of each. Provide representative quotes for each theme. Visualize sentiment trends over time.' },
-        { id: 'AI Action', example: 'Process review data, perform sentiment analysis, cluster themes, calculate statistics, generate trend graphs, and compile a concise report.' },
-        { id: 'Additional Context', example: 'Product X underwent a significant feature update 3 months ago. Note if there are sentiment changes correlating with this update. Key competitor, Product Y, also launched a new campaign concurrently.' },
-        { id: 'Example Output', example: 'Report format: 1. Executive Summary. 2. Key Positive Sentiments (with percentages and quotes). 3. Key Negative Sentiments (with percentages and quotes). 4. Monthly Sentiment Trend Graph. 5. Analysis of Feature Update Impact.' }
+        { id: 'Main Task', label: 'Main Task', example: 'Analyze customer sentiment towards Product X based on online reviews from 3 major e-commerce platforms over the last 6 months.' },
+        { id: 'Detailed Request', label: 'Detailed Request', example: 'Identify key positive and negative sentiment themes. Quantify the percentage of each. Provide representative quotes for each theme. Visualize sentiment trends over time.' },
+        { id: 'AI Action', label: 'AI Action', example: 'Process review data, perform sentiment analysis, cluster themes, calculate statistics, generate trend graphs, and compile a concise report.' },
+        { id: 'Additional Context', label: 'Additional Context', example: 'Product X underwent a significant feature update 3 months ago. Note if there are sentiment changes correlating with this update. Key competitor, Product Y, also launched a new campaign concurrently.' },
+        { id: 'Example Output', label: 'Example Output', example: 'Report format: 1. Executive Summary. 2. Key Positive Sentiments (with percentages and quotes). 3. Key Negative Sentiments (with percentages and quotes). 4. Monthly Sentiment Trend Graph. 5. Analysis of Feature Update Impact.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -702,9 +726,9 @@ export const frameworks: Framework[] = [
       shortName: 'CTI',
       description: 'Kerangka CTI menekankan pentingnya memberikan Konteks yang cukup, mendefinisikan Tugas dengan jelas, dan memberikan Instruksi yang spesifik kepada AI.',
       components: [
-        { id: 'Konteks', example: 'Perusahaan kami adalah startup SaaS B2B yang menyediakan alat manajemen proyek untuk tim developer perangkat lunak. Kami ingin meningkatkan engagement di blog teknis kami.' },
-        { id: 'Tugas', example: 'Buat draf artikel blog (sekitar 800-1000 kata) tentang "5 Strategi Efektif untuk Meningkatkan Kolaborasi Tim Developer Agile".' },
-        { id: 'Instruksi', example: 'Gunakan gaya bahasa yang informatif namun mudah diakses. Sertakan contoh praktis atau studi kasus singkat jika memungkinkan. Fokus pada tips yang actionable. Akhiri dengan ajakan untuk berbagi pengalaman di kolom komentar.' }
+        { id: 'Konteks', label: 'Konteks', example: 'Perusahaan kami adalah startup SaaS B2B yang menyediakan alat manajemen proyek untuk tim developer perangkat lunak. Kami ingin meningkatkan engagement di blog teknis kami.' },
+        { id: 'Tugas', label: 'Tugas', example: 'Buat draf artikel blog (sekitar 800-1000 kata) tentang "5 Strategi Efektif untuk Meningkatkan Kolaborasi Tim Developer Agile".' },
+        { id: 'Instruksi', label: 'Instruksi', example: 'Gunakan gaya bahasa yang informatif namun mudah diakses. Sertakan contoh praktis atau studi kasus singkat jika memungkinkan. Fokus pada tips yang actionable. Akhiri dengan ajakan untuk berbagi pengalaman di kolom komentar.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -714,9 +738,9 @@ export const frameworks: Framework[] = [
       shortName: 'CTI',
       description: 'The CTI framework emphasizes providing sufficient Context, clearly defining the Task, and giving specific Instructions to the AI.',
       components: [
-        { id: 'Context', example: 'Our company is a B2B SaaS startup providing project management tools for software development teams. We want to increase engagement on our technical blog.' },
-        { id: 'Task', example: 'Draft a blog post (around 800-1000 words) on "5 Effective Strategies to Enhance Agile Developer Team Collaboration".' },
-        { id: 'Instructions', example: 'Use an informative yet accessible tone. Include practical examples or brief case studies where possible. Focus on actionable tips. End with a call to action to share experiences in the comments.' }
+        { id: 'Context', label: 'Context', example: 'Our company is a B2B SaaS startup providing project management tools for software development teams. We want to increase engagement on our technical blog.' },
+        { id: 'Task', label: 'Task', example: 'Draft a blog post (around 800-1000 words) on "5 Effective Strategies to Enhance Agile Developer Team Collaboration".' },
+        { id: 'Instructions', label: 'Instructions', example: 'Use an informative yet accessible tone. Include practical examples or brief case studies where possible. Focus on actionable tips. End with a call to action to share experiences in the comments.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -729,9 +753,9 @@ export const frameworks: Framework[] = [
       shortName: 'TAG',
       description: 'TAG adalah kerangka kerja sederhana yang berfokus pada Tugas yang diberikan, Aksi yang harus dilakukan AI, dan Tujuan akhir dari output.',
       components: [
-        { id: 'Tugas', example: 'Menulis email tindak lanjut kepada klien potensial setelah demonstrasi produk.' },
-        { id: 'Aksi', example: 'Susun email yang sopan dan profesional. Ucapkan terima kasih atas waktunya, rangkum poin-poin penting demo, jawab pertanyaan yang mungkin muncul, dan ajak untuk langkah selanjutnya (misal, diskusi teknis atau penawaran harga).' },
-        { id: 'Tujuan', example: 'Mendorong klien potensial untuk melanjutkan ke tahap berikutnya dalam siklus penjualan dan menunjukkan profesionalisme perusahaan.' }
+        { id: 'Tugas', label: 'Tugas', example: 'Menulis email tindak lanjut kepada klien potensial setelah demonstrasi produk.' },
+        { id: 'Aksi', label: 'Aksi', example: 'Susun email yang sopan dan profesional. Ucapkan terima kasih atas waktunya, rangkum poin-poin penting demo, jawab pertanyaan yang mungkin muncul, dan ajak untuk langkah selanjutnya (misal, diskusi teknis atau penawaran harga).' },
+        { id: 'Tujuan', label: 'Tujuan', example: 'Mendorong klien potensial untuk melanjutkan ke tahap berikutnya dalam siklus penjualan dan menunjukkan profesionalisme perusahaan.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -741,9 +765,9 @@ export const frameworks: Framework[] = [
       shortName: 'TAG',
       description: 'TAG is a simple framework focusing on the given Task, the Action the AI should perform, and the ultimate Goal of the output.',
       components: [
-        { id: 'Task', example: 'Write a follow-up email to a potential client after a product demonstration.' },
-        { id: 'Action', example: 'Draft a polite and professional email. Thank them for their time, summarize key demo points, address any questions that arose, and propose next steps (e.g., technical discussion or price quote).' },
-        { id: 'Goal', example: 'Encourage the potential client to move to the next stage in the sales cycle and demonstrate company professionalism.' }
+        { id: 'Task', label: 'Task', example: 'Write a follow-up email to a potential client after a product demonstration.' },
+        { id: 'Action', label: 'Action', example: 'Draft a polite and professional email. Thank them for their time, summarize key demo points, address any questions that arose, and propose next steps (e.g., technical discussion or price quote).' },
+        { id: 'Goal', label: 'Goal', example: 'Encourage the potential client to move to the next stage in the sales cycle and demonstrate company professionalism.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -756,10 +780,10 @@ export const frameworks: Framework[] = [
       shortName: 'RISE',
       description: 'RISE membantu dalam menghasilkan output yang terstruktur dengan mendefinisikan Peran AI, Input yang digunakan, Langkah-langkah pemrosesan, dan Ekspektasi hasil akhir.',
       components: [
-        { id: 'Peran (Role)', example: 'Asisten peneliti AI yang bertugas merangkum artikel ilmiah kompleks menjadi poin-poin kunci yang mudah dipahami.' },
-        { id: 'Input (Input)', example: 'Artikel ilmiah berjudul "The Impact of Quantum Computing on Cryptographic Systems" oleh John Doe, 2023, Journal of Cryptography. (Teks lengkap artikel akan diberikan setelah prompt ini).' },
-        { id: 'Langkah (Steps)', example: '1. Baca dan pahami abstrak serta kesimpulan artikel. 2. Identifikasi argumen utama, metodologi, dan temuan kunci. 3. Susun rangkuman dalam 5-7 poin utama. 4. Hindari jargon teknis berlebihan jika memungkinkan.' },
-        { id: 'Ekspektasi (Expectation)', example: 'Rangkuman poin-poin yang jelas, ringkas, dan akurat, menyoroti kontribusi utama artikel. Tidak lebih dari 250 kata.' }
+        { id: 'Peran (Role)', label: 'Peran (Role)', example: 'Asisten peneliti AI yang bertugas merangkum artikel ilmiah kompleks menjadi poin-poin kunci yang mudah dipahami.' },
+        { id: 'Input (Input)', label: 'Input (Input)', example: 'Artikel ilmiah berjudul "The Impact of Quantum Computing on Cryptographic Systems" oleh John Doe, 2023, Journal of Cryptography. (Teks lengkap artikel akan diberikan setelah prompt ini).' },
+        { id: 'Langkah (Steps)', label: 'Langkah (Steps)', example: '1. Baca dan pahami abstrak serta kesimpulan artikel. 2. Identifikasi argumen utama, metodologi, dan temuan kunci. 3. Susun rangkuman dalam 5-7 poin utama. 4. Hindari jargon teknis berlebihan jika memungkinkan.' },
+        { id: 'Ekspektasi (Expectation)', label: 'Ekspektasi (Expectation)', example: 'Rangkuman poin-poin yang jelas, ringkas, dan akurat, menyoroti kontribusi utama artikel. Tidak lebih dari 250 kata.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -769,10 +793,10 @@ export const frameworks: Framework[] = [
       shortName: 'RISE',
       description: 'RISE helps generate structured output by defining the AI\'s Role, the Input it uses, the Steps for processing, and the Expectation for the final result.',
       components: [
-        { id: 'Role', example: 'An AI research assistant tasked with summarizing complex scientific articles into easily understandable key points.' },
-        { id: 'Input', example: 'Scientific article titled "The Impact of Quantum Computing on Cryptographic Systems" by John Doe, 2023, Journal of Cryptography. (Full text of the article will be provided after this prompt).' },
-        { id: 'Steps', example: '1. Read and understand the abstract and conclusion of the article. 2. Identify main arguments, methodology, and key findings. 3. Structure the summary into 5-7 main bullet points. 4. Avoid excessive technical jargon where possible.' },
-        { id: 'Expectation', example: 'A clear, concise, and accurate bullet-point summary highlighting the article\'s main contributions. No more than 250 words.' }
+        { id: 'Role', label: 'Role', example: 'An AI research assistant tasked with summarizing complex scientific articles into easily understandable key points.' },
+        { id: 'Input', label: 'Input', example: 'Scientific article titled "The Impact of Quantum Computing on Cryptographic Systems" by John Doe, 2023, Journal of Cryptography. (Full text of the article will be provided after this prompt).' },
+        { id: 'Steps', label: 'Steps', example: '1. Read and understand the abstract and conclusion of the article. 2. Identify main arguments, methodology, and key findings. 3. Structure the summary into 5-7 main bullet points. 4. Avoid excessive technical jargon where possible.' },
+        { id: 'Expectation', label: 'Expectation', example: 'A clear, concise, and accurate bullet-point summary highlighting the article\'s main contributions. No more than 250 words.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -785,10 +809,10 @@ export const frameworks: Framework[] = [
       shortName: 'RODE',
       description: 'RODE berguna untuk menghasilkan konten kreatif atau simulasi dengan menentukan Peran, Output yang diharapkan, Dinamika interaksi (jika ada), dan Contoh.',
       components: [
-        { id: 'Peran (Role)', example: 'Seorang detektif swasta bergaya noir tahun 1940-an yang sinis namun brilian.' },
-        { id: 'Output (Output)', example: 'Monolog internal detektif saat mengamati tempat kejadian perkara sebuah kasus pembunuhan misterius di sebuah bar kumuh.' },
-        { id: 'Dinamika (Dynamics)', example: 'Gunakan bahasa kiasan khas noir, deskripsi visual yang kaya, dan sentuhan humor gelap. Detektif harus merenungkan petunjuk-petunjuk awal dan karakter-karakter yang terlibat.' },
-        { id: 'Contoh (Example)', example: '"Hujan turun seperti air mata malaikat yang menangisi kota busuk ini. Bar itu sendiri adalah sebuah noda, dan korban... yah, dia adalah bagian dari noda itu sekarang. Secarik kertas di sakunya, nomor telepon tanpa nama. Klasik."' }
+        { id: 'Peran (Role)', label: 'Peran (Role)', example: 'Seorang detektif swasta bergaya noir tahun 1940-an yang sinis namun brilian.' },
+        { id: 'Output (Output)', label: 'Output (Output)', example: 'Monolog internal detektif saat mengamati tempat kejadian perkara sebuah kasus pembunuhan misterius di sebuah bar kumuh.' },
+        { id: 'Dinamika (Dynamics)', label: 'Dinamika (Dynamics)', example: 'Gunakan bahasa kiasan khas noir, deskripsi visual yang kaya, dan sentuhan humor gelap. Detektif harus merenungkan petunjuk-petunjuk awal dan karakter-karakter yang terlibat.' },
+        { id: 'Contoh (Example)', label: 'Contoh (Example)', example: '"Hujan turun seperti air mata malaikat yang menangisi kota busuk ini. Bar itu sendiri adalah sebuah noda, dan korban... yah, dia adalah bagian dari noda itu sekarang. Secarik kertas di sakunya, nomor telepon tanpa nama. Klasik."' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -798,10 +822,10 @@ export const frameworks: Framework[] = [
       shortName: 'RODE',
       description: 'RODE is useful for generating creative content or simulations by specifying the Role, expected Output, interaction Dynamics (if any), and an Example.',
       components: [
-        { id: 'Role', example: 'A cynical yet brilliant 1940s noir private detective.' },
-        { id: 'Output', example: 'An internal monologue of the detective observing the crime scene of a mysterious murder in a seedy bar.' },
-        { id: 'Dynamics', example: 'Use typical noir figurative language, rich visual descriptions, and a touch of dark humor. The detective should reflect on initial clues and characters involved.' },
-        { id: 'Example', example: '"Rain was falling like an angel weeping for this rotten city. The bar itself was a stain, and the vic... well, he was part of that stain now. A slip of paper in his pocket, a phone number with no name. Classic."' }
+        { id: 'Role', label: 'Role', example: 'A cynical yet brilliant 1940s noir private detective.' },
+        { id: 'Output', label: 'Output', example: 'An internal monologue of the detective observing the crime scene of a mysterious murder in a seedy bar.' },
+        { id: 'Dynamics', label: 'Dynamics', example: 'Use typical noir figurative language, rich visual descriptions, and a touch of dark humor. The detective should reflect on initial clues and characters involved.' },
+        { id: 'Example', label: 'Example', example: '"Rain was falling like an angel weeping for this rotten city. The bar itself was a stain, and the vic... well, he was part of that stain now. A slip of paper in his pocket, a phone number with no name. Classic."' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -814,9 +838,9 @@ export const frameworks: Framework[] = [
       shortName: 'APE',
       description: 'APE adalah kerangka kerja ringkas untuk Aksi yang harus dilakukan, Tujuan dari aksi tersebut, dan Ekspektasi kualitas atau format output.',
       components: [
-        { id: 'Aksi (Action)', example: 'Terjemahkan teks berikut dari Bahasa Inggris ke Bahasa Indonesia.' },
-        { id: 'Tujuan (Purpose)', example: 'Teks terjemahan akan digunakan untuk materi pemasaran di situs web regional Indonesia.' },
-        { id: 'Ekspektasi (Expectation)', example: 'Terjemahan yang akurat, alami, dan sesuai dengan konteks budaya Indonesia. Pertahankan gaya formal namun menarik.' }
+        { id: 'Aksi (Action)', label: 'Aksi (Action)', example: 'Terjemahkan teks berikut dari Bahasa Inggris ke Bahasa Indonesia.' },
+        { id: 'Tujuan (Purpose)', label: 'Tujuan (Purpose)', example: 'Teks terjemahan akan digunakan untuk materi pemasaran di situs web regional Indonesia.' },
+        { id: 'Ekspektasi (Expectation)', label: 'Ekspektasi (Expectation)', example: 'Terjemahan yang akurat, alami, dan sesuai dengan konteks budaya Indonesia. Pertahankan gaya formal namun menarik.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -826,9 +850,9 @@ export const frameworks: Framework[] = [
       shortName: 'APE',
       description: 'APE is a concise framework for the Action to be performed, the Purpose of that action, and the Expectation of the output quality or format.',
       components: [
-        { id: 'Action', example: 'Translate the following text from English to Indonesian.' },
-        { id: 'Purpose', example: 'The translated text will be used for marketing materials on the Indonesian regional website.' },
-        { id: 'Expectation', example: 'Accurate, natural-sounding translation appropriate for the Indonesian cultural context. Maintain a formal yet engaging tone.' }
+        { id: 'Action', label: 'Action', example: 'Translate the following text from English to Indonesian.' },
+        { id: 'Purpose', label: 'Purpose', example: 'The translated text will be used for marketing materials on the Indonesian regional website.' },
+        { id: 'Expectation', label: 'Expectation', example: 'Accurate, natural-sounding translation appropriate for the Indonesian cultural context. Maintain a formal yet engaging tone.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -841,10 +865,10 @@ export const frameworks: Framework[] = [
       shortName: 'COPE',
       description: 'COPE membantu menghasilkan respons yang relevan dengan memberikan Konteks, Objektif yang jelas, Persona untuk AI, dan Contoh output yang diinginkan.',
       components: [
-        { id: 'Konteks (Context)', example: 'Seorang pelanggan mengirim email keluhan tentang keterlambatan pengiriman pesanannya.' },
-        { id: 'Objektif (Objective)', example: 'Menanggapi email pelanggan dengan empati, meminta maaf atas ketidaknyamanan, memberikan penjelasan (jika ada), dan menawarkan solusi atau kompensasi yang sesuai.' },
-        { id: 'Persona (Persona)', example: 'Agen layanan pelanggan yang ramah, profesional, dan solutif.' },
-        { id: 'Contoh (Example)', example: '"Yth. Bapak/Ibu [Nama Pelanggan], Terima kasih telah menghubungi kami. Kami mohon maaf atas keterlambatan pengiriman pesanan Anda [Nomor Pesanan]. Kami memahami kekecewaan Anda..." (lanjutkan dengan detail dan solusi).' }
+        { id: 'Konteks (Context)', label: 'Konteks (Context)', example: 'Seorang pelanggan mengirim email keluhan tentang keterlambatan pengiriman pesanannya.' },
+        { id: 'Objektif (Objective)', label: 'Objektif (Objective)', example: 'Menanggapi email pelanggan dengan empati, meminta maaf atas ketidaknyamanan, memberikan penjelasan (jika ada), dan menawarkan solusi atau kompensasi yang sesuai.' },
+        { id: 'Persona (Persona)', label: 'Persona (Persona)', example: 'Agen layanan pelanggan yang ramah, profesional, dan solutif.' },
+        { id: 'Contoh (Example)', label: 'Contoh (Example)', example: '"Yth. Bapak/Ibu [Nama Pelanggan], Terima kasih telah menghubungi kami. Kami mohon maaf atas keterlambatan pengiriman pesanan Anda [Nomor Pesanan]. Kami memahami kekecewaan Anda..." (lanjutkan dengan detail dan solusi).' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -854,10 +878,10 @@ export const frameworks: Framework[] = [
       shortName: 'COPE',
       description: 'COPE helps generate relevant responses by providing Context, a clear Objective, a Persona for the AI, and an Example of the desired output.',
       components: [
-        { id: 'Context', example: 'A customer has sent an email complaining about a delay in their order shipment.' },
-        { id: 'Objective', example: 'Respond to the customer\'s email empathetically, apologize for the inconvenience, provide an explanation (if available), and offer a suitable solution or compensation.' },
-        { id: 'Persona', example: 'A friendly, professional, and solution-oriented customer service agent.' },
-        { id: 'Example', example: '"Dear Mr./Ms. [Customer Name], Thank you for contacting us. We sincerely apologize for the delay in the shipment of your order [Order Number]. We understand your disappointment..." (continue with details and solution).' }
+        { id: 'Context', label: 'Context', example: 'A customer has sent an email complaining about a delay in their order shipment.' },
+        { id: 'Objective', label: 'Objective', example: 'Respond to the customer\'s email empathetically, apologize for the inconvenience, provide an explanation (if available), and offer a suitable solution or compensation.' },
+        { id: 'Persona', label: 'Persona', example: 'A friendly, professional, and solution-oriented customer service agent.' },
+        { id: 'Example', label: 'Example', example: '"Dear Mr./Ms. [Customer Name], Thank you for contacting us. We sincerely apologize for the delay in the shipment of your order [Order Number]. We understand your disappointment..." (continue with details and solution).' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -870,10 +894,10 @@ export const frameworks: Framework[] = [
       shortName: 'CARE',
       description: 'CARE adalah kerangka kerja yang berfokus pada pemberian Konteks, menentukan Aksi, mendefinisikan Hasil yang diinginkan, dan menyertakan Contoh.',
       components: [
-        { id: 'Konteks (Context)', example: 'Saya sedang menyusun proposal proyek untuk pengembangan aplikasi mobile baru.' },
-        { id: 'Aksi (Action)', example: 'Buatkan bagian "Analisis Risiko" untuk proposal tersebut. Identifikasi setidaknya 5 potensi risiko (teknis, pasar, operasional) dan usulkan strategi mitigasinya.' },
-        { id: 'Hasil (Result)', example: 'Bagian analisis risiko yang terstruktur dengan baik, jelas, dan komprehensif, cocok untuk dimasukkan ke dalam dokumen proposal formal.' },
-        { id: 'Contoh (Example)', example: 'Contoh format risiko: "Risiko Teknis 1: Keterlambatan integrasi API pihak ketiga. Mitigasi: Alokasikan waktu buffer dalam jadwal proyek, identifikasi API alternatif."' }
+        { id: 'Konteks (Context)', label: 'Konteks (Context)', example: 'Saya sedang menyusun proposal proyek untuk pengembangan aplikasi mobile baru.' },
+        { id: 'Aksi (Action)', label: 'Aksi (Action)', example: 'Buatkan bagian "Analisis Risiko" untuk proposal tersebut. Identifikasi setidaknya 5 potensi risiko (teknis, pasar, operasional) dan usulkan strategi mitigasinya.' },
+        { id: 'Hasil (Result)', label: 'Hasil (Result)', example: 'Bagian analisis risiko yang terstruktur dengan baik, jelas, dan komprehensif, cocok untuk dimasukkan ke dalam dokumen proposal formal.' },
+        { id: 'Contoh (Example)', label: 'Contoh (Example)', example: 'Contoh format risiko: "Risiko Teknis 1: Keterlambatan integrasi API pihak ketiga. Mitigasi: Alokasikan waktu buffer dalam jadwal proyek, identifikasi API alternatif."' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -883,10 +907,10 @@ export const frameworks: Framework[] = [
       shortName: 'CARE',
       description: 'CARE is a framework focusing on providing Context, specifying the Action, defining the desired Result, and including an Example.',
       components: [
-        { id: 'Context', example: 'I am drafting a project proposal for a new mobile application development.' },
-        { id: 'Action', example: 'Create the "Risk Analysis" section for this proposal. Identify at least 5 potential risks (technical, market, operational) and propose mitigation strategies for each.' },
-        { id: 'Result', example: 'A well-structured, clear, and comprehensive risk analysis section suitable for inclusion in a formal proposal document.' },
-        { id: 'Example', example: 'Example risk format: "Technical Risk 1: Delay in third-party API integration. Mitigation: Allocate buffer time in the project schedule, identify alternative APIs."' }
+        { id: 'Context', label: 'Context', example: 'I am drafting a project proposal for a new mobile application development.' },
+        { id: 'Action', label: 'Action', example: 'Create the "Risk Analysis" section for this proposal. Identify at least 5 potential risks (technical, market, operational) and propose mitigation strategies for each.' },
+        { id: 'Result', label: 'Result', example: 'A well-structured, clear, and comprehensive risk analysis section suitable for inclusion in a formal proposal document.' },
+        { id: 'Example', label: 'Example', example: 'Example risk format: "Technical Risk 1: Delay in third-party API integration. Mitigation: Allocate buffer time in the project schedule, identify alternative APIs."' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -899,11 +923,11 @@ export const frameworks: Framework[] = [
       shortName: 'SPARE',
       description: 'SPARE memperluas CARE dengan menambahkan Persona, berguna untuk menghasilkan output yang lebih spesifik gayanya.',
       components: [
-        { id: 'Situasi (Situation)', example: 'Seorang manajer produk sedang mempersiapkan presentasi untuk C-level mengenai roadmap produk kuartal berikutnya.' },
-        { id: 'Persona (Persona)', example: 'Seorang analis bisnis yang tajam dan persuasif, mampu menyajikan data kompleks secara sederhana.' },
-        { id: 'Aksi (Action)', example: 'Buatlah 3 slide kunci untuk presentasi tersebut yang menyoroti: 1. Fitur utama yang akan diluncurkan. 2. Dampak bisnis yang diharapkan (metrik). 3. Kebutuhan sumber daya.' },
-        { id: 'Hasil (Result)', example: 'Konten untuk 3 slide yang ringkas, fokus pada poin penting, dan menggunakan bahasa yang sesuai untuk audiens C-level.' },
-        { id: 'Contoh (Example)', example: 'Slide 1 (Fitur): "Q3 Priority: AI-Powered Recommendation Engine." Bullet points: Personalized content discovery, Increased user engagement by 15%, Reduced churn by 5%.' }
+        { id: 'Situasi (Situation)', label: 'Situasi (Situation)', example: 'Seorang manajer produk sedang mempersiapkan presentasi untuk C-level mengenai roadmap produk kuartal berikutnya.' },
+        { id: 'Persona (Persona)', label: 'Persona (Persona)', example: 'Seorang analis bisnis yang tajam dan persuasif, mampu menyajikan data kompleks secara sederhana.' },
+        { id: 'Aksi (Action)', label: 'Aksi (Action)', example: 'Buatlah 3 slide kunci untuk presentasi tersebut yang menyoroti: 1. Fitur utama yang akan diluncurkan. 2. Dampak bisnis yang diharapkan (metrik). 3. Kebutuhan sumber daya.' },
+        { id: 'Hasil (Result)', label: 'Hasil (Result)', example: 'Konten untuk 3 slide yang ringkas, fokus pada poin penting, dan menggunakan bahasa yang sesuai untuk audiens C-level.' },
+        { id: 'Contoh (Example)', label: 'Contoh (Example)', example: 'Slide 1 (Fitur): "Q3 Priority: AI-Powered Recommendation Engine." Bullet points: Personalized content discovery, Increased user engagement by 15%, Reduced churn by 5%.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -913,11 +937,11 @@ export const frameworks: Framework[] = [
       shortName: 'SPARE',
       description: 'SPARE expands on CARE by adding Persona, useful for generating more style-specific outputs.',
       components: [
-        { id: 'Situation', example: 'A product manager is preparing a presentation for C-level executives regarding the product roadmap for the next quarter.' },
-        { id: 'Persona', example: 'A sharp and persuasive business analyst, capable of presenting complex data simply.' },
-        { id: 'Action', example: 'Create 3 key slides for the presentation highlighting: 1. Key features to be launched. 2. Expected business impact (metrics). 3. Resource requirements.' },
-        { id: 'Result', example: 'Content for 3 slides that is concise, focused on key points, and uses language appropriate for a C-level audience.' },
-        { id: 'Example', example: 'Slide 1 (Feature): "Q3 Priority: AI-Powered Recommendation Engine." Bullet points: Personalized content discovery, Increased user engagement by 15%, Reduced churn by 5%.' }
+        { id: 'Situation', label: 'Situation', example: 'A product manager is preparing a presentation for C-level executives regarding the product roadmap for the next quarter.' },
+        { id: 'Persona', label: 'Persona', example: 'A sharp and persuasive business analyst, capable of presenting complex data simply.' },
+        { id: 'Action', label: 'Action', example: 'Create 3 key slides for the presentation highlighting: 1. Key features to be launched. 2. Expected business impact (metrics). 3. Resource requirements.' },
+        { id: 'Result', label: 'Result', example: 'Content for 3 slides that is concise, focused on key points, and uses language appropriate for a C-level audience.' },
+        { id: 'Example', label: 'Example', example: 'Slide 1 (Feature): "Q3 Priority: AI-Powered Recommendation Engine." Bullet points: Personalized content discovery, Increased user engagement by 15%, Reduced churn by 5%.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -930,9 +954,9 @@ export const frameworks: Framework[] = [
       shortName: 'CoT',
       description: 'Mendorong AI untuk "berpikir langkah demi langkah" untuk mencapai solusi, seringkali dengan memberikan contoh proses berpikir.',
       components: [
-        { id: 'Masalah Kompleks', example: 'Jika sebuah mobil melaju dengan kecepatan 60 km/jam selama 2,5 jam, dan kemudian 70 km/jam selama 1,5 jam, berapa total jarak yang ditempuh?' },
-        { id: 'Instruksi Chain-of-Thought', example: 'Pecahkan masalah ini langkah demi langkah. Pertama, hitung jarak untuk bagian pertama perjalanan. Kedua, hitung jarak untuk bagian kedua. Ketiga, jumlahkan kedua jarak tersebut untuk mendapatkan total jarak.' },
-        { id: 'Contoh Proses Berpikir (Opsional)', example: 'Contoh: Untuk menghitung jarak, kita gunakan rumus jarak = kecepatan × waktu. Bagian 1: 60 km/jam × 2,5 jam = 150 km. Bagian 2: ... (AI melanjutkan)' }
+        { id: 'Masalah Kompleks', label: 'Masalah Kompleks', example: 'Jika sebuah mobil melaju dengan kecepatan 60 km/jam selama 2,5 jam, dan kemudian 70 km/jam selama 1,5 jam, berapa total jarak yang ditempuh?' },
+        { id: 'Instruksi Chain-of-Thought', label: 'Instruksi Chain-of-Thought', example: 'Pecahkan masalah ini langkah demi langkah. Pertama, hitung jarak untuk bagian pertama perjalanan. Kedua, hitung jarak untuk bagian kedua. Ketiga, jumlahkan kedua jarak tersebut untuk mendapatkan total jarak.' },
+        { id: 'Contoh Proses Berpikir (Opsional)', label: 'Contoh Proses Berpikir (Opsional)', example: 'Contoh: Untuk menghitung jarak, kita gunakan rumus jarak = kecepatan × waktu. Bagian 1: 60 km/jam × 2,5 jam = 150 km. Bagian 2: ... (AI melanjutkan)' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -942,9 +966,9 @@ export const frameworks: Framework[] = [
       shortName: 'CoT',
       description: 'Encourages the AI to "think step-by-step" to reach a solution, often by providing an example of the thinking process.',
       components: [
-        { id: 'Complex Problem', example: 'If a car travels at 60 km/h for 2.5 hours, and then at 70 km/h for 1.5 hours, what is the total distance traveled?' },
-        { id: 'Chain-of-Thought Instruction', example: 'Solve this problem step by step. First, calculate the distance for the first part of the journey. Second, calculate the distance for the second part. Third, add these two distances to get the total distance.' },
-        { id: 'Example Thinking Process (Optional)', example: 'Example: To calculate distance, we use the formula distance = speed × time. Part 1: 60 km/h × 2.5 hours = 150 km. Part 2: ... (AI continues)' }
+        { id: 'Complex Problem', label: 'Complex Problem', example: 'If a car travels at 60 km/h for 2.5 hours, and then at 70 km/h for 1.5 hours, what is the total distance traveled?' },
+        { id: 'Chain-of-Thought Instruction', label: 'Chain-of-Thought Instruction', example: 'Solve this problem step by step. First, calculate the distance for the first part of the journey. Second, calculate the distance for the second part. Third, add these two distances to get the total distance.' },
+        { id: 'Example Thinking Process (Optional)', label: 'Example Thinking Process (Optional)', example: 'Example: To calculate distance, we use the formula distance = speed × time. Part 1: 60 km/h × 2.5 hours = 150 km. Part 2: ... (AI continues)' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -957,8 +981,8 @@ export const frameworks: Framework[] = [
       shortName: 'Zero-shot CoT',
       description: 'Memicu penalaran langkah demi langkah tanpa contoh, biasanya dengan menambahkan frasa seperti "Mari kita berpikir langkah demi langkah."',
       components: [
-        { id: 'Pertanyaan', example: 'Seorang petani memiliki 17 domba. Semua kecuali 9 mati. Berapa banyak domba yang tersisa?' },
-        { id: 'Pemicu Zero-shot CoT', example: 'Mari kita berpikir langkah demi langkah untuk menyelesaikan ini.' }
+        { id: 'Pertanyaan', label: 'Pertanyaan', example: 'Seorang petani memiliki 17 domba. Semua kecuali 9 mati. Berapa banyak domba yang tersisa?' },
+        { id: 'Pemicu Zero-shot CoT', label: 'Pemicu Zero-shot CoT', example: 'Mari kita berpikir langkah demi langkah untuk menyelesaikan ini.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -968,8 +992,8 @@ export const frameworks: Framework[] = [
       shortName: 'Zero-shot CoT',
       description: 'Triggers step-by-step reasoning without examples, usually by adding a phrase like "Let\'s think step by step."',
       components: [
-        { id: 'Question', example: 'A farmer had 17 sheep. All but 9 died. How many are left?' },
-        { id: 'Zero-shot CoT Trigger', example: 'Let\'s think step by step to solve this.' }
+        { id: 'Question', label: 'Question', example: 'A farmer had 17 sheep. All but 9 died. How many are left?' },
+        { id: 'Zero-shot CoT Trigger', label: 'Zero-shot CoT Trigger', example: 'Let\'s think step by step to solve this.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -982,8 +1006,8 @@ export const frameworks: Framework[] = [
       shortName: 'Self-Consistency',
       description: 'Mengambil beberapa output CoT yang berbeda dan memilih jawaban yang paling konsisten atau sering muncul.',
       components: [
-        { id: 'Masalah', example: 'Ada 5 buah apel di keranjang. Saya mengambil 2, lalu teman saya memberi saya 3 lagi. Berapa banyak apel yang saya miliki sekarang?' },
-        { id: 'Instruksi untuk Beberapa Jalur Penalaran', example: 'Berikan 3 jalur penalaran yang berbeda untuk menyelesaikan masalah ini, lalu tentukan jawaban akhir yang paling konsisten.' }
+        { id: 'Masalah', label: 'Masalah', example: 'Ada 5 buah apel di keranjang. Saya mengambil 2, lalu teman saya memberi saya 3 lagi. Berapa banyak apel yang saya miliki sekarang?' },
+        { id: 'Instruksi untuk Beberapa Jalur Penalaran', label: 'Instruksi untuk Beberapa Jalur Penalaran', example: 'Berikan 3 jalur penalaran yang berbeda untuk menyelesaikan masalah ini, lalu tentukan jawaban akhir yang paling konsisten.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -993,8 +1017,8 @@ export const frameworks: Framework[] = [
       shortName: 'Self-Consistency',
       description: 'Samples multiple different CoT outputs and selects the most consistent or frequently occurring answer.',
       components: [
-        { id: 'Problem', example: 'There are 5 apples in a basket. I take 2, then my friend gives me 3 more. How many apples do I have now?' },
-        { id: 'Instruction for Multiple Reasoning Paths', example: 'Provide 3 different reasoning paths to solve this problem, then determine the most consistent final answer.' }
+        { id: 'Problem', label: 'Problem', example: 'There are 5 apples in a basket. I take 2, then my friend gives me 3 more. How many apples do I have now?' },
+        { id: 'Instruction for Multiple Reasoning Paths', label: 'Instruction for Multiple Reasoning Paths', example: 'Provide 3 different reasoning paths to solve this problem, then determine the most consistent final answer.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1007,8 +1031,8 @@ export const frameworks: Framework[] = [
       shortName: 'GenKnowledge',
       description: 'Meminta AI untuk menghasilkan pengetahuan atau fakta relevan terlebih dahulu, kemudian menggunakan fakta tersebut untuk menjawab pertanyaan.',
       components: [
-        { id: 'Pertanyaan', example: 'Apa dampak perubahan iklim terhadap terumbu karang?' },
-        { id: 'Instruksi Pembuatan Pengetahuan', example: 'Pertama, hasilkan 3-5 fakta kunci tentang bagaimana perubahan iklim mempengaruhi terumbu karang. Kemudian, gunakan fakta-fakta tersebut untuk menjawab pertanyaan awal secara komprehensif.' }
+        { id: 'Pertanyaan', label: 'Pertanyaan', example: 'Apa dampak perubahan iklim terhadap terumbu karang?' },
+        { id: 'Instruksi Pembuatan Pengetahuan', label: 'Instruksi Pembuatan Pengetahuan', example: 'Pertama, hasilkan 3-5 fakta kunci tentang bagaimana perubahan iklim mempengaruhi terumbu karang. Kemudian, gunakan fakta-fakta tersebut untuk menjawab pertanyaan awal secara komprehensif.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1018,8 +1042,8 @@ export const frameworks: Framework[] = [
       shortName: 'GenKnowledge',
       description: 'Asks the AI to generate relevant knowledge or facts first, then uses those facts to answer the question.',
       components: [
-        { id: 'Question', example: 'What is the impact of climate change on coral reefs?' },
-        { id: 'Knowledge Generation Instruction', example: 'First, generate 3-5 key facts about how climate change affects coral reefs. Then, use these facts to answer the original question comprehensively.' }
+        { id: 'Question', label: 'Question', example: 'What is the impact of climate change on coral reefs?' },
+        { id: 'Knowledge Generation Instruction', label: 'Knowledge Generation Instruction', example: 'First, generate 3-5 key facts about how climate change affects coral reefs. Then, use these facts to answer the original question comprehensively.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1032,9 +1056,9 @@ export const frameworks: Framework[] = [
       shortName: 'Least-to-Most',
       description: 'Memecah masalah kompleks menjadi sub-masalah yang lebih mudah, lalu menyelesaikannya secara berurutan.',
       components: [
-        { id: 'Masalah Utama', example: 'Rencanakan perjalanan 5 hari ke Tokyo untuk dua orang dengan anggaran $2000, fokus pada budaya dan kuliner.' },
-        { id: 'Daftar Sub-Masalah (AI dapat diminta membuat ini atau diberi)', example: '1. Alokasi anggaran harian. 2. Rekomendasi akomodasi. 3. Daftar tempat wisata budaya. 4. Rekomendasi restoran/area kuliner. 5. Rencana perjalanan harian kasar.' },
-        { id: 'Instruksi Penyelesaian Berurutan', example: 'Selesaikan setiap sub-masalah secara berurutan untuk membangun rencana perjalanan lengkap.' }
+        { id: 'Masalah Utama', label: 'Masalah Utama', example: 'Rencanakan perjalanan 5 hari ke Tokyo untuk dua orang dengan anggaran $2000, fokus pada budaya dan kuliner.' },
+        { id: 'Daftar Sub-Masalah (AI dapat diminta membuat ini atau diberi)', label: 'Daftar Sub-Masalah (AI dapat diminta membuat ini atau diberi)', example: '1. Alokasi anggaran harian. 2. Rekomendasi akomodasi. 3. Daftar tempat wisata budaya. 4. Rekomendasi restoran/area kuliner. 5. Rencana perjalanan harian kasar.' },
+        { id: 'Instruksi Penyelesaian Berurutan', label: 'Instruksi Penyelesaian Berurutan', example: 'Selesaikan setiap sub-masalah secara berurutan untuk membangun rencana perjalanan lengkap.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1044,9 +1068,9 @@ export const frameworks: Framework[] = [
       shortName: 'Least-to-Most',
       description: 'Breaks down a complex problem into simpler sub-problems, then solves them sequentially.',
       components: [
-        { id: 'Main Problem', example: 'Plan a 5-day trip to Tokyo for two people on a $2000 budget, focusing on culture and cuisine.' },
-        { id: 'List of Sub-Problems (AI can be asked to generate this or be given)', example: '1. Daily budget allocation. 2. Accommodation recommendations. 3. List of cultural attractions. 4. Restaurant/culinary area recommendations. 5. Rough daily itinerary.' },
-        { id: 'Sequential Solving Instruction', example: 'Solve each sub-problem sequentially to build the complete travel plan.' }
+        { id: 'Main Problem', label: 'Main Problem', example: 'Plan a 5-day trip to Tokyo for two people on a $2000 budget, focusing on culture and cuisine.' },
+        { id: 'List of Sub-Problems (AI can be asked to generate this or be given)', label: 'List of Sub-Problems (AI can be asked to generate this or be given)', example: '1. Daily budget allocation. 2. Accommodation recommendations. 3. List of cultural attractions. 4. Restaurant/culinary area recommendations. 5. Rough daily itinerary.' },
+        { id: 'Sequential Solving Instruction', label: 'Sequential Solving Instruction', example: 'Solve each sub-problem sequentially to build the complete travel plan.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1059,9 +1083,9 @@ export const frameworks: Framework[] = [
       shortName: 'Self-Refine',
       description: 'AI menghasilkan respons awal, kemudian diminta untuk mengkritik dan memperbaiki respons tersebut berdasarkan kriteria tertentu.',
       components: [
-        { id: 'Tugas Awal', example: 'Tulis paragraf singkat yang menjelaskan konsep relativitas umum Einstein untuk audiens awam.' },
-        { id: 'Respons Awal (dihasilkan AI atau contoh)', example: 'Relativitas umum adalah teori gravitasi Einstein yang mengatakan ruang dan waktu melengkung karena massa dan energi.' },
-        { id: 'Instruksi Perbaikan', example: 'Sekarang, tinjau kembali penjelasan di atas. Apakah sudah cukup jelas untuk seseorang tanpa latar belakang fisika? Bisakah Anda menambahkan analogi sederhana untuk membuatnya lebih mudah dipahami? Perbaiki penjelasan tersebut.' }
+        { id: 'Tugas Awal', label: 'Tugas Awal', example: 'Tulis paragraf singkat yang menjelaskan konsep relativitas umum Einstein untuk audiens awam.' },
+        { id: 'Respons Awal (dihasilkan AI atau contoh)', label: 'Respons Awal (dihasilkan AI atau contoh)', example: 'Relativitas umum adalah teori gravitasi Einstein yang mengatakan ruang dan waktu melengkung karena massa dan energi.' },
+        { id: 'Instruksi Perbaikan', label: 'Instruksi Perbaikan', example: 'Sekarang, tinjau kembali penjelasan di atas. Apakah sudah cukup jelas untuk seseorang tanpa latar belakang fisika? Bisakah Anda menambahkan analogi sederhana untuk membuatnya lebih mudah dipahami? Perbaiki penjelasan tersebut.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1071,9 +1095,9 @@ export const frameworks: Framework[] = [
       shortName: 'Self-Refine',
       description: 'AI generates an initial response, then is asked to critique and refine that response based on certain criteria.',
       components: [
-        { id: 'Initial Task', example: 'Write a short paragraph explaining Einstein\'s concept of general relativity for a lay audience.' },
-        { id: 'Initial Response (AI-generated or example)', example: 'General relativity is Einstein\'s theory of gravity which says space and time are curved by mass and energy.' },
-        { id: 'Refinement Instruction', example: 'Now, review the explanation above. Is it clear enough for someone with no physics background? Can you add a simple analogy to make it more understandable? Refine the explanation.' }
+        { id: 'Initial Task', label: 'Initial Task', example: 'Write a short paragraph explaining Einstein\'s concept of general relativity for a lay audience.' },
+        { id: 'Initial Response (AI-generated or example)', label: 'Initial Response (AI-generated or example)', example: 'General relativity is Einstein\'s theory of gravity which says space and time are curved by mass and energy.' },
+        { id: 'Refinement Instruction', label: 'Refinement Instruction', example: 'Now, review the explanation above. Is it clear enough for someone with no physics background? Can you add a simple analogy to make it more understandable? Refine the explanation.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1086,8 +1110,8 @@ export const frameworks: Framework[] = [
       shortName: 'ToT',
       description: 'AI mengeksplorasi berbagai jalur pemikiran ("cabang") secara bersamaan, mengevaluasi kemajuannya, dan dapat melakukan backtracking jika buntu.',
       components: [
-        { id: 'Masalah Kompleks', example: 'Buatlah strategi pemasaran yang inovatif untuk produk minuman energi baru yang menargetkan gamer kompetitif.' },
-        { id: 'Instruksi Eksplorasi Pikiran', example: 'Pertimbangkan beberapa pendekatan awal (misalnya, sponsorship eSports, konten influencer, tantangan media sosial). Untuk setiap pendekatan, evaluasi pro dan kontra, potensi jangkauan, dan perkiraan biaya. Pilih pendekatan yang paling menjanjikan atau gabungkan ide-ide terbaik menjadi strategi kohesif.' }
+        { id: 'Masalah Kompleks', label: 'Masalah Kompleks', example: 'Buatlah strategi pemasaran yang inovatif untuk produk minuman energi baru yang menargetkan gamer kompetitif.' },
+        { id: 'Instruksi Eksplorasi Pikiran', label: 'Instruksi Eksplorasi Pikiran', example: 'Pertimbangkan beberapa pendekatan awal (misalnya, sponsorship eSports, konten influencer, tantangan media sosial). Untuk setiap pendekatan, evaluasi pro dan kontra, potensi jangkauan, dan perkiraan biaya. Pilih pendekatan yang paling menjanjikan atau gabungkan ide-ide terbaik menjadi strategi kohesif.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1097,8 +1121,8 @@ export const frameworks: Framework[] = [
       shortName: 'ToT',
       description: 'AI explores multiple reasoning paths ("branches") simultaneously, evaluates their progress, and can backtrack if stuck.',
       components: [
-        { id: 'Complex Problem', example: 'Develop an innovative marketing strategy for a new energy drink targeting competitive gamers.' },
-        { id: 'Thought Exploration Instruction', example: 'Consider several initial approaches (e.g., eSports sponsorships, influencer content, social media challenges). For each approach, evaluate pros and cons, potential reach, and estimated cost. Select the most promising approach or combine the best ideas into a cohesive strategy.' }
+        { id: 'Complex Problem', label: 'Complex Problem', example: 'Develop an innovative marketing strategy for a new energy drink targeting competitive gamers.' },
+        { id: 'Thought Exploration Instruction', label: 'Thought Exploration Instruction', example: 'Consider several initial approaches (e.g., eSports sponsorships, influencer content, social media challenges). For each approach, evaluate pros and cons, potential reach, and estimated cost. Select the most promising approach or combine the best ideas into a cohesive strategy.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1111,11 +1135,11 @@ export const frameworks: Framework[] = [
       shortName: 'Ensembling',
       description: 'Menggunakan beberapa prompt berbeda untuk tugas yang sama, lalu menggabungkan atau memilih output terbaik.',
       components: [
-        { id: 'Tugas', example: 'Hasilkan slogan untuk merek kopi ramah lingkungan.' },
-        { id: 'Prompt 1 (fokus pada rasa)', example: 'Buat slogan yang menekankan rasa kaya dan aroma kopi kami.' },
-        { id: 'Prompt 2 (fokus pada keberlanjutan)', example: 'Buat slogan yang menyoroti komitmen kami terhadap praktik pertanian berkelanjutan dan perdagangan yang adil.' },
-        { id: 'Prompt 3 (fokus pada energi)', example: 'Buat slogan yang menghubungkan kopi kami dengan energi alami dan awal hari yang positif.' },
-        { id: 'Instruksi Penggabungan (Opsional)', example: 'Pilih slogan terbaik dari output masing-masing prompt, atau coba gabungkan elemen terbaiknya.' }
+        { id: 'Tugas', label: 'Tugas', example: 'Hasilkan slogan untuk merek kopi ramah lingkungan.' },
+        { id: 'Prompt 1 (fokus pada rasa)', label: 'Prompt 1 (fokus pada rasa)', example: 'Buat slogan yang menekankan rasa kaya dan aroma kopi kami.' },
+        { id: 'Prompt 2 (fokus pada keberlanjutan)', label: 'Prompt 2 (fokus pada keberlanjutan)', example: 'Buat slogan yang menyoroti komitmen kami terhadap praktik pertanian berkelanjutan dan perdagangan yang adil.' },
+        { id: 'Prompt 3 (fokus pada energi)', label: 'Prompt 3 (fokus pada energi)', example: 'Buat slogan yang menghubungkan kopi kami dengan energi alami dan awal hari yang positif.' },
+        { id: 'Instruksi Penggabungan (Opsional)', label: 'Instruksi Penggabungan (Opsional)', example: 'Pilih slogan terbaik dari output masing-masing prompt, atau coba gabungkan elemen terbaiknya.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1125,11 +1149,11 @@ export const frameworks: Framework[] = [
       shortName: 'Ensembling',
       description: 'Uses multiple different prompts for the same task, then combines or selects the best output.',
       components: [
-        { id: 'Task', example: 'Generate a tagline for an eco-friendly coffee brand.' },
-        { id: 'Prompt 1 (focus on taste)', example: 'Create a tagline emphasizing the rich taste and aroma of our coffee.' },
-        { id: 'Prompt 2 (focus on sustainability)', example: 'Create a tagline highlighting our commitment to sustainable farming practices and fair trade.' },
-        { id: 'Prompt 3 (focus on energy)', example: 'Create a tagline connecting our coffee with natural energy and a positive start to the day.' },
-        { id: 'Combining Instruction (Optional)', example: 'Select the best tagline from each prompt\'s output, or try to combine their best elements.' }
+        { id: 'Task', label: 'Task', example: 'Generate a tagline for an eco-friendly coffee brand.' },
+        { id: 'Prompt 1 (focus on taste)', label: 'Prompt 1 (focus on taste)', example: 'Create a tagline emphasizing the rich taste and aroma of our coffee.' },
+        { id: 'Prompt 2 (focus on sustainability)', label: 'Prompt 2 (focus on sustainability)', example: 'Create a tagline highlighting our commitment to sustainable farming practices and fair trade.' },
+        { id: 'Prompt 3 (focus on energy)', label: 'Prompt 3 (focus on energy)', example: 'Create a tagline connecting our coffee with natural energy and a positive start to the day.' },
+        { id: 'Combining Instruction (Optional)', label: 'Combining Instruction (Optional)', example: 'Select the best tagline from each prompt\'s output, or try to combine their best elements.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1142,8 +1166,8 @@ export const frameworks: Framework[] = [
       shortName: 'Factive',
       description: 'Menyediakan AI dengan fakta-fakta relevan sebagai bagian dari prompt untuk meningkatkan akurasi jawaban.',
       components: [
-        { id: 'Konteks Fakta', example: 'Fakta: 1. Ibukota Prancis adalah Paris. 2. Menara Eiffel terletak di Paris. 3. Louvre adalah museum seni terkenal di Paris.' },
-        { id: 'Pertanyaan', example: 'Sebutkan dua landmark terkenal yang bisa ditemukan di ibukota Prancis.' }
+        { id: 'Konteks Fakta', label: 'Konteks Fakta', example: 'Fakta: 1. Ibukota Prancis adalah Paris. 2. Menara Eiffel terletak di Paris. 3. Louvre adalah museum seni terkenal di Paris.' },
+        { id: 'Pertanyaan', label: 'Pertanyaan', example: 'Sebutkan dua landmark terkenal yang bisa ditemukan di ibukota Prancis.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1153,8 +1177,8 @@ export const frameworks: Framework[] = [
       shortName: 'Factive',
       description: 'Provides the AI with relevant facts as part of the prompt to improve answer accuracy.',
       components: [
-        { id: 'Factual Context', example: 'Facts: 1. The capital of France is Paris. 2. The Eiffel Tower is located in Paris. 3. The Louvre is a famous art museum in Paris.' },
-        { id: 'Question', example: 'Name two famous landmarks that can be found in the capital of France.' }
+        { id: 'Factual Context', label: 'Factual Context', example: 'Facts: 1. The capital of France is Paris. 2. The Eiffel Tower is located in Paris. 3. The Louvre is a famous art museum in Paris.' },
+        { id: 'Question', label: 'Question', example: 'Name two famous landmarks that can be found in the capital of France.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1167,8 +1191,8 @@ export const frameworks: Framework[] = [
       shortName: 'EmotionPrompt',
       description: 'Menambahkan stimulus emosional ke prompt (misalnya, "Ini sangat penting untuk karir saya") untuk berpotensi meningkatkan kinerja.',
       components: [
-        { id: 'Tugas Inti', example: 'Tulis ringkasan eksekutif dari laporan penjualan kuartalan terlampir.' },
-        { id: 'Stimulus Emosional', example: 'Ini sangat penting untuk presentasi saya kepada dewan direksi besok. Kualitas ringkasan ini dapat mempengaruhi kemajuan karir saya secara signifikan.' }
+        { id: 'Tugas Inti', label: 'Tugas Inti', example: 'Tulis ringkasan eksekutif dari laporan penjualan kuartalan terlampir.' },
+        { id: 'Stimulus Emosional', label: 'Stimulus Emosional', example: 'Ini sangat penting untuk presentasi saya kepada dewan direksi besok. Kualitas ringkasan ini dapat mempengaruhi kemajuan karir saya secara signifikan.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1178,8 +1202,8 @@ export const frameworks: Framework[] = [
       shortName: 'EmotionPrompt',
       description: 'Adds emotional stimuli to the prompt (e.g., "This is very important for my career") to potentially enhance performance.',
       components: [
-        { id: 'Core Task', example: 'Write an executive summary of the attached quarterly sales report.' },
-        { id: 'Emotional Stimulus', example: 'This is very important for my presentation to the board of directors tomorrow. The quality of this summary could significantly impact my career advancement.' }
+        { id: 'Core Task', label: 'Core Task', example: 'Write an executive summary of the attached quarterly sales report.' },
+        { id: 'Emotional Stimulus', label: 'Emotional Stimulus', example: 'This is very important for my presentation to the board of directors tomorrow. The quality of this summary could significantly impact my career advancement.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1192,9 +1216,9 @@ export const frameworks: Framework[] = [
       shortName: 'Chaining',
       description: 'Output dari satu prompt digunakan sebagai input untuk prompt berikutnya, membangun solusi secara bertahap.',
       components: [
-        { id: 'Prompt 1: Identifikasi Tema', example: 'Analisis ulasan pelanggan berikut dan identifikasi 3 tema keluhan utama: [Teks ulasan pelanggan]' },
-        { id: 'Prompt 2: Buat Template Respons (Menggunakan output Prompt 1)', example: 'Untuk setiap tema keluhan yang diidentifikasi ([Output Tema dari Prompt 1]), buatlah template respons email standar yang empatik dan menawarkan solusi.' },
-        { id: 'Prompt 3: Personalisasi Respons (Menggunakan output Prompt 2)', example: 'Gunakan template respons untuk tema [Tema Spesifik dari Output 1] dan personalisasikan untuk pelanggan John Doe yang mengeluhkan [Detail Keluhan John Doe].' }
+        { id: 'Prompt 1: Identifikasi Tema', label: 'Prompt 1: Identifikasi Tema', example: 'Analisis ulasan pelanggan berikut dan identifikasi 3 tema keluhan utama: [Teks ulasan pelanggan]' },
+        { id: 'Prompt 2: Buat Template Respons (Menggunakan output Prompt 1)', label: 'Prompt 2: Buat Template Respons (Menggunakan output Prompt 1)', example: 'Untuk setiap tema keluhan yang diidentifikasi ([Output Tema dari Prompt 1]), buatlah template respons email standar yang empatik dan menawarkan solusi.' },
+        { id: 'Prompt 3: Personalisasi Respons (Menggunakan output Prompt 2)', label: 'Prompt 3: Personalisasi Respons (Menggunakan output Prompt 2)', example: 'Gunakan template respons untuk tema [Tema Spesifik dari Output 1] dan personalisasikan untuk pelanggan John Doe yang mengeluhkan [Detail Keluhan John Doe].' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1204,9 +1228,9 @@ export const frameworks: Framework[] = [
       shortName: 'Chaining',
       description: 'The output of one prompt is used as input for the next, building up a solution step-by-step.',
       components: [
-        { id: 'Prompt 1: Identify Themes', example: 'Analyze the following customer reviews and identify the top 3 complaint themes: [Customer review text]' },
-        { id: 'Prompt 2: Create Response Templates (Uses output of Prompt 1)', example: 'For each identified complaint theme ([Theme Output from Prompt 1]), create a standard empathetic email response template that offers a solution.' },
-        { id: 'Prompt 3: Personalize Response (Uses output of Prompt 2)', example: 'Use the response template for theme [Specific Theme from Output 1] and personalize it for customer John Doe who complained about [John Doe\'s specific complaint details].' }
+        { id: 'Prompt 1: Identify Themes', label: 'Prompt 1: Identify Themes', example: 'Analyze the following customer reviews and identify the top 3 complaint themes: [Customer review text]' },
+        { id: 'Prompt 2: Create Response Templates (Uses output of Prompt 1)', label: 'Prompt 2: Create Response Templates (Uses output of Prompt 1)', example: 'For each identified complaint theme ([Theme Output from Prompt 1]), create a standard empathetic email response template that offers a solution.' },
+        { id: 'Prompt 3: Personalize Response (Uses output of Prompt 2)', label: 'Prompt 3: Personalize Response (Uses output of Prompt 2)', example: 'Use the response template for theme [Specific Theme from Output 1] and personalize it for customer John Doe who complained about [John Doe\'s specific complaint details].' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1219,9 +1243,9 @@ export const frameworks: Framework[] = [
       shortName: 'Instruction Basics',
       description: 'Memberikan instruksi yang jelas, spesifik, dan tidak ambigu. Menggunakan kata kerja imperatif.',
       components: [
-        { id: 'Instruksi Jelas', example: 'Buat daftar 5 ide judul artikel blog tentang manfaat meditasi untuk mengurangi stres.' },
-        { id: 'Spesifisitas', example: 'Target audiens adalah profesional muda yang sibuk. Gaya penulisan harus informatif namun santai.' },
-        { id: 'Format Output', example: 'Sajikan ide judul sebagai daftar bernomor.' }
+        { id: 'Instruksi Jelas', label: 'Instruksi Jelas', example: 'Buat daftar 5 ide judul artikel blog tentang manfaat meditasi untuk mengurangi stres.' },
+        { id: 'Spesifisitas', label: 'Spesifisitas', example: 'Target audiens adalah profesional muda yang sibuk. Gaya penulisan harus informatif namun santai.' },
+        { id: 'Format Output', label: 'Format Output', example: 'Sajikan ide judul sebagai daftar bernomor.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1231,9 +1255,9 @@ export const frameworks: Framework[] = [
       shortName: 'Instruction Basics',
       description: 'Providing clear, specific, and unambiguous instructions. Using imperative verbs.',
       components: [
-        { id: 'Clear Instruction', example: 'Generate a list of 5 blog post title ideas about the benefits of meditation for stress reduction.' },
-        { id: 'Specificity', example: 'The target audience is busy young professionals. The writing style should be informative yet casual.' },
-        { id: 'Output Format', example: 'Present the title ideas as a numbered list.' }
+        { id: 'Clear Instruction', label: 'Clear Instruction', example: 'Generate a list of 5 blog post title ideas about the benefits of meditation for stress reduction.' },
+        { id: 'Specificity', label: 'Specificity', example: 'The target audience is busy young professionals. The writing style should be informative yet casual.' },
+        { id: 'Output Format', label: 'Output Format', example: 'Present the title ideas as a numbered list.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1246,9 +1270,9 @@ export const frameworks: Framework[] = [
       shortName: 'RolePlay',
       description: 'Menetapkan peran atau persona tertentu untuk AI (misalnya, "Anda adalah seorang sejarawan ahli").',
       components: [
-        { id: 'Persona AI', example: 'Seorang koki pastry pemenang penghargaan dari Prancis.' },
-        { id: 'Tugas', example: 'Berikan resep detail untuk membuat croissant klasik Prancis yang sempurna, termasuk tips dan trik untuk pemula.' },
-        { id: 'Gaya Respons yang Diharapkan', example: 'Gunakan bahasa yang antusias dan berpengetahuan, seolah-olah berbagi rahasia dagang. Sertakan detail tentang pentingnya kualitas bahan dan teknik.' }
+        { id: 'Persona AI', label: 'Persona AI', example: 'Seorang koki pastry pemenang penghargaan dari Prancis.' },
+        { id: 'Tugas', label: 'Tugas', example: 'Berikan resep detail untuk membuat croissant klasik Prancis yang sempurna, termasuk tips dan trik untuk pemula.' },
+        { id: 'Gaya Respons yang Diharapkan', label: 'Gaya Respons yang Diharapkan', example: 'Gunakan bahasa yang antusias dan berpengetahuan, seolah-olah berbagi rahasia dagang. Sertakan detail tentang pentingnya kualitas bahan dan teknik.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1258,9 +1282,9 @@ export const frameworks: Framework[] = [
       shortName: 'RolePlay',
       description: 'Assigning a specific role or persona to the AI (e.g., "You are an expert historian").',
       components: [
-        { id: 'AI Persona', example: 'You are an award-winning pastry chef from France.' },
-        { id: 'Task', example: 'Provide a detailed recipe for making perfect classic French croissants, including tips and tricks for beginners.' },
-        { id: 'Expected Response Style', example: 'Use enthusiastic and knowledgeable language, as if sharing trade secrets. Include details on the importance of quality ingredients and technique.' }
+        { id: 'AI Persona', label: 'AI Persona', example: 'You are an award-winning pastry chef from France.' },
+        { id: 'Task', label: 'Task', example: 'Provide a detailed recipe for making perfect classic French croissants, including tips and tricks for beginners.' },
+        { id: 'Expected Response Style', label: 'Expected Response Style', example: 'Use enthusiastic and knowledgeable language, as if sharing trade secrets. Include details on the importance of quality ingredients and technique.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1273,11 +1297,11 @@ export const frameworks: Framework[] = [
       shortName: 'Few-Shot',
       description: 'Memberikan beberapa contoh input-output (shots) untuk membantu AI memahami pola dan format yang diinginkan.',
       components: [
-        { id: 'Contoh 1 Input', example: 'Teks: "Cuaca hari ini sangat cerah dan menyenangkan." Sentimen:' },
-        { id: 'Contoh 1 Output', example: 'Positif' },
-        { id: 'Contoh 2 Input', example: 'Teks: "Saya kecewa dengan kualitas produk ini." Sentimen:' },
-        { id: 'Contoh 2 Output', example: 'Negatif' },
-        { id: 'Input Baru', example: 'Teks: "Pelayanannya biasa saja, tidak ada yang istimewa." Sentimen:' }
+        { id: 'Contoh 1 Input', label: 'Contoh 1 Input', example: 'Teks: "Cuaca hari ini sangat cerah dan menyenangkan." Sentimen:' },
+        { id: 'Contoh 1 Output', label: 'Contoh 1 Output', example: 'Positif' },
+        { id: 'Contoh 2 Input', label: 'Contoh 2 Input', example: 'Teks: "Saya kecewa dengan kualitas produk ini." Sentimen:' },
+        { id: 'Contoh 2 Output', label: 'Contoh 2 Output', example: 'Negatif' },
+        { id: 'Input Baru', label: 'Input Baru', example: 'Teks: "Pelayanannya biasa saja, tidak ada yang istimewa." Sentimen:' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1287,11 +1311,11 @@ export const frameworks: Framework[] = [
       shortName: 'Few-Shot',
       description: 'Providing a few input-output examples (shots) to help the AI understand the desired pattern and format.',
       components: [
-        { id: 'Example 1 Input', example: 'Text: "The weather today is so bright and pleasant." Sentiment:' },
-        { id: 'Example 1 Output', example: 'Positive' },
-        { id: 'Example 2 Input', example: 'Text: "I am disappointed with the quality of this product." Sentiment:' },
-        { id: 'Example 2 Output', example: 'Negative' },
-        { id: 'New Input', example: 'Text: "The service was average, nothing special." Sentiment:' }
+        { id: 'Example 1 Input', label: 'Example 1 Input', example: 'Text: "The weather today is so bright and pleasant." Sentiment:' },
+        { id: 'Example 1 Output', label: 'Example 1 Output', example: 'Positive' },
+        { id: 'Example 2 Input', label: 'Example 2 Input', example: 'Text: "I am disappointed with the quality of this product." Sentiment:' },
+        { id: 'Example 2 Output', label: 'Example 2 Output', example: 'Negative' },
+        { id: 'New Input', label: 'New Input', example: 'Text: "The service was average, nothing special." Sentiment:' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1304,10 +1328,10 @@ export const frameworks: Framework[] = [
       shortName: 'PACT',
       description: 'PACT membantu dalam pemecahan masalah dengan mendefinisikan Masalah, melakukan Analisis, mengidentifikasi Kendala, dan menetapkan Target Hasil.',
       components: [
-        { id: 'Masalah (Problem)', example: 'Tingkat retensi karyawan di departemen teknologi kami menurun 15% dalam setahun terakhir.' },
-        { id: 'Analisis (Analysis)', example: 'Wawancara keluar menunjukkan ketidakpuasan dengan peluang pengembangan karir dan keseimbangan kerja-hidup. Gaji kompetitif tetapi bukan faktor utama. Budaya tim dilaporkan positif.' },
-        { id: 'Kendala (Constraints)', example: 'Anggaran terbatas untuk kenaikan gaji besar-besaran. Perusahaan sedang dalam fase pertumbuhan cepat, sehingga beban kerja cenderung tinggi.' },
-        { id: 'Target Hasil (Target Outcome)', example: 'Strategi retensi karyawan yang dapat diterapkan dalam 3 bulan ke depan, dengan tujuan mengurangi tingkat atrisi sebesar 5% dalam 6 bulan berikutnya. Fokus pada solusi non-moneter atau berbiaya rendah.' }
+        { id: 'Masalah (Problem)', label: 'Masalah (Problem)', example: 'Tingkat retensi karyawan di departemen teknologi kami menurun 15% dalam setahun terakhir.' },
+        { id: 'Analisis (Analysis)', label: 'Analisis (Analysis)', example: 'Wawancara keluar menunjukkan ketidakpuasan dengan peluang pengembangan karir dan keseimbangan kerja-hidup. Gaji kompetitif tetapi bukan faktor utama. Budaya tim dilaporkan positif.' },
+        { id: 'Kendala (Constraints)', label: 'Kendala (Constraints)', example: 'Anggaran terbatas untuk kenaikan gaji besar-besaran. Perusahaan sedang dalam fase pertumbuhan cepat, sehingga beban kerja cenderung tinggi.' },
+        { id: 'Target Hasil (Target Outcome)', label: 'Target Hasil (Target Outcome)', example: 'Strategi retensi karyawan yang dapat diterapkan dalam 3 bulan ke depan, dengan tujuan mengurangi tingkat atrisi sebesar 5% dalam 6 bulan berikutnya. Fokus pada solusi non-moneter atau berbiaya rendah.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1317,10 +1341,10 @@ export const frameworks: Framework[] = [
       shortName: 'PACT',
       description: 'PACT aids in problem-solving by defining the Problem, conducting Analysis, identifying Constraints, and setting a Target Outcome.',
       components: [
-        { id: 'Problem', example: 'Employee retention rate in our tech department has dropped by 15% in the last year.' },
-        { id: 'Analysis', example: 'Exit interviews indicate dissatisfaction with career development opportunities and work-life balance. Salaries are competitive but not the primary factor. Team culture is reportedly positive.' },
-        { id: 'Constraints', example: 'Limited budget for across-the-board salary increases. The company is in a rapid growth phase, so workload tends to be high.' },
-        { id: 'Target Outcome', example: 'An employee retention strategy implementable within the next 3 months, aiming to reduce the attrition rate by 5% in the following 6 months. Focus on non-monetary or low-cost solutions.' }
+        { id: 'Problem', label: 'Problem', example: 'Employee retention rate in our tech department has dropped by 15% in the last year.' },
+        { id: 'Analysis', label: 'Analysis', example: 'Exit interviews indicate dissatisfaction with career development opportunities and work-life balance. Salaries are competitive but not the primary factor. Team culture is reportedly positive.' },
+        { id: 'Constraints', label: 'Constraints', example: 'Limited budget for across-the-board salary increases. The company is in a rapid growth phase, so workload tends to be high.' },
+        { id: 'Target Outcome', label: 'Target Outcome', example: 'An employee retention strategy implementable within the next 3 months, aiming to reduce the attrition rate by 5% in the following 6 months. Focus on non-monetary or low-cost solutions.' }
       ],
       category: 'text',
       genericToolLinks: mergeAndSortTextToolLinks([])
@@ -1843,4 +1867,3 @@ export const frameworks: Framework[] = [
     }
   },
 ];
-    
