@@ -29,22 +29,13 @@
       --text-anim-default-active: #A3FAF0; /* teal-200 */
       --text-anim-accent-bg-hover: #F0FDFA; /* teal-50 */
       --text-anim-accent-bg-active: #CCFBF1; /* teal-100 */
-      
-      /* Colors for Plan Badges & AI Icon Glow */
-      --badge-premium-bg-start: #8B5CF6; /* purple-500 */
-      --badge-premium-bg-end: #6D28D9;   /* purple-700 */
-      --badge-premium-border: #A78BFA;   /* purple-400 */
-      --badge-premium-icon: #FACC15;   /* yellow-400 */
-      --badge-premium-text: #FFFFFF;
-      /* Adjusted glow for AI icons - brighter */
-      --badge-premium-glow: rgba(192, 132, 252, 0.85); /* purple-300 with higher alpha */
+      --text-disconnected: #F43F5E; /* rose-500 */
+      --text-teal-400: #2dd4bf; /* Tailwind teal-400 for JS access if needed */
 
-
-      --badge-free-bg: #334155;       /* slate-700 */
-      --badge-free-border: #475569;   /* slate-600 */
-      --badge-free-icon: #2DD4BF;     /* teal-400 */
-      --badge-free-text: #E2E8F0;     /* slate-200 */
-      --badge-free-glow: rgba(45, 212, 191, 0.7); /* teal-400 with increased alpha for consistency */
+      /* Purple colors for API status indicator (from Tailwind) */
+      --text-purple-400: #a855f7;
+      --text-purple-300: #c084fc;
+      --text-purple-200: #d8b4fe;
     }
 
     body {
@@ -390,106 +381,35 @@
     .mc-collapsible-header button[aria-expanded="true"] svg {
       transform: rotate(180deg);
     }
-    
-    @keyframes global-activity-fade-in-out {
-      0%, 100% { opacity: 0; transform: translateY(10px) scale(0.95); }
-      10%, 90% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .global-activity-indicator-animation {
-      animation: global-activity-fade-in-out 4s ease-in-out forwards;
-    }
-    .animate-spin-slow {
-      animation: spin 2s linear infinite;
-    }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
 
-    @keyframes progress-bar-animation {
-      0% { width: 100%; }
-      100% { width: 0%; }
-    }
-    .animate-progress-bar {
-      animation: progress-bar-animation 5s linear forwards; /* Changed from 15s to 5s */
-    }
-
-    /* Custom Plan Badge Styles */
-    .plan-badge {
-      display: flex;
-      align-items: center;
-      padding: 0.25rem 0.75rem; /* py-1 px-3 */
-      font-size: 0.75rem; /* text-xs */
-      font-weight: 700; /* font-bold */
-      border-radius: 0.375rem; /* rounded-md */
-      /* Removed base shadow to apply glow directly */
-    }
-    .plan-badge-premium {
-      background-image: linear-gradient(to right, var(--badge-premium-bg-start), var(--badge-premium-bg-end));
-      color: var(--badge-premium-text);
-      border: 1px solid var(--badge-premium-border);
-    }
-    .plan-badge-premium svg {
-      color: var(--badge-premium-icon);
-    }
-    .plan-badge-free {
-      background-color: var(--badge-free-bg);
-      color: var(--badge-free-text);
-      border: 1px solid var(--badge-free-border);
-    }
-    .plan-badge-free svg {
-      color: var(--badge-free-icon);
-    }
-    .plan-badge svg {
-      width: 1rem; /* w-4 */
-      height: 1rem; /* h-4 */
-      margin-right: 0.375rem; /* mr-1.5 */
-    }
-
-    /* Badge Animations */
-    @keyframes badgeGlowPremiumAnimation {
-      0%, 100% { box-shadow: 0 0 4px 1px var(--badge-premium-glow); }
-      50% { box-shadow: 0 0 10px 3px var(--badge-premium-glow); }
-    }
-    .plan-badge-glow-premium {
-      animation: badgeGlowPremiumAnimation 2.8s infinite ease-in-out;
-    }
-
-    @keyframes badgeGlowFreeAnimation {
-      0%, 100% { box-shadow: 0 0 4px 1px var(--badge-free-glow); }
-      50% { box-shadow: 0 0 10px 3px var(--badge-free-glow); }
-    }
-    .plan-badge-glow-free {
-      animation: badgeGlowFreeAnimation 2.8s infinite ease-in-out;
-    }
-
-    @keyframes badgeSwayAnimation { /* Renamed to badgeBounceAnimation internally, but keep name for CSS class */
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-2px); } /* Subtle bounce up, removed rotate */
-    }
-    .plan-badge-sway { /* Common class for sway/bounce */
-      animation-name: badgeSwayAnimation; /* Will use the modified keyframes */
-      animation-duration: 3s; /* Adjusted duration for bounce */
-      animation-timing-function: ease-in-out;
-      animation-iteration-count: infinite;
-    }
-    .plan-badge-animated { /* Base class to combine animations */
-        /* Add other base styles for animated badges if needed */
-    }
-
-    /* AI Icon Animations */
-    @keyframes aiIconSwayAnimation { /* Name kept, behavior changed to bounce */
+    /* API Status Indicator Animations */
+    @keyframes api-glow {
       0%, 100% {
-        transform: translateY(0);
+        text-shadow: 0 0 3px var(--text-purple-400), 
+                     0 0 5px var(--text-purple-400), 
+                     0 0 8px var(--text-purple-300);
+        opacity: 0.8;
       }
       50% {
-        transform: translateY(-2.5px); /* Bounce up */
+        text-shadow: 0 0 5px var(--text-purple-300), 
+                     0 0 10px var(--text-purple-300), 
+                     0 0 15px var(--text-purple-200),
+                     0 0 20px var(--text-purple-200);
+        opacity: 1;
       }
     }
-    .ai-icon-sway-glow-effect { /* Class name kept for simplicity, applies bounce */
-      animation: aiIconSwayAnimation 3.5s infinite ease-in-out;
-      /* Increased glow intensity and spread */
-      filter: drop-shadow(0 0 5px var(--badge-premium-glow)) drop-shadow(0 0 10px var(--badge-premium-glow));
+
+    @keyframes api-sway {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-1px) rotate(-2deg); }
+      75% { transform: translateY(1px) rotate(2deg); }
+    }
+
+    .api-status-indicator {
+      display: inline-block; /* Essential for transform to work */
+      animation: api-glow 2s infinite ease-in-out, 
+                 api-sway 3s infinite ease-in-out alternate;
+      animation-delay: 0s, 0.3s; /* Stagger animations for a more organic feel */
     }
 
   </style>
@@ -498,10 +418,9 @@
   "imports": {
     "react": "https://esm.sh/react@^19.1.0",
     "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "react/": "https://esm.sh/react@^19.1.0/",
-    "@google/genai": "https://esm.sh/@google/genai@0.12.0",
-    "vite": "https://esm.sh/vite@^6.3.5",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2"
+    "@google/genai": "https://esm.sh/@google/genai@^1.5.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2",
+    "vite": "https://esm.sh/vite@^6.3.5"
   }
 }
 </script>

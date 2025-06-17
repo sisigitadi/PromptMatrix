@@ -8,9 +8,7 @@ import { ClipboardIcon } from './icons/ClipboardIcon';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
 import { ChevronDownIcon } from './icons/ChevronDownIcon';
 import { ChevronUpIcon } from './icons/ChevronUpIcon';
-import { AiTextIcon } from './icons/AiTextIcon';
-import { SaveIcon } from './icons/SaveIcon';
-import { GlobeAltIcon } from './icons/GlobeAltIcon.tsx';
+import { AppLogoIcon } from './icons/AppLogoIcon'; 
 
 interface PromptOutputProps {
   promptText: string;
@@ -31,18 +29,9 @@ interface PromptOutputProps {
   detailedAiAnalysisReceived: boolean;
   hasCurrentPromptBeenCopied: boolean;
   onPromptSuccessfullyCopied: () => void;
-  onSavePrompt: () => void;
-  isPromptSavable: boolean;
-  userGoalForFramework: string;
-  onFetchWebResearch: () => void;
-  webResearchSummary: string | null;
-  webResearchSources: WebResearchDataSource[] | null;
-  isFetchingWebResearch: boolean;
-  webResearchError: string | null;
-  webResearchReceived: boolean;
-  isFetchingFrameworkSuggestions: boolean;
 }
 
+// Helper function to parse markdown-like content
 const parseMarkdownContent = (text: string): ReactNode[] => {
   const output: ReactNode[] = [];
   let currentListType: 'ul' | 'ol' | null = null;
@@ -102,13 +91,13 @@ const parseMarkdownContent = (text: string): ReactNode[] => {
     } else if (line.startsWith('# ')) {
       flushList();
       output.push(<h4 key={`h4-${index}`} className="text-lg font-semibold text-slate-100 mt-1.5 mb-0.5">{parseInlineFormatting(line.substring(2))}</h4>);
-    } else if (line.match(/^(\*|-|\+) /)) {
+    } else if (line.match(/^(\*|-|\+) /)) { // Unordered list
       if (currentListType !== 'ul') {
         flushList();
         currentListType = 'ul';
       }
       listItems.push(<li key={`li-${index}`}>{parseInlineFormatting(line.substring(2))}</li>);
-    } else if (line.match(/^\d+\. /)) {
+    } else if (line.match(/^\d+\. /)) { // Ordered list
       if (currentListType !== 'ol') {
         flushList();
         currentListType = 'ol';
@@ -118,10 +107,14 @@ const parseMarkdownContent = (text: string): ReactNode[] => {
       flushList();
       if (line.trim() !== "") {
         output.push(<p key={`p-${index}`} className="mb-1">{parseInlineFormatting(line)}</p>);
+      } else if (output.length > 0 && typeof output[output.length -1] === 'object' && (output[output.length-1] as any)?.type === 'p') {
+        // Add extra margin for consecutive empty lines creating paragraph breaks if needed,
+        // or simply ensure single empty lines are ignored if that's preferred.
+        // Current: empty lines are mostly ignored unless between text blocks.
       }
     }
   });
-  flushList();
+  flushList(); // Ensure any trailing list is flushed
   return output;
 };
 
@@ -145,47 +138,21 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
   detailedAiAnalysisReceived,
   hasCurrentPromptBeenCopied,
   onPromptSuccessfullyCopied,
-  onSavePrompt,
-  isPromptSavable,
-  userGoalForFramework,
-  onFetchWebResearch,
-  webResearchSummary,
-  webResearchSources,
-  isFetchingWebResearch,
-  webResearchError,
-  webResearchReceived,
-  isFetchingFrameworkSuggestions,
 }) => {
   const { language, t } = useLanguage();
   const [copied, setCopied] = useState<boolean>(false);
   const [copyAttemptedMessage, setCopyAttemptedMessage] = useState<string | null>(null);
   const [isToolSelectorModalOpen, setIsToolSelectorModalOpen] = useState<boolean>(false);
-
   const [isAiFeedbackExpanded, setIsAiFeedbackExpanded] = useState<boolean>(true);
-  const [isDetailedAnalysisExpanded, setIsDetailedAnalysisExpanded] = useState<boolean>(true);
-  const [isWebResearchSectionExpanded, setIsWebResearchSectionExpanded] = useState<boolean>(true);
 
 
   const currentFrameworkLocale = selectedFramework ? selectedFramework[language === 'id' ? 'idLocale' : 'enLocale'] : null;
 
   useEffect(() => {
-    if (apiKeyAvailable && aiFeedbackReceived && !isFetchingAiFeedback && !aiError && aiFeedback) {
+    if (aiFeedbackReceived && !isFetchingAiFeedback && !aiError && aiFeedback) {
       setIsAiFeedbackExpanded(true);
     }
-  }, [apiKeyAvailable, aiFeedbackReceived, isFetchingAiFeedback, aiError, aiFeedback]);
-
-  useEffect(() => {
-    if (apiKeyAvailable && detailedAiAnalysisReceived && !isFetchingDetailedAnalysis && !detailedAnalysisError && detailedAiAnalysis) {
-      setIsDetailedAnalysisExpanded(true);
-    }
-  }, [apiKeyAvailable, detailedAiAnalysisReceived, isFetchingDetailedAnalysis, detailedAnalysisError, detailedAiAnalysis]);
-
-  useEffect(() => {
-    if (apiKeyAvailable && webResearchReceived && !isFetchingWebResearch && !webResearchError && webResearchSummary) {
-      setIsWebResearchSectionExpanded(true);
-    }
-  }, [apiKeyAvailable, webResearchReceived, isFetchingWebResearch, webResearchError, webResearchSummary]);
-
+  }, [aiFeedbackReceived, isFetchingAiFeedback, aiError, aiFeedback]);
 
   const handleCopy = useCallback(async () => {
     const trimmedPromptToCopy = promptToCopy.trim();
@@ -226,80 +193,87 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
       (currentFrameworkLocale.genericToolLinks && currentFrameworkLocale.genericToolLinks.length > 0) ||
       !!currentFrameworkLocale.toolLink
     );
-
-  const isPromptNotEmpty = promptToCopy.trim().length > 0;
-
-  const enhanceButtonTitle = !apiKeyAvailable || !isPromptNotEmpty
-    ? t('aiFeatureRequiresSubscriptionTooltip')
-    : t('enhanceButtonTitle');
-  const analyzeButtonTitle = !apiKeyAvailable || !isPromptNotEmpty
-    ? t('aiFeatureRequiresSubscriptionTooltip')
-    : t('analyzeButtonTitle');
-  const webResearchButtonTitle = !apiKeyAvailable || !userGoalForFramework.trim()
-    ? t('aiFeatureRequiresSubscriptionTooltip')
-    : t('researchWebButtonAria');
-
-
+  
+  const canEnhanceInternal = !!apiKeyAvailable && promptToCopy.trim().length > 0 && !isFetchingAiFeedback;
   const canCopy = promptToCopy.trim().length > 0;
 
   const isActuallyShowingPrompt = selectedFramework && promptText !== t('initialPromptAreaInstruction') && promptText !== t('initialPromptAreaInstructionNoApiKey') && promptText !== t('selectFrameworkPromptAreaInstruction') && promptToCopy.trim() !== '';
   const opacityClass = isExpanded && !isActuallyShowingPrompt ? 'opacity-60' : 'opacity-100';
 
-  const showAiFeedbackSuccessIndicator = aiFeedbackReceived && !isFetchingAiFeedback && !aiError && apiKeyAvailable;
-  const showDetailedAnalysisSuccessIndicator = detailedAiAnalysisReceived && !isFetchingDetailedAnalysis && !detailedAnalysisError && apiKeyAvailable;
-  const showWebResearchSuccessIndicator = webResearchReceived && !isFetchingWebResearch && !webResearchError && webResearchSummary && apiKeyAvailable;
-
-
-  const renderFormattedTextSection = (text: string | null, titleKey: TranslationKey, defaultContentKey: TranslationKey, isPremiumFeature: boolean) => {
-    let placeholderText = t(defaultContentKey);
-    if (isPremiumFeature && !apiKeyAvailable) {
-        placeholderText += ` ${t('aiFeaturesRequireSubscriptionMessage')}`;
-    }
+  const enhanceButtonCurrentTitle = !apiKeyAvailable 
+    ? t('apiKeyMissingError') 
+    : t('enhanceButtonTitle');
     
-    if (!text) {
-        return <p className="text-xs text-slate-400 italic">{placeholderText}</p>;
-    }
+  const showAiFeedbackSuccessIndicator = aiFeedbackReceived && !isFetchingAiFeedback && !aiError && apiKeyAvailable;
 
-    const sections: { header?: string; content: ReactNode[] }[] = [];
-    const lines = text.split('\n').map(line => line.trim()).filter(line => line);
-
-    let currentSectionTitle = '';
-    let currentSectionContent: string[] = [];
-
-    const flushCurrentSection = () => {
-      if (currentSectionContent.length > 0) {
-        sections.push({
-          header: currentSectionTitle || undefined,
-          content: parseMarkdownContent(currentSectionContent.join('\n'))
-        });
-        currentSectionContent = [];
-        currentSectionTitle = '';
-      }
-    };
-
-    // These headers are specific to feedback/analysis. Web research is usually free-form.
-    const knownHeaders = (titleKey !== 'webResearchSectionTitle') ? [
-      t('aiFeedbackStrengthsTitle'), t('aiFeedbackWeaknessesTitle'), t('aiFeedbackReasoningTitle'), t('aiFeedbackActionableSuggestionsTitle'),
-      t('detailedAnalysisClarityScoreTitle'), t('detailedAnalysisSpecificityScoreTitle'), t('detailedAnalysisAmbiguitiesTitle'), t('detailedAnalysisSuggestionsTitle'), t('detailedAnalysisOverallAssessmentTitle')
-    ].map(h => h.replace(':', '')) : [];
-
-    let isFirstSection = true;
-    for (const line of lines) {
-      const matchingHeader = knownHeaders.find(header => line.toLowerCase().startsWith(header.toLowerCase()));
-      if (matchingHeader) { 
-        flushCurrentSection();
-        currentSectionTitle = line;
-        isFirstSection = false;
-      } else {
-        if (isFirstSection && !currentSectionTitle && titleKey !== 'webResearchSectionTitle') {
-          // This condition might not be needed or could be adjusted
+  const renderFormattedAiFeedback = () => {
+    if (!aiFeedback) return null;
+  
+    const headers = [
+      { key: 'aiFeedbackStrengthsTitle', title: t('aiFeedbackStrengthsTitle') },
+      { key: 'aiFeedbackWeaknessesTitle', title: t('aiFeedbackWeaknessesTitle') },
+      { key: 'aiFeedbackReasoningTitle', title: t('aiFeedbackReasoningTitle') },
+      { key: 'aiFeedbackActionableSuggestionsTitle', title: t('aiFeedbackActionableSuggestionsTitle') },
+    ];
+  
+    let remainingText = aiFeedback;
+    const parts: { header?: string; content: string }[] = [];
+    let foundAnyHeader = false;
+  
+    // Try to preserve text before the first known header
+    let firstKnownHeaderPosition = -1;
+    for (const headerObj of headers) {
+        const index = remainingText.indexOf(headerObj.title);
+        if (index !== -1) {
+            if (firstKnownHeaderPosition === -1 || index < firstKnownHeaderPosition) {
+                firstKnownHeaderPosition = index;
+            }
         }
-        currentSectionContent.push(line);
-      }
     }
-    flushCurrentSection();
-
-    if (sections.length === 0 && text.trim()) {
+  
+    if (firstKnownHeaderPosition > 0) {
+        parts.push({ content: remainingText.substring(0, firstKnownHeaderPosition).trim() });
+        remainingText = remainingText.substring(firstKnownHeaderPosition);
+    }
+  
+    while (remainingText.trim()) {
+        let currentHeader: string | undefined = undefined;
+        let currentHeaderKey: string | undefined = undefined;
+        let nextHeaderStartIndex = Infinity;
+        let contentEndIndex = remainingText.length;
+    
+        // Find the first header at the beginning of the remainingText
+        for (const headerObj of headers) {
+            if (remainingText.startsWith(headerObj.title)) {
+                currentHeader = headerObj.title;
+                currentHeaderKey = headerObj.key;
+                remainingText = remainingText.substring(currentHeader.length).trimStart();
+                foundAnyHeader = true;
+                break;
+            }
+        }
+    
+        // Find the start of the next header to determine current content boundary
+        for (const headerObj of headers) {
+            const index = remainingText.indexOf(headerObj.title);
+            if (index !== -1 && index < nextHeaderStartIndex) {
+                nextHeaderStartIndex = index;
+            }
+        }
+        contentEndIndex = nextHeaderStartIndex;
+    
+        const content = remainingText.substring(0, contentEndIndex).trim();
+        
+        if (currentHeader || content) {
+             parts.push({ header: currentHeader, content });
+        }
+        
+        remainingText = remainingText.substring(contentEndIndex).trimStart();
+        if (!foundAnyHeader && !currentHeader && parts.length > 0) break; // Avoid infinite loop if no headers left
+    }
+  
+    if (!foundAnyHeader && aiFeedback.trim()) {
+      // If no known headers were found at all, render everything with Markdown parsing
       return (
         <div className="font-sans text-sm sm:text-base text-slate-100 leading-relaxed max-h-60 sm:max-h-72 overflow-y-auto space-y-1" aria-live="polite">
           {parseMarkdownContent(text)}
@@ -357,25 +331,63 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
             </pre>
           </div>
 
-          {/* Moved Save, Copy, Launch buttons here */}
-          {isExpanded && (
-            <div className="mx-4 sm:mx-6 mt-2.5 space-y-2">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
-                <button
-                  onClick={onSavePrompt}
-                  title={t('savePromptButtonAria')}
-                  className={`w-full py-2 px-2.5 text-xs font-semibold rounded-md transition-all duration-200 ease-in-out flex items-center justify-center space-x-1.5
-                              transform active:scale-95 shadow-md sm:col-span-1
-                              ${isPromptSavable
-                                  ? 'bg-sky-600 hover:bg-sky-500 text-white focus:ring-1 focus:ring-sky-400 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800'
-                                  : 'bg-slate-600 text-slate-400 cursor-not-allowed focus:ring-slate-500 opacity-70'
-                              }`}
-                  aria-label={t('savePromptButtonAria')}
-                  disabled={!isPromptSavable}
-                >
-                  <SaveIcon className="w-4 h-4" />
-                  <span className="button-text-content">{t('savePromptButton')}</span>
-                </button>
+          {apiKeyAvailable && isExpanded && (
+            <div className="mx-4 sm:mx-6 mt-2.5"> 
+              <div 
+                className="flex justify-between items-center px-3 py-2 sm:px-4 sm:py-2.5 bg-slate-700/30 dark:bg-slate-800/40 rounded-t-lg border border-b-0 border-[var(--border-color)] dark:border-slate-600/70 cursor-pointer hover:bg-slate-700/50"
+                onClick={() => setIsAiFeedbackExpanded(!isAiFeedbackExpanded)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setIsAiFeedbackExpanded(!isAiFeedbackExpanded)}
+                aria-expanded={isAiFeedbackExpanded}
+                aria-controls="ai-feedback-content"
+              >
+                <h4 className="text-sm sm:text-md font-semibold text-purple-400 dark:text-purple-300 flex items-center">
+                  <strong className="italic">{t('aiFeedbackTitleTextOnly')}</strong>
+                  {apiKeyAvailable && <AppLogoIcon animatedAsAiIndicator className="w-4 h-4 ml-1.5 api-status-indicator shrink-0" />}
+                  {showAiFeedbackSuccessIndicator && (
+                    <CheckCircleIcon className="w-4 h-4 text-green-500 dark:text-green-400 ml-1.5 shrink-0" title={t('aiFeedbackReceivedIndicatorTooltip')} />
+                  )}
+                </h4>
+                {isAiFeedbackExpanded ? <ChevronUpIcon className="w-5 h-5 text-purple-400" /> : <ChevronDownIcon className="w-5 h-5 text-purple-400" />}
+              </div>
+              <div 
+                id="ai-feedback-content" 
+                className={`overflow-hidden transition-all duration-300 ease-in-out bg-slate-700/30 dark:bg-slate-800/40 rounded-b-lg border border-t-0 border-[var(--border-color)] dark:border-slate-600/70
+                            ${isAiFeedbackExpanded ? 'max-h-[500px] opacity-100 p-3 sm:p-4' : 'max-h-0 opacity-0 p-0'}`}
+              >
+                {isFetchingAiFeedback && (
+                  <p className="text-xs sm:text-sm text-slate-300 animate-pulse">{t('aiFeedbackLoading')}</p>
+                )}
+                {aiError && (
+                  <p className="text-xs sm:text-sm text-rose-400 dark:text-rose-400" role="alert">{aiError}</p>
+                )}
+                {!isFetchingAiFeedback && aiFeedback && (
+                   renderFormattedAiFeedback()
+                )}
+              </div>
+            </div>
+          )}
+
+          <div className="mt-auto pt-2.5 px-4 sm:px-6 pb-3 sm:pb-4 space-y-2.5"> 
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-2.5"> 
+                {apiKeyAvailable && (
+                  <button
+                      onClick={onEnhanceWithAI}
+                      title={enhanceButtonCurrentTitle}
+                      className={`w-full sm:w-auto flex-grow py-2 px-2.5 text-xs font-semibold rounded-md transition-all duration-200 ease-in-out flex items-center justify-center space-x-1.5
+                                  transform active:scale-95 shadow-md
+                                  ${canEnhanceInternal
+                                      ? 'bg-purple-600 hover:bg-purple-500 text-white focus:ring-1 focus:ring-purple-400 focus:ring-offset-1 focus:ring-offset-[var(--bg-secondary)] dark:focus:ring-offset-slate-800'
+                                      : 'bg-slate-600 text-slate-400 cursor-not-allowed focus:ring-slate-500 opacity-70'
+                                  }`}
+                      aria-label={t('enhanceButtonAria')}
+                      disabled={!canEnhanceInternal || isFetchingAiFeedback}
+                  >
+                      <span className="button-text-content">{isFetchingAiFeedback ? t('enhanceButtonLoadingText') : t('enhanceButtonText')}</span>
+                      <AppLogoIcon animatedAsAiIndicator className={`w-4 h-4 api-status-indicator ml-1.5 ${isFetchingAiFeedback ? 'opacity-70 animate-pulse' : ''}`} /> 
+                  </button>
+                )}
 
                 <button
                 onClick={handleCopy}

@@ -51,7 +51,7 @@ const InputField: React.FC<InputFieldProps> = ({
   const [focusedSuggestionIndex, setFocusedSuggestionIndex] = useState(-1);
   
   const hasClearButton = !!value;
-  const showSuggestButtonIcon = !!fetchSuggestions && !!frameworkName; 
+  const showSuggestButton = !!fetchSuggestions && !!frameworkName && !!apiKeyAvailable;
   let prClass = 'pr-2.5'; 
   if (hasClearButton && showSuggestButtonIcon) {
     prClass = 'pr-16 sm:pr-16'; 
@@ -155,7 +155,7 @@ const InputField: React.FC<InputFieldProps> = ({
   };
 
   const handleSuggest = async () => {
-    if (!fetchSuggestions || !frameworkName || !apiKeyAvailable) return; 
+    if (!fetchSuggestions || !frameworkName || !apiKeyAvailable) return;
 
     setIsFetchingSuggestions(true);
     setSuggestionError(null);
@@ -276,19 +276,18 @@ const InputField: React.FC<InputFieldProps> = ({
           />
         )}
         <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-0"> 
-            {showSuggestButtonIcon && (
+            {showSuggestButton && (
                  <button
                     type="button"
-                    onClick={apiKeyAvailable ? handleSuggest : undefined} 
-                    className={`p-1 ${apiKeyAvailable ? 'text-purple-400 hover:text-purple-200 active:text-purple-500' : 'text-slate-500 opacity-50 cursor-not-allowed'} transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button`} 
+                    onClick={handleSuggest}
+                    className="p-1 text-purple-400 hover:text-purple-200 active:text-purple-500 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button" 
                     title={effectiveSuggestButtonTitle}
                     aria-label={t('suggestButtonTitle')}
-                    disabled={!apiKeyAvailable || isFetchingSuggestions} 
+                    disabled={isFetchingSuggestions} 
                 >
-                    <AiTextIcon 
-                        isAiFeatureActive={!!apiKeyAvailable}
-                        enableSwayAndGlow={!!apiKeyAvailable && !isFetchingSuggestions}
-                        isLoading={isFetchingSuggestions}
+                    <AppLogoIcon 
+                        animatedAsAiIndicator
+                        className={`w-4 h-4 api-status-indicator ${isFetchingSuggestions ? 'opacity-70 animate-pulse' : ''}`} 
                     /> 
                 </button>
             )}
@@ -304,7 +303,7 @@ const InputField: React.FC<InputFieldProps> = ({
             )}
         </div>
       </div>
-      {showSuggestions && apiKeyAvailable && (isFetchingSuggestions || suggestionError || suggestions.length > 0) && ( 
+      {showSuggestions && (isFetchingSuggestions || suggestionError || suggestions.length > 0) && (
         <div className="absolute z-10 w-full mt-0.5 bg-[var(--bg-tertiary)] dark:bg-slate-700 border border-[var(--border-color)] dark:border-slate-600 rounded-md shadow-lg max-h-52 overflow-y-auto" id={`${id}-suggestions`} role="listbox"> 
           {isFetchingSuggestions && (
             <div className="px-2.5 py-1.5 text-xs text-slate-400 animate-pulse">{t('suggestionsLoading')}</div>
