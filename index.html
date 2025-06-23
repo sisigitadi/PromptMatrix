@@ -1,115 +1,21 @@
 <!DOCTYPE html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMART Framework Demo</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body class="bg-gray-50 min-h-screen font-['Inter']">
-    <div class="container mx-auto px-4 py-8">
-        <div class="max-w-4xl mx-auto">
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">SMART Framework Demo</h1>
-                <div class="flex gap-4 items-center">
-                    <button onclick="updateContent('en')" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">English</button>
-                    <button onclick="updateContent('id')" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Bahasa Indonesia</button>
-                    <select id="languageSelect" class="px-4 py-2 border border-gray-300 rounded-md bg-white shadow-sm">
-                        <option value="en">English</option>
-                        <option value="id">Bahasa Indonesia</option>
-                    </select>
-                </div>
-            </div>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PromptMatrix</title>
 
-            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-                <h2 id="frameworkTitle" class="text-xl font-semibold mb-2"></h2>
-                <p id="frameworkDescription" class="text-gray-600 mb-6"></p>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet" />
 
-                <div id="components" class="space-y-6"></div>
-            </div>
-        </div>
-    </div>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-    <script>
-        const framework = {
-            id: 'smart',
-            idLocale: {
-                name: 'SMART (Spesifik, Terukur, Dapat Dicapai, Relevan, Terikat Waktu)',
-                shortName: 'SMART',
-                description: 'Kerangka kerja SMART membantu dalam menyusun tujuan dan rencana yang jelas dan terukur dengan mendefinisikan kriteria spesifik.',
-                components: [
-                    { id: 'Spesifik', label: 'Spesifik', example: 'Contoh 1: Tingkatkan traffic website perusahaan melalui optimasi SEO dengan fokus pada 5 kata kunci utama produk kita.\nContoh 2: Kembangkan aplikasi mobile untuk manajemen tugas dengan fitur reminder, kategori, dan sinkronisasi cloud.\nContoh 3: Kurangi waktu loading halaman website dari 5 detik menjadi maksimal 2 detik.\nContoh 4: Kuasai bahasa Inggris hingga level B2 dengan fokus pada speaking dan listening.\nContoh 5: Turunkan berat badan dari 80kg menjadi 70kg dengan cara yang sehat.\nContoh 6: Selesaikan sertifikasi AWS Solutions Architect Associate.' },
-                    { id: 'Terukur', label: 'Terukur', example: 'Contoh 1: Target peningkatan traffic organik sebesar 50% dalam 6 bulan, dari rata-rata 10.000 menjadi 15.000 pengunjung per bulan.\nContoh 2: Tingkatkan rating aplikasi di Play Store dari 4.2 menjadi 4.5 dengan minimal 1000 review baru.\nContoh 3: Capai conversion rate sebesar 3% untuk landing page baru, dari rata-rata saat ini 1.5%.\nContoh 4: Capai skor IELTS 7.0 dengan minimal 6.5 di setiap komponen.\nContoh 5: Kurangi asupan kalori harian menjadi 1800 kalori dan latihan 4x seminggu.\nContoh 6: Selesaikan 6 modul pelatihan dan lulus ujian dengan skor minimal 750.' },
-                    { id: 'Dapat Dicapai', label: 'Dapat Dicapai', example: 'Contoh 1: Dengan tim konten 3 orang, kita akan memproduksi 2 artikel berkualitas tinggi per minggu, didukung oleh riset kata kunci dan analisis kompetitor.\nContoh 2: Implementasi fitur baru akan dilakukan secara bertahap dengan 2 developer full-time dan 1 QA.\nContoh 3: Optimasi performa akan fokus pada kompresi gambar, caching, dan minifikasi kode.\nContoh 4: Belajar bahasa Inggris 1 jam setiap hari dengan kombinasi aplikasi, video, dan tutor online.\nContoh 5: Olahraga 45 menit setiap pagi dan persiapkan meal prep untuk mengontrol porsi.\nContoh 6: Dedikasikan 2 jam setiap hari untuk belajar dan latihan praktek AWS.' },
-                    { id: 'Relevan', label: 'Relevan', example: 'Contoh 1: Peningkatan traffic organik akan mendukung tujuan perusahaan untuk mengurangi biaya akuisisi pelanggan dan meningkatkan otoritas domain.\nContoh 2: Pengembangan aplikasi mobile sejalan dengan strategi digital-first dan kebutuhan pengguna untuk akses mobile.\nContoh 3: Peningkatan performa website akan meningkatkan pengalaman pengguna dan SEO ranking.\nContoh 4: Kemampuan bahasa Inggris yang lebih baik akan membuka peluang karir internasional.\nContoh 5: Penurunan berat badan akan meningkatkan kesehatan dan kepercayaan diri.\nContoh 6: Sertifikasi AWS akan meningkatkan prospek karir di bidang cloud computing.' },
-                    { id: 'Terikat Waktu', label: 'Terikat Waktu', example: 'Contoh 1: Timeline 6 bulan dengan evaluasi bulanan: Bulan 1-2 optimasi konten lama, Bulan 3-6 fokus pada konten baru dan link building.\nContoh 2: Pengembangan MVP dalam 3 bulan: Sprint 2 minggu untuk setiap fitur utama, 2 minggu terakhir untuk testing dan polish.\nContoh 3: Optimasi performa diselesaikan dalam 1 bulan: Minggu 1-2 implementasi, Minggu 3 testing, Minggu 4 deployment dan monitoring.\nContoh 4: Program belajar bahasa Inggris 6 bulan: 3 bulan fokus grammar dan vocabulary, 3 bulan fokus speaking dan listening.\nContoh 5: Program penurunan berat badan 4 bulan: Target 2.5kg per bulan dengan evaluasi mingguan.\nContoh 6: Persiapan sertifikasi 3 bulan: 2 bulan belajar materi, 2 minggu latihan ujian, 2 minggu review.' }
-                ]
-            },
-            enLocale: {
-                name: 'SMART (Specific, Measurable, Achievable, Relevant, Time-bound)',
-                shortName: 'SMART',
-                description: 'The SMART framework helps in creating clear and measurable goals and plans by defining specific criteria.',
-                components: [
-                    { id: 'Specific', label: 'Specific', example: 'Example 1: Increase company website traffic through SEO optimization focusing on our 5 main product keywords.\nExample 2: Develop a mobile task management app with reminder features, categories, and cloud synchronization.\nExample 3: Reduce website page loading time from 5 seconds to maximum 2 seconds.\nExample 4: Master English language to B2 level with focus on speaking and listening skills.\nExample 5: Reduce body weight from 80kg to 70kg in a healthy way.\nExample 6: Complete AWS Solutions Architect Associate certification.' },
-                    { id: 'Measurable', label: 'Measurable', example: 'Example 1: Target 50% increase in organic traffic over 6 months, from average 10,000 to 15,000 visitors per month.\nExample 2: Improve app rating on Play Store from 4.2 to 4.5 with minimum 1000 new reviews.\nExample 3: Achieve 3% conversion rate for new landing page, up from current 1.5% average.\nExample 4: Achieve IELTS score of 7.0 with minimum 6.5 in each component.\nExample 5: Reduce daily calorie intake to 1800 calories and exercise 4 times per week.\nExample 6: Complete 6 training modules and pass exam with minimum score of 750.' },
-                    { id: 'Achievable', label: 'Achievable', example: 'Example 1: With a content team of 3, we will produce 2 high-quality articles per week, supported by keyword research and competitor analysis.\nExample 2: New feature implementation will be done gradually with 2 full-time developers and 1 QA.\nExample 3: Performance optimization will focus on image compression, caching, and code minification.\nExample 4: Study English 1 hour daily using a combination of apps, videos, and online tutoring.\nExample 5: Exercise 45 minutes every morning and prepare meal preps to control portions.\nExample 6: Dedicate 2 hours daily for AWS study and hands-on practice.' },
-                    { id: 'Relevant', label: 'Relevant', example: 'Example 1: Increasing organic traffic will support company goals to reduce customer acquisition costs and improve domain authority.\nExample 2: Mobile app development aligns with digital-first strategy and user needs for mobile access.\nExample 3: Website performance improvements will enhance user experience and SEO ranking.\nExample 4: Better English language skills will open up international career opportunities.\nExample 5: Weight loss will improve health and boost self-confidence.\nExample 6: AWS certification will enhance career prospects in cloud computing.' },
-                    { id: 'Time-bound', label: 'Time-bound', example: 'Example 1: 6-month timeline with monthly evaluations: Months 1-2 existing content optimization, Months 3-6 focus on new content and link building.\nExample 2: MVP development in 3 months: 2-week sprints for each core feature, final 2 weeks for testing and polish.\nExample 3: Performance optimization completed in 1 month: Weeks 1-2 implementation, Week 3 testing, Week 4 deployment and monitoring.\nExample 4: 6-month English program: 3 months focus on grammar and vocabulary, 3 months focus on speaking and listening.\nExample 5: 4-month weight loss program: Target 2.5kg per month with weekly evaluations.\nExample 6: 3-month certification prep: 2 months studying materials, 2 weeks practice exams, 2 weeks review.' }
-                ]
-            }
-        };
-
-        function updateContent(locale) {
-            console.log('Updating content to locale:', locale);
-            const content = locale === 'en' ? framework.enLocale : framework.idLocale;
-            console.log('Selected content:', content.name);
-            
-            document.getElementById('frameworkTitle').textContent = content.name;
-            document.getElementById('frameworkDescription').textContent = content.description;
-            
-            const componentsContainer = document.getElementById('components');
-            componentsContainer.innerHTML = '';
-            
-            content.components.forEach(component => {
-                const examples = component.example.split('\n').map(ex => 
-                    `<li class="text-gray-600 mb-2">${ex}</li>`
-                ).join('');
-
-                const componentHtml = `
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <h3 class="text-lg font-semibold mb-3">${component.label}</h3>
-                        <ul class="list-disc pl-5 space-y-1">
-                            ${examples}
-                        </ul>
-                    </div>
-                `;
-                
-                componentsContainer.innerHTML += componentHtml;
-            });
-        }
-
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM Content Loaded');
-            
-            // Set initial content
-            updateContent('en');
-            
-            // Add event listener for language changes
-            const languageSelect = document.getElementById('languageSelect');
-            console.log('Language select element:', languageSelect);
-            
-            if (languageSelect) {
-                languageSelect.addEventListener('change', function(event) {
-                    console.log('Change event triggered');
-                    console.log('New language:', event.target.value);
-                    updateContent(event.target.value);
-                });
-                console.log('Event listener attached');
-            } else {
-                console.error('Language select element not found!');
-            }
-        });
-    </script>
-</body>
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body class="bg-background text-white font-sans">
+    <div id="root"></div>
+  </body>
 </html>
