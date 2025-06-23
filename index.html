@@ -1,434 +1,92 @@
-
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PromptMatrix</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='appLogoGradFaviconTeal' x1='0.5' y1='0' x2='0.5' y2='1'%3E%3Cstop offset='0%25' stop-color='%230D9488'/%3E%3Cstop offset='100%25' stop-color='%230F766E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='6' y='6' width='8' height='8' rx='1' fill='url(%23appLogoGradFaviconTeal)'/%3E%3Crect x='18' y='6' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='6' y='18' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='18' y='18' width='8' height='8' rx='1' fill='url(%23appLogoGradFaviconTeal)'/%3E%3C/svg%3E" type="image/svg+xml">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root {
-      --bg-primary: #0f172a; /* slate-900 */
-      --bg-secondary: #1e293b; /* slate-800 */
-      --bg-tertiary: #334155; /* slate-700 */
-      --text-primary: #f1f5f9; /* slate-100 */
-      --text-secondary: #94a3b8; /* slate-400 */
-      --text-accent: #0F766E; /* teal-700 */
-      --text-accent-hover: #0D9488; /* teal-600 */
-      --text-accent-active: #134E4A; /* teal-900 (darker for active state on teal) */
-      --border-color: #475569; /* slate-600 */
-      --ring-color: #0F766E; /* teal-700 */
-      --selection-bg: #0F766E; /* teal-700 */
-      --selection-text: #ffffff;
-      --scrollbar-thumb: #0F766E; /* teal-700 */
-      --scrollbar-track: #1e293b; /* slate-800 */
-
-      /* Text animation colors for TEAL accent */
-      --text-anim-default-hover: #14B8A6; /* teal-500 */
-      --text-anim-default-active: #A3FAF0; /* teal-200 */
-      --text-anim-accent-bg-hover: #F0FDFA; /* teal-50 */
-      --text-anim-accent-bg-active: #CCFBF1; /* teal-100 */
-      --text-disconnected: #F43F5E; /* rose-500 */
-      --text-teal-400: #2dd4bf; /* Tailwind teal-400 for JS access if needed */
-
-      /* Purple colors for API status indicator (from Tailwind) */
-      --text-purple-400: #a855f7;
-      --text-purple-300: #c084fc;
-      --text-purple-200: #d8b4fe;
-    }
-
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-      scrollbar-width: thin;
-    }
-
-    ::selection {
-      background-color: var(--selection-bg);
-      color: var(--selection-text);
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--scrollbar-track);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--scrollbar-thumb);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--text-accent-hover);
-    }
-
-    .text-xxs { /* Added for dev toggle info text */
-      font-size: 0.65rem; /* Roughly 10.4px */
-      line-height: 0.9rem; /* Roughly 14.4px */
-    }
-
-    @keyframes pulse-bg-intensified {
-      0%, 100% { background-color: var(--text-accent); transform: scale(1.03); }
-      50% { background-color: color-mix(in srgb, var(--text-accent) 70%, white); transform: scale(1.06); }
-    }
-    .animate-pulse-bg-custom {
-      animation: pulse-bg-intensified 1.2s infinite ease-in-out;
-    }
-
-    @keyframes click-text-effect {
-      0% { color: inherit; transform: scale(1); }
-      25% { color: var(--text-accent-hover); transform: scale(1.05); }
-      50% { color: var(--text-accent); transform: scale(0.95); opacity: 0.7; }
-      75% { color: var(--text-accent-active); transform: scale(1.05); opacity: 1; }
-      100% { color: inherit; transform: scale(1); }
-    }
-    .animate-just-clicked-text > span {
-      display: inline-block;
-      animation: click-text-effect 0.8s ease-in-out;
-    }
-
-     @keyframes footer-sig-blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-    .animated-signature {
-      animation: footer-sig-blink 2.2s infinite ease-in-out;
-      font-weight: bold;
-      color: color-mix(in srgb, var(--text-accent) 80%, var(--text-primary) 20%);
-    }
-
-    footer a[href^="mailto:si.sigitadi@gmail.com"] {
-      color: var(--text-accent-hover);
-      text-decoration: none;
-    }
-    footer a[href^="mailto:si.sigitadi@gmail.com"]:hover {
-      text-decoration: underline;
-    }
-
-    @keyframes header-frame-glow-animation {
-      0%, 100% {
-        border-color: color-mix(in srgb, var(--text-accent) 60%, transparent);
-        box-shadow: 0 0 5px color-mix(in srgb, var(--text-accent) 50%, transparent),
-                    0 0 8px color-mix(in srgb, var(--text-accent) 30%, transparent) inset;
-      }
-      50% {
-        border-color: var(--text-accent-hover);
-        box-shadow: 0 0 10px var(--text-accent-hover),
-                    0 0 12px var(--text-accent-hover) inset,
-                    0 0 12px var(--text-accent-hover);
-      }
-    }
-    .header-glowing-frame {
-      border-width: 2px;
-      border-style: solid;
-      animation: header-frame-glow-animation 3.5s infinite ease-in-out;
-    }
-
-    @keyframes word-up-down-animation { 
-      0%, 100% { transform: translateY(0); }
-      25% { transform: translateY(-1px); }
-      75% { transform: translateY(1px); }
-    }
-
-    .subtitle-3d-effect {
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); 
-    }
-
-    .collapsible-content {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out 0.1s, visibility 0s linear 0.5s;
-      visibility: hidden;
-    }
-    .collapsible-content.open {
-      max-height: 2000px; 
-      opacity: 1;
-      visibility: visible;
-      transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
-    }
-
-    .collapsible-mc-content {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out, padding 0.35s ease-in-out;
-      padding-top: 0;
-      padding-bottom: 0;
-    }
-    .collapsible-mc-content.open {
-      max-height: 500px; 
-      opacity: 1;
-      transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out, padding 0.35s ease-in-out;
-    }
-
-    .non-copyable-input-field {
-      user-select: none;
-      -webkit-user-select: none; 
-      -moz-user-select: none;    
-      -ms-user-select: none;     
-    }
-    .non-copyable-input-field::placeholder {
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      font-style: italic;
-    }
-
-    @keyframes subtle-button-pulse {
-      0%, 100% {
-        box-shadow: 0 0 0 0 color-mix(in srgb, var(--text-accent) 40%, transparent);
-        transform: scale(1.0);
-      }
-      50% {
-        box-shadow: 0 0 0 5px color-mix(in srgb, var(--text-accent) 10%, transparent);
-        transform: scale(1.03);
-      }
-    }
-    .animate-subtle-pulse {
-      animation: subtle-button-pulse 2s infinite ease-in-out;
-    }
-
-    .button-text-content {
-      display: inline-block; 
-      transition: transform 0.1s ease-out, color 0.1s ease-out;
-      will-change: transform, color; 
-    }
-
-    /* General 3D Button Effect for Header */
-    .button-header-3d {
-      position: relative;
-      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, top 0.1s ease-out;
-      box-shadow: 0 2px 0 0 var(--bg-tertiary); /* Default shadow, adjust color if needed */
-    }
-    .button-header-3d:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 0 0 var(--bg-tertiary);
-    }
-    .button-header-3d:active {
-      transform: translateY(1px);
-      box-shadow: 0 1px 0 0 var(--bg-tertiary);
-    }
-    /* Specific hover text color for header buttons if not covered by existing rules */
-    .button-header-3d.text-purple-300:hover .button-text-content { color: var(--text-yellow-300, #FDE047); } /* Assuming yellow-300 equivalent */
-    .button-header-3d.text-slate-300:hover .button-text-content { color: var(--text-teal-400, #2DD4BF); }
-
-    button:hover .button-text-content {
-      color: var(--text-anim-default-hover);
-    }
-    button:active .button-text-content {
-      color: var(--text-anim-default-active);
-      transform: translateY(1px); 
-    }
-
-    button.bg-slate-600:hover .button-text-content,
-    button.bg-slate-700:hover .button-text-content,
-    button.bg-slate-500:hover .button-text-content { 
-        color: var(--text-anim-accent-bg-hover); 
-    }
-    button.bg-slate-600:active .button-text-content,
-    button.bg-slate-700:active .button-text-content,
-    button.bg-slate-500:active .button-text-content { 
-        color: var(--text-anim-accent-bg-active);
-        transform: translateY(1px);
-    }
-
-    button.bg-teal-700 > .button-text-content,
-    button.bg-teal-600 > .button-text-content {
-        color: #FFFFFF; 
-    }
-    button.bg-teal-700:hover > .button-text-content,
-    button.bg-teal-600:hover > .button-text-content {
-      color: var(--text-anim-accent-bg-hover); 
-    }
-    button.bg-teal-700:active > .button-text-content,
-    button.bg-teal-600:active > .button-text-content {
-      color: var(--text-anim-accent-bg-active); 
-      transform: translateY(1px);
-    }
-
-    button.bg-rose-600 > .button-text-content {
-       color: #FFFFFF; 
-    }
-    button.bg-rose-600:hover > .button-text-content {
-      color: #FFE4E6; 
-    }
-    button.bg-rose-600:active > .button-text-content {
-      color: #FFF1F2; 
-      transform: translateY(1px);
-    }
-
-    button.bg-green-500 > .button-text-content {
-       color: #FFFFFF; 
-    }
-    button.bg-green-500:hover > .button-text-content {
-      color: #D1FAE5; 
-    }
-    button.bg-green-500:active > .button-text-content {
-      color: #F0FDF4; 
-      transform: translateY(1px);
-    }
-
-    button.bg-sky-600 > .button-text-content {
-       color: #FFFFFF;
-    }
-    button.bg-sky-600:hover > .button-text-content {
-      color: #E0F2FE; 
-    }
-    button.bg-sky-600:active > .button-text-content {
-      color: #F0F9FF; 
-      transform: translateY(1px);
-    }
-
-    button.bg-teal-600.border-teal-500.text-white:hover > .button-text-content,
-    button.bg-teal-700.border-teal-500.text-white:hover > .button-text-content {
-      color: var(--text-anim-accent-bg-hover);
-    }
-    button.bg-teal-600.border-teal-500.text-white:active > .button-text-content,
-    button.bg-teal-700.border-teal-500.text-white:active > .button-text-content {
-      color: var(--text-anim-accent-bg-active);
-      transform: translateY(1px);
-    }
-    button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700 > .button-text-content,
-    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-slate-600 > .button-text-content {
-        color: #E2E8F0; 
-    }
-    button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700:hover > .button-text-content,
-    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:hover > .button-text-content { 
-        color: var(--text-anim-accent-bg-hover); 
-    }
-    button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content,
-    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content {
-        color: var(--text-anim-accent-bg-active);
-        transform: translateY(1px);
-    }
-
-    button.bg-purple-600 > .button-text-content {
-       color: #FFFFFF;
-    }
-    button.bg-purple-600:hover > .button-text-content {
-      color: #E9D5FF; 
-    }
-    button.bg-purple-600:active > .button-text-content {
-      color: #F3E8FF; 
-      transform: translateY(1px);
-    }
-
-    button.bg-indigo-600 > .button-text-content { 
-       color: #FFFFFF;
-    }
-    button.bg-indigo-600:hover > .button-text-content {
-      color: #E0E7FF; 
-    }
-    button.bg-indigo-600:active > .button-text-content {
-      color: #EEF2FF; 
-      transform: translateY(1px);
-    }
-
-
-    select {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); 
-      background-position: right 0.5rem center;
-      background-repeat: no-repeat;
-      background-size: 1.5em 1.5em;
-      padding-right: 2.5rem; 
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-    }
-    select:focus { 
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230D9488' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); 
-    }
-
-    select option {
-      background-color: var(--bg-secondary); 
-      color: var(--text-primary);       
-    }
-    select option:checked,
-    select option:hover {
-      background-color: var(--text-accent); 
-      color: var(--text-primary);          
-    }
-
-    select option[value="LAINNYA_INTERAKTIF_PLACEHOLDER"] {
-      font-style: italic;
-      color: var(--text-secondary); 
-    }
-
-    .ai-suggestion-textarea {
-      min-height: 60px; 
-    }
-
-    .interactive-suggestion-list-container {
-      margin-top: 0.125rem; 
-      position: absolute;
-      z-index: 20;
-      width: 100%;
-      background-color: var(--bg-tertiary); 
-      border: 1px solid var(--border-color);
-      border-radius: 0.375rem; 
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
-      max-height: 13rem; 
-      overflow-y: auto;
-    }
-    .mc-collapsible-header button svg {
-      transition: transform 0.3s ease-in-out;
-    }
-    .mc-collapsible-header button[aria-expanded="true"] svg {
-      transform: rotate(180deg);
-    }
-
-    /* API Status Indicator Animations */
-    @keyframes api-glow {
-      0%, 100% {
-        text-shadow: 0 0 3px var(--text-purple-400), 
-                     0 0 5px var(--text-purple-400), 
-                     0 0 8px var(--text-purple-300);
-        opacity: 0.8;
-      }
-      50% {
-        text-shadow: 0 0 5px var(--text-purple-300), 
-                     0 0 10px var(--text-purple-300), 
-                     0 0 15px var(--text-purple-200),
-                     0 0 20px var(--text-purple-200);
-        opacity: 1;
-      }
-    }
-
-    @keyframes api-sway {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      25% { transform: translateY(-1px) rotate(-2deg); }
-      75% { transform: translateY(1px) rotate(2deg); }
-    }
-
-    .api-status-indicator {
-      display: inline-block; /* Essential for transform to work */
-      animation: api-glow 2s infinite ease-in-out, 
-                 api-sway 3s infinite ease-in-out alternate;
-      animation-delay: 0s, 0.3s; /* Stagger animations for a more organic feel */
-    }
-
-  </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.1.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.5.1",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2",
-    "vite": "https://esm.sh/vite@^6.3.5"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART Framework Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="antialiased theme-dark">
-  <div id="root"></div>
-  <script type="module" src="./index.tsx"></script>
-<script type="module" src="/index.tsx"></script>
+<body class="bg-gray-50 min-h-screen font-['Inter']">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">SMART Framework Demo</h1>
+                <select id="languageSelect" class="px-4 py-2 border border-gray-300 rounded-md bg-white shadow-sm" onchange="updateContent(this.value)">
+                    <option value="en">English</option>
+                    <option value="id">Bahasa Indonesia</option>
+                </select>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 id="frameworkTitle" class="text-xl font-semibold mb-2"></h2>
+                <p id="frameworkDescription" class="text-gray-600 mb-6"></p>
+
+                <div id="components" class="space-y-6"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const framework = {
+            id: 'smart',
+            idLocale: {
+                name: 'SMART (Spesifik, Terukur, Dapat Dicapai, Relevan, Terikat Waktu)',
+                shortName: 'SMART',
+                description: 'Kerangka kerja SMART membantu dalam menyusun tujuan dan rencana yang jelas dan terukur dengan mendefinisikan kriteria spesifik.',
+                components: [
+                    { id: 'Spesifik', label: 'Spesifik', example: 'Contoh 1: Tingkatkan traffic website perusahaan melalui optimasi SEO dengan fokus pada 5 kata kunci utama produk kita.\nContoh 2: Kembangkan aplikasi mobile untuk manajemen tugas dengan fitur reminder, kategori, dan sinkronisasi cloud.\nContoh 3: Kurangi waktu loading halaman website dari 5 detik menjadi maksimal 2 detik.\nContoh 4: Kuasai bahasa Inggris hingga level B2 dengan fokus pada speaking dan listening.\nContoh 5: Turunkan berat badan dari 80kg menjadi 70kg dengan cara yang sehat.\nContoh 6: Selesaikan sertifikasi AWS Solutions Architect Associate.' },
+                    { id: 'Terukur', label: 'Terukur', example: 'Contoh 1: Target peningkatan traffic organik sebesar 50% dalam 6 bulan, dari rata-rata 10.000 menjadi 15.000 pengunjung per bulan.\nContoh 2: Tingkatkan rating aplikasi di Play Store dari 4.2 menjadi 4.5 dengan minimal 1000 review baru.\nContoh 3: Capai conversion rate sebesar 3% untuk landing page baru, dari rata-rata saat ini 1.5%.\nContoh 4: Capai skor IELTS 7.0 dengan minimal 6.5 di setiap komponen.\nContoh 5: Kurangi asupan kalori harian menjadi 1800 kalori dan latihan 4x seminggu.\nContoh 6: Selesaikan 6 modul pelatihan dan lulus ujian dengan skor minimal 750.' },
+                    { id: 'Dapat Dicapai', label: 'Dapat Dicapai', example: 'Contoh 1: Dengan tim konten 3 orang, kita akan memproduksi 2 artikel berkualitas tinggi per minggu, didukung oleh riset kata kunci dan analisis kompetitor.\nContoh 2: Implementasi fitur baru akan dilakukan secara bertahap dengan 2 developer full-time dan 1 QA.\nContoh 3: Optimasi performa akan fokus pada kompresi gambar, caching, dan minifikasi kode.\nContoh 4: Belajar bahasa Inggris 1 jam setiap hari dengan kombinasi aplikasi, video, dan tutor online.\nContoh 5: Olahraga 45 menit setiap pagi dan persiapkan meal prep untuk mengontrol porsi.\nContoh 6: Dedikasikan 2 jam setiap hari untuk belajar dan latihan praktek AWS.' },
+                    { id: 'Relevan', label: 'Relevan', example: 'Contoh 1: Peningkatan traffic organik akan mendukung tujuan perusahaan untuk mengurangi biaya akuisisi pelanggan dan meningkatkan otoritas domain.\nContoh 2: Pengembangan aplikasi mobile sejalan dengan strategi digital-first dan kebutuhan pengguna untuk akses mobile.\nContoh 3: Peningkatan performa website akan meningkatkan pengalaman pengguna dan SEO ranking.\nContoh 4: Kemampuan bahasa Inggris yang lebih baik akan membuka peluang karir internasional.\nContoh 5: Penurunan berat badan akan meningkatkan kesehatan dan kepercayaan diri.\nContoh 6: Sertifikasi AWS akan meningkatkan prospek karir di bidang cloud computing.' },
+                    { id: 'Terikat Waktu', label: 'Terikat Waktu', example: 'Contoh 1: Timeline 6 bulan dengan evaluasi bulanan: Bulan 1-2 optimasi konten lama, Bulan 3-6 fokus pada konten baru dan link building.\nContoh 2: Pengembangan MVP dalam 3 bulan: Sprint 2 minggu untuk setiap fitur utama, 2 minggu terakhir untuk testing dan polish.\nContoh 3: Optimasi performa diselesaikan dalam 1 bulan: Minggu 1-2 implementasi, Minggu 3 testing, Minggu 4 deployment dan monitoring.\nContoh 4: Program belajar bahasa Inggris 6 bulan: 3 bulan fokus grammar dan vocabulary, 3 bulan fokus speaking dan listening.\nContoh 5: Program penurunan berat badan 4 bulan: Target 2.5kg per bulan dengan evaluasi mingguan.\nContoh 6: Persiapan sertifikasi 3 bulan: 2 bulan belajar materi, 2 minggu latihan ujian, 2 minggu review.' }
+                ]
+            },
+            enLocale: {
+                name: 'SMART (Specific, Measurable, Achievable, Relevant, Time-bound)',
+                shortName: 'SMART',
+                description: 'The SMART framework helps in creating clear and measurable goals and plans by defining specific criteria.',
+                components: [
+                    { id: 'Specific', label: 'Specific', example: 'Example 1: Increase company website traffic through SEO optimization focusing on our 5 main product keywords.\nExample 2: Develop a mobile task management app with reminder features, categories, and cloud synchronization.\nExample 3: Reduce website page loading time from 5 seconds to maximum 2 seconds.\nExample 4: Master English language to B2 level with focus on speaking and listening skills.\nExample 5: Reduce body weight from 80kg to 70kg in a healthy way.\nExample 6: Complete AWS Solutions Architect Associate certification.' },
+                    { id: 'Measurable', label: 'Measurable', example: 'Example 1: Target 50% increase in organic traffic over 6 months, from average 10,000 to 15,000 visitors per month.\nExample 2: Improve app rating on Play Store from 4.2 to 4.5 with minimum 1000 new reviews.\nExample 3: Achieve 3% conversion rate for new landing page, up from current 1.5% average.\nExample 4: Achieve IELTS score of 7.0 with minimum 6.5 in each component.\nExample 5: Reduce daily calorie intake to 1800 calories and exercise 4 times per week.\nExample 6: Complete 6 training modules and pass exam with minimum score of 750.' },
+                    { id: 'Achievable', label: 'Achievable', example: 'Example 1: With a content team of 3, we will produce 2 high-quality articles per week, supported by keyword research and competitor analysis.\nExample 2: New feature implementation will be done gradually with 2 full-time developers and 1 QA.\nExample 3: Performance optimization will focus on image compression, caching, and code minification.\nExample 4: Study English 1 hour daily using a combination of apps, videos, and online tutoring.\nExample 5: Exercise 45 minutes every morning and prepare meal preps to control portions.\nExample 6: Dedicate 2 hours daily for AWS study and hands-on practice.' },
+                    { id: 'Relevant', label: 'Relevant', example: 'Example 1: Increasing organic traffic will support company goals to reduce customer acquisition costs and improve domain authority.\nExample 2: Mobile app development aligns with digital-first strategy and user needs for mobile access.\nExample 3: Website performance improvements will enhance user experience and SEO ranking.\nExample 4: Better English language skills will open up international career opportunities.\nExample 5: Weight loss will improve health and boost self-confidence.\nExample 6: AWS certification will enhance career prospects in cloud computing.' },
+                    { id: 'Time-bound', label: 'Time-bound', example: 'Example 1: 6-month timeline with monthly evaluations: Months 1-2 existing content optimization, Months 3-6 focus on new content and link building.\nExample 2: MVP development in 3 months: 2-week sprints for each core feature, final 2 weeks for testing and polish.\nExample 3: Performance optimization completed in 1 month: Weeks 1-2 implementation, Week 3 testing, Week 4 deployment and monitoring.\nExample 4: 6-month English program: 3 months focus on grammar and vocabulary, 3 months focus on speaking and listening.\nExample 5: 4-month weight loss program: Target 2.5kg per month with weekly evaluations.\nExample 6: 3-month certification prep: 2 months studying materials, 2 weeks practice exams, 2 weeks review.' }
+                ]
+            }
+        };
+
+        function updateContent(locale) {
+            console.log('Updating content to locale:', locale);
+            const content = locale === 'en' ? framework.enLocale : framework.idLocale;
+            console.log('Selected content:', content.name);
+            
+            document.getElementById('frameworkTitle').textContent = content.name;
+            document.getElementById('frameworkDescription').textContent = content.description;
+            
+            const componentsContainer = document.getElementById('components');
+            componentsContainer.innerHTML = '';
+            
+            content.components.forEach(component => {
+                const examples = component.example.split('\n').map(ex => 
+                    `<li class="text-gray-600 mb-2">${ex}</li>`
+                ).join('');
+
+                const componentHtml = `
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold mb-3">${component.label}</h3>
+                        <ul class="list-disc pl-5 space-y-1">
+                            ${examples}
+                        </ul>
+                    </div>
+                `;
+                
+                componentsContainer.innerHTML += componentHtml;
+            });
+        }
+
+        // Initial content load
+        document.addEventListener('DOMContentLoaded', () => updateContent('en'));
+    </script>
 </body>
 </html>
