@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptMatrix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            800: '#1a1e24',
+                            900: '#0d1117'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1e24; }
+        ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4a5568; }
+        .hover-translate { 
+            transition: all 0.2s ease-in-out; 
+        }
+        .hover-translate:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        @media (max-width: 640px) {
+            .hover-translate:hover {
+                transform: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark-900 text-white font-[Inter]">
+    <!-- Header -->
+    <header class="border-b border-gray-800 sticky top-0 bg-dark-900/95 backdrop-blur-sm z-50">
+        <div class="container mx-auto px-4 py-6 flex items-center">
+            <i class="fas fa-robot text-teal-400 text-2xl mr-3"></i>
+            <h1 class="text-2xl font-bold">PromptMatrix</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Categories -->
+        <section class="mb-12">
+            <h2 class="text-xl font-semibold mb-6 flex items-center">
+                <span class="text-teal-400 mr-2">1.</span>
+                Category & Search
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <button class="bg-dark-800 p-4 rounded-lg flex flex-col items-center hover-translate">
+                    <i class="fas fa-text-height text-teal-400 text-xl mb-2"></i>
+                    <span>Text</span>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg flex flex-col items-center hover-translate">
+                    <i class="fas fa-image text-teal-400 text-xl mb-2"></i>
+                    <span>Image</span>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg flex flex-col items-center hover-translate">
+                    <i class="fas fa-video text-teal-400 text-xl mb-2"></i>
+                    <span>Video</span>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg flex flex-col items-center hover-translate">
+                    <i class="fas fa-music text-teal-400 text-xl mb-2"></i>
+                    <span>Music</span>
+                </button>
+            </div>
+
+            <!-- AI Framework Finder -->
+            <div class="bg-dark-800 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-robot text-teal-400 mr-2"></i>
+                    AI Framework Finder & ResearcherAi
+                </h3>
+                <p class="text-gray-400 mb-4">Describe your goal. AI will suggest matching frameworks. You can also research new techniques from the web. (Premium AI Feature - Subscription Coming Soon!)</p>
+                <button class="bg-teal-600 hover:bg-teal-700 px-6 py-2 rounded-lg hover-translate flex items-center">
+                    <i class="fas fa-magic mr-2"></i>
+                    Get Framework SuggestionsAi
+                </button>
+            </div>
+        </section>
+
+        <!-- Frameworks -->
+        <section class="mb-12">
+            <h2 class="text-xl font-semibold mb-6 flex items-center">
+                <span class="text-teal-400 mr-2">2.</span>
+                Text Frameworks
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <button class="bg-dark-800 p-4 rounded-lg text-left hover-translate">
+                    <h3 class="font-semibold mb-2">AIDA</h3>
+                    <p class="text-sm text-gray-400">Attention, Interest, Desire, Action</p>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg text-left hover-translate">
+                    <h3 class="font-semibold mb-2">APE</h3>
+                    <p class="text-sm text-gray-400">Action, Purpose, Expectation</p>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg text-left hover-translate">
+                    <h3 class="font-semibold mb-2">CARE</h3>
+                    <p class="text-sm text-gray-400">Context, Action, Result, Example</p>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg text-left hover-translate">
+                    <h3 class="font-semibold mb-2">Chain-of-Thought</h3>
+                    <p class="text-sm text-gray-400">Step-by-step reasoning</p>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg text-left hover-translate">
+                    <h3 class="font-semibold mb-2">COPE</h3>
+                    <p class="text-sm text-gray-400">Context, Objective, Persona, Example</p>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg text-left hover-translate">
+                    <h3 class="font-semibold mb-2">CTI</h3>
+                    <p class="text-sm text-gray-400">Context, Task, Instructions</p>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg text-left hover-translate">
+                    <h3 class="font-semibold mb-2">EmotionPrompt</h3>
+                    <p class="text-sm text-gray-400">Emotional Intelligence Framework</p>
+                </button>
+                <button class="bg-dark-800 p-4 rounded-lg text-left hover-translate">
+                    <h3 class="font-semibold mb-2">Factive Prompting</h3>
+                    <p class="text-sm text-gray-400">Fact-based Response Generation</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- Components -->
+        <section class="mb-12">
+            <h2 class="text-xl font-semibold mb-6 flex items-center">
+                <span class="text-teal-400 mr-2">3.</span>
+                Components
+            </h2>
+            <div class="bg-dark-800 p-6 rounded-lg">
+                <p class="text-gray-400">Choose a framework from the grid to see its components and start building your prompt. Each component will provide an example.</p>
+            </div>
+        </section>
+
+        <!-- Prompt Preview -->
+        <section class="mb-12">
+            <h2 class="text-xl font-semibold mb-6">Prompt Preview</h2>
+            <div class="bg-dark-800 p-6 rounded-lg border border-gray-700">
+                <p class="text-gray-400">Your structured prompt will appear here. AI feedback & analysis are premium features (subscription coming soon).</p>
+            </div>
+        </section>
+
+        <!-- AI Analysis Section -->
+        <section class="mb-12 space-y-6">
+            <div class="bg-dark-800 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-robot text-teal-400 mr-2"></i>
+                    AI Feedback & Suggestions
+                </h3>
+                <p class="text-gray-400 mb-4">Click 'Get AI Suggestions' for overall prompt feedback. (Premium Feature - Subscription Coming Soon)</p>
+                <button disabled class="bg-gray-700 text-gray-400 px-6 py-2 rounded-lg cursor-not-allowed opacity-70 flex items-center">
+                    <i class="fas fa-magic mr-2"></i>
+                    Get AI SuggestionsAi
+                </button>
+            </div>
+
+            <div class="bg-dark-800 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-teal-400 mr-2"></i>
+                    Detailed AI Analysis
+                </h3>
+                <p class="text-gray-400 mb-4">Click 'Detailed Analysis' to get an in-depth review. (Premium Feature - Subscription Coming Soon)</p>
+                <button disabled class="bg-gray-700 text-gray-400 px-6 py-2 rounded-lg cursor-not-allowed opacity-70 flex items-center">
+                    <i class="fas fa-chart-bar mr-2"></i>
+                    Detailed AnalysisAi
+                </button>
+            </div>
+
+            <div class="bg-dark-800 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-4 flex items-center">
+                    <i class="fas fa-globe text-teal-400 mr-2"></i>
+                    AI Web Research
+                </h3>
+                <p class="text-gray-400 mb-4">Click 'Research Web' to discover new prompting techniques from the internet. (Premium Feature - Subscription Coming Soon)</p>
+                <button disabled class="bg-gray-700 text-gray-400 px-6 py-2 rounded-lg cursor-not-allowed opacity-70 flex items-center">
+                    <i class="fas fa-search mr-2"></i>
+                    Research WebAi
+                </button>
+            </div>
+        </section>
+
+        <!-- Saved Prompts -->
+        <section class="mb-12">
+            <h2 class="text-xl font-semibold mb-6">Saved Prompts</h2>
+            <div class="bg-dark-800 p-6 rounded-lg">
+                <div class="flex flex-wrap gap-4 mb-6">
+                    <button class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg hover-translate flex items-center">
+                        <i class="fas fa-download mr-2"></i>
+                        Export All
+                    </button>
+                    <button class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg hover-translate flex items-center">
+                        <i class="fas fa-upload mr-2"></i>
+                        Import from File
+                    </button>
+                </div>
+                <p class="text-gray-400">No prompts saved yet. Create a prompt and click 'Save Prompt'!</p>
+            </div>
+        </section>
+
+        <!-- About -->
+        <section class="mt-12 border-t border-gray-800 pt-8">
+            <div class="bg-dark-800 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-info-circle text-teal-400 mr-2"></i>
+                    About PromptMatrix
+                </h2>
+                <ul class="space-y-4 text-gray-400">
+                    <li class="flex items-start">
+                        <span class="text-teal-400 mr-2">•</span>
+                        <span>Learn to build & understand structured AI prompts with guided frameworks.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-teal-400 mr-2">•</span>
+                        <span>Core prompt building (framework selection, input fields, prompt preview, copy, save/load) is free. Advanced AI-powered features (AI Framework Finder & Researcher, AI Per-Field Input Suggestions, AI Overall Prompt Feedback, AI Detailed Prompt Analysis, AI Web Research) are premium and will require a future subscription.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-teal-400 mr-2">•</span>
+                        <span>Free core features are provided 'as is' & respect your privacy. No personal data collected for core use. Ad-free & promotion-free.</span>
+                    </li>
+                </ul>
+                <p class="mt-6 text-gray-400">
+                    Feedback & Questions: 
+                    <a href="mailto:si.sigitadi@gmail.com" class="text-teal-400 hover:underline">si.sigitadi@gmail.com</a>
+                </p>
+            </div>
+            <div class="text-center text-gray-500 mt-8">
+                <p>PromptMatrix © 2023</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
