@@ -2,20 +2,27 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { WorkflowDiagramIcon } from './icons/WorkflowDiagramIcon';
+import { TranslationKey } from '../types'; 
 
 interface HowToUseModalProps {
   isOpen: boolean;
   onClose: () => void;
   isShownAutomatically?: boolean;
+  apiKeyAvailable?: boolean; 
 }
 
-const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownAutomatically = false }) => {
+const HowToUseModal: React.FC<HowToUseModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  isShownAutomatically = false,
+  apiKeyAvailable = false 
+}) => {
   const { t, language, setLanguage: setAppLanguage } = useLanguage();
   const modalRef = useRef<HTMLDivElement>(null);
-  const acknowledgeButtonRef = useRef<HTMLButtonElement>(null); // Renamed from closeButtonRef for consistency
+  const acknowledgeButtonRef = useRef<HTMLButtonElement>(null);
 
   const [countdown, setCountdown] = useState(5);
-  const [isCountdownActive, setIsCountdownActive] = useState(isShownAutomatically); // Initialize based on prop
+  const [isCountdownActive, setIsCountdownActive] = useState(isShownAutomatically);
   const intervalRef = useRef<number | null>(null);
 
   const startCountdown = () => {
@@ -43,9 +50,8 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownA
       setCountdown(0);
       if (intervalRef.current) clearInterval(intervalRef.current);
       setTimeout(() => acknowledgeButtonRef.current?.focus(), 100);
-    } else { // When closed
+    } else { 
       if (intervalRef.current) clearInterval(intervalRef.current);
-      // Reset for next potential automatic show, only if it *was* an automatic show
       if(isShownAutomatically) {
         setIsCountdownActive(true);
         setCountdown(5);
@@ -60,17 +66,14 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownA
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        if (!isShownAutomatically) { // If opened manually, allow Escape to close
+        if (!isShownAutomatically || !isCountdownActive) { // Allow escape if not auto-shown OR if countdown finished
            onClose();
         }
-        // If isShownAutomatically is true, Escape key does nothing.
-        // Modal must be closed by the Acknowledge button.
       }
     };
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscapeKey);
-      // Initial focus if not counting down or if manually opened
       if (!isCountdownActive || !isShownAutomatically) { 
         setTimeout(() => {
             acknowledgeButtonRef.current?.focus();
@@ -119,7 +122,7 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownA
         currentModalRef?.removeEventListener('keydown', handleTabKeyPress);
       };
     }
-  }, [isOpen, isCountdownActive]); // Re-evaluate focusable elements when countdown active state changes
+  }, [isOpen, isCountdownActive]);
 
   if (!isOpen) {
     return null;
@@ -128,7 +131,6 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownA
   const handleLanguageToggleInModal = () => {
     const newLang = language === 'id' ? 'en' : 'id';
     setAppLanguage(newLang);
-    // If countdown was active, restart it for the new language content
     if (isShownAutomatically) {
         startCountdown();
     }
@@ -138,13 +140,20 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownA
     ? t('disclaimerAcknowledgeButtonDisabledText', countdown) 
     : t('disclaimerModalAcknowledgeButton');
 
+  const step2TextKey = apiKeyAvailable ? 'howToUseStep2Premium' : 'howToUseStep2Free';
+  const step3TextKey = apiKeyAvailable ? 'howToUseStep3Premium' : 'howToUseStep3Free';
+  const step5TextKey = apiKeyAvailable ? 'howToUseStep5Premium' : 'howToUseStep5Free';
+  const step5bTextKey = apiKeyAvailable ? 'howToUseStep5bPremium' : 'howToUseStep5bFree';
+  const tipTextKey = apiKeyAvailable ? 'howToUseTipPremium' : 'howToUseTipFree';
+
+
   return (
     <div 
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="how-to-use-title"
-      onClick={!isShownAutomatically ? onClose : undefined} // Only allow overlay click to close if opened manually
+      onClick={(!isShownAutomatically || !isCountdownActive) ? onClose : undefined}
     >
       <div
         ref={modalRef}
@@ -154,7 +163,7 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownA
       >
         <div className="flex justify-between items-center pb-3 border-b border-[var(--border-color)]">
           <h2 id="how-to-use-title" className="text-lg sm:text-xl font-semibold text-teal-600 dark:text-teal-500">{t('howToUseAppTitle')}</h2>
-          <div className="flex items-center"> {/* Removed space-x-2 as only one button remains here */}
+          <div className="flex items-center">
             <button
               onClick={handleLanguageToggleInModal}
               className="px-2 py-1 text-xs sm:text-sm font-semibold text-slate-300 hover:text-teal-400 transition-colors rounded-md hover:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-teal-500"
@@ -162,7 +171,6 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownA
             >
               {language === 'id' ? 'EN' : 'ID'}
             </button>
-            {/* "X" Close button removed from here */}
           </div>
         </div>
         
@@ -171,20 +179,20 @@ const HowToUseModal: React.FC<HowToUseModalProps> = ({ isOpen, onClose, isShownA
 
           <h3 className="text-md font-semibold text-teal-500 dark:text-teal-400 mt-2 mb-1.5">{t('howToUseDiagramTitle')}</h3>
           <div className="my-2 bg-slate-800/50 p-3 rounded-lg border border-slate-700 flex justify-center items-center">
-            <WorkflowDiagramIcon className="w-full h-auto max-w-lg"/>
+            <WorkflowDiagramIcon className="w-full h-auto max-w-lg" data-apikeyavailable={apiKeyAvailable.toString()} />
           </div>
 
           <h3 className="text-md font-semibold text-teal-500 dark:text-teal-400 mt-4 mb-1.5">{t('howToUseAppTitleShort')}:</h3>
           <ol className="list-decimal list-inside space-y-1.5 text-slate-300 pl-1">
             <li>{t('howToUseStep1')}</li>
-            <li>{t('howToUseStep2')}</li>
-            <li>{t('howToUseStep3')}</li>
+            <li>{t(step2TextKey)}</li>
+            <li>{t(step3TextKey)}</li>
             <li>{t('howToUseStep4')}</li>
-            <li>{t('howToUseStep5')}</li>
-            <li>{t('howToUseStep5b')}</li> 
+            <li>{t(step5TextKey)}</li>
+            {apiKeyAvailable && t(step5bTextKey) && <li>{t(step5bTextKey)}</li>} 
             <li>{t('howToUseStep6')}</li> 
           </ol>
-          <p className="mt-3 text-teal-400 dark:text-teal-300 font-semibold text-xs italic pl-1">{t('howToUseTip')}</p>
+          <p className="mt-3 text-teal-400 dark:text-teal-300 font-semibold text-xs italic pl-1">{t(tipTextKey)}</p>
         </div>
 
         <button

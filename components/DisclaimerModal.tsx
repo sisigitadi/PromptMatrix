@@ -6,9 +6,14 @@ import { InfoIcon } from './icons/InfoIcon';
 interface DisclaimerModalProps {
   isOpen: boolean;
   onClose: () => void;
+  apiKeyAvailable?: boolean;
 }
 
-const DisclaimerModal: React.FC<DisclaimerModalProps> = ({ isOpen, onClose }) => {
+const DisclaimerModal: React.FC<DisclaimerModalProps> = ({ 
+  isOpen, 
+  onClose,
+  apiKeyAvailable = false 
+}) => {
   const { t, language, setLanguage: setAppLanguage } = useLanguage();
   const modalRef = useRef<HTMLDivElement>(null);
   const acknowledgeButtonRef = useRef<HTMLButtonElement>(null);
@@ -26,7 +31,6 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({ isOpen, onClose }) =>
         if (prev <= 1) {
           if (intervalRef.current) clearInterval(intervalRef.current);
           setIsCountdownActive(false);
-          // Auto-focus the button once countdown finishes and it becomes enabled
           setTimeout(() => acknowledgeButtonRef.current?.focus(), 0);
           return 0;
         }
@@ -46,7 +50,7 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({ isOpen, onClose }) =>
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isOpen, language]); // Restart countdown if modal re-opens or language changes while open
+  }, [isOpen, language]); 
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
@@ -57,7 +61,7 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({ isOpen, onClose }) =>
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscapeKey);
-      if (!isCountdownActive) { // Only focus initially if not in countdown
+      if (!isCountdownActive) { 
         setTimeout(() => {
             acknowledgeButtonRef.current?.focus();
         }, 100);
@@ -106,7 +110,7 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({ isOpen, onClose }) =>
         currentModalRef?.removeEventListener('keydown', handleTabKeyPress);
       };
     }
-  }, [isOpen, isCountdownActive]); // Re-evaluate focusable elements when countdown finishes
+  }, [isOpen, isCountdownActive]); 
 
   if (!isOpen) {
     return null;
@@ -120,6 +124,8 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({ isOpen, onClose }) =>
   const acknowledgeButtonText = isCountdownActive 
     ? t('disclaimerAcknowledgeButtonDisabledText', countdown) 
     : t('disclaimerModalAcknowledgeButton');
+
+  const disclaimerPoint2Key = apiKeyAvailable ? 'disclaimerPoint2Premium' : 'disclaimerPoint2Free';
 
   return (
     <div 
@@ -152,7 +158,7 @@ const DisclaimerModal: React.FC<DisclaimerModalProps> = ({ isOpen, onClose }) =>
         <div className="flex-grow overflow-y-auto space-y-3 pr-1 text-sm sm:text-base" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--scrollbar-thumb) var(--scrollbar-track)' }}>
           <ul className="list-disc list-inside space-y-2 text-slate-300 pl-1">
             <li>{t('disclaimerPoint1')}</li>
-            <li>{t('disclaimerPoint2')}</li>
+            <li>{t(disclaimerPoint2Key)}</li>
             <li>{t('disclaimerPoint3')}</li>
           </ul>
           <p className="mt-3 text-slate-300 pl-1">

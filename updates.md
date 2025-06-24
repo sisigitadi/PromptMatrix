@@ -6,9 +6,9 @@ This document provides a history of major features and updates to the PromptMatr
 ---
 ## V6.2.0 (Current Version - UI/UX Fixes)
 *   **UI/UX Bug Fixes & Polish:**
-    *   **Mobile Subtitle:** Fixed an issue where the app subtitle in the header could be truncated on mobile devices by ensuring proper text wrapping.
-    *   **Teaser Popup:** Addressed a bug where the "Premium Teaser Popup" might not appear reliably as intended on initial load after disclaimer/how-to-use modals. The visibility and animation logic has been refined.
-    *   **Category & Framework Toggles:** Reviewed existing hover effects for category and framework selection buttons. Confirmed they already provide unique and informative feedback (icon scaling, button lift, background/text color changes on hover) as per recent requests, so no structural changes were needed for these elements.
+    *   **Mobile Subtitle Wrapping:** Fixed an issue where the app subtitle in the header could be truncated on mobile devices by ensuring proper text wrapping logic. The subtitle now correctly wraps to multiple lines if necessary on smaller screens.
+    *   **Teaser Popup Reliability:** Addressed a bug where the "Premium Teaser Popup" might not appear reliably as intended on initial load after disclaimer/how-to-use modals. The trigger logic has been refined to ensure the `localStorage` flag (marking it as "shown") is set more accurately when the popup is actually scheduled to display.
+    *   **Category & Framework Toggles (Reviewed):** Existing hover effects for category and framework selection buttons were reviewed. Confirmed they already provide unique and informative feedback (icon scaling, button lift, background/text color changes on hover) as per recent requests, so no structural changes were needed for these elements.
 *   **Documentation:** Updated `updates.md` and `README.md` to reflect these fixes.
 *   **Version:** Maintained at `V6.2.0` as these are primarily bug fixes and minor polish to existing V6.2.0 features.
 
@@ -47,6 +47,8 @@ This document provides a history of major features and updates to the PromptMatr
 *   **🔬 AI-Powered Detailed Prompt Analysis (Premium Feature - Subscription Coming Soon):**
     *   Users can request a **Detailed Analysis** of their generated prompt.
     *   AI (Gemini) provides a structured breakdown including: Clarity Score, Specificity Score, Potential Ambiguities, Actionable Suggestions, and Overall Assessment.
+    *   Tombol baru "Analisis Detail dengan AI 📊" ditambahkan di panel Pratinjau Prompt.
+    *   Hasil analisis ditampilkan secara terstruktur di bawah pratinjau prompt, dalam format yang mudah dibaca.
 *   **🌐 AI Web Research (Premium Feature - Subscription Coming Soon):**
     *   "AI Framework Finder" enhanced to "AI Framework Finder & Researcher".
     *   AI (Gemini with Google Search grounding) summarizes findings on new prompt techniques and provides source links.
@@ -69,9 +71,9 @@ This document provides a history of major features and updates to the PromptMatr
 This period focused on data management enhancements, usability improvements, and refining existing features.
 
 *   **Data Management:**
-    *   **Export/Import for Prompt Stash:**
-        *   Added functionality to export all saved prompts from the "Prompt Stash" into a single JSON file (`promptmatrix_stash_backup.json`).
-        *   Allowed users to import prompts from a previously exported JSON file back into their stash.
+    *   **Export/Import for Saved prompts:**
+        *   Added functionality to export all saved prompts from the "Saved prompts" list into a single JSON file (`promptmatrix_stash_backup.json`).
+        *   Allowed users to import prompts from a previously exported JSON file back into their list of saved prompts.
         *   Toast notifications confirm successful export/import or indicate errors.
 *   **User Experience (UX):**
     *   **Favorite Frameworks:** (This feature was subsequently removed to simplify the UI/UX).
@@ -89,10 +91,10 @@ This period focused on data management enhancements, usability improvements, and
 
 This version marked a significant step in making PromptMatrix a more robust and user-friendly tool for managing and creating prompts.
 
-*   **Core Feature - Prompt Stash (My Prompt Stash):**
+*   **Core Feature - Saved prompts (My Saved Prompts):**
     *   Implemented local prompt storage using **IndexedDB**.
     *   Users can **Save** their crafted prompts.
-    *   A dedicated "Prompt Stash" panel allows users to:
+    *   A dedicated "Saved prompts" panel allows users to:
         *   View a list of saved prompts with details (name, framework, date, preview).
         *   **Load** saved prompts back into the editor.
         *   **Rename** saved prompts.
@@ -104,7 +106,7 @@ This version marked a significant step in making PromptMatrix a more robust and 
     *   Implemented **Toast Notifications** for actions like saving, loading, deleting prompts, and for errors.
 *   **UI & Styling:**
     *   Introduced more sophisticated animations and visual feedback for button clicks and UI interactions.
-    *   Improved layout for new panels (Prompt Stash).
+    *   Improved layout for new panels (Saved prompts).
     *   Enhanced non-copyable placeholder text styling for better clarity.
     *   Consistent prompt preview logic, showing instructional text until significant user input.
 

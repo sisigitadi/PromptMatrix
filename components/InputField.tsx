@@ -2,7 +2,7 @@
 import React, { useLayoutEffect, useRef, useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { XCircleIcon } from './icons/XCircleIcon';
-import { AiTextIcon } from './icons/AiTextIcon'; 
+import { AiTextIcon } from './AiTextIcon'; 
 
 interface InputFieldProps {
   id: string;
@@ -19,6 +19,7 @@ interface InputFieldProps {
   frameworkName?: string;
   apiKeyAvailable?: boolean;
   exampleText?: string; 
+  tooltip?: string; 
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -34,8 +35,9 @@ const InputField: React.FC<InputFieldProps> = ({
   isVisible,
   fetchSuggestions,
   frameworkName,
-  apiKeyAvailable,
+  apiKeyAvailable = false, // Default to false if not provided
   exampleText,
+  tooltip, 
 }) => {
   const { t } = useLanguage();
   const commonClasses = "w-full p-2.5 bg-[var(--bg-secondary)] dark:bg-slate-700/50 border border-[var(--border-color)] dark:border-slate-600 rounded-md focus:ring-1 focus:ring-[var(--ring-color)] focus:border-[var(--ring-color)] outline-none transition-all duration-150 text-sm text-[var(--text-primary)] dark:text-slate-100 placeholder-[var(--text-secondary)] dark:placeholder-slate-400/80 shadow-sm non-copyable-input-field"; 
@@ -51,19 +53,21 @@ const InputField: React.FC<InputFieldProps> = ({
   const [focusedSuggestionIndex, setFocusedSuggestionIndex] = useState(-1);
   
   const hasClearButton = !!value;
-  const showSuggestButton = !!fetchSuggestions && !!frameworkName && !!apiKeyAvailable;
+  const showAiSuggestButton = !!fetchSuggestions && !!frameworkName && apiKeyAvailable; 
+
   let prClass = 'pr-2.5'; 
-  if (hasClearButton && showSuggestButtonIcon) {
+  if (hasClearButton && showAiSuggestButton) {
     prClass = 'pr-16 sm:pr-16'; 
-  } else if (hasClearButton || showSuggestButtonIcon) {
+  } else if (hasClearButton) {
+    prClass = 'pr-8 sm:pr-8'; 
+  } else if (showAiSuggestButton) {
     prClass = 'pr-8 sm:pr-8'; 
   }
 
-  const actualPlaceholder = exampleText || placeholder || t('inputFieldPlaceholder', label);
 
-  const effectiveSuggestButtonTitle = !apiKeyAvailable 
-    ? t('aiFeatureRequiresSubscriptionTooltip') 
-    : t('suggestButtonTitle');
+  const actualPlaceholder = exampleText || placeholder || t('inputFieldPlaceholder', t(label)); 
+
+  const effectiveSuggestButtonTitle = apiKeyAvailable ? t('suggestButtonTitle') : t('aiFeatureRequiresSubscriptionTooltip'); 
 
   useLayoutEffect(() => {
     if (!isTextarea || !textareaRef.current) {
@@ -155,7 +159,7 @@ const InputField: React.FC<InputFieldProps> = ({
   };
 
   const handleSuggest = async () => {
-    if (!fetchSuggestions || !frameworkName || !apiKeyAvailable) return;
+    if (!fetchSuggestions || !frameworkName || !apiKeyAvailable) return; 
 
     setIsFetchingSuggestions(true);
     setSuggestionError(null);
@@ -164,7 +168,7 @@ const InputField: React.FC<InputFieldProps> = ({
     setFocusedSuggestionIndex(-1);
 
     try {
-      const fetchedSuggestions = await fetchSuggestions(label, frameworkName, value);
+      const fetchedSuggestions = await fetchSuggestions(t(label), frameworkName, value); 
       setSuggestions(fetchedSuggestions);
       if (fetchedSuggestions.length === 0) {
         setSuggestionError(t('noSuggestionsFound'));
@@ -178,7 +182,7 @@ const InputField: React.FC<InputFieldProps> = ({
   };
   
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    if (showSuggestions && suggestions.length > 0) {
+    if (showSuggestions && suggestions.length > 0 && apiKeyAvailable) { // Ensure suggestions only work if API key available
       if (e.key === 'ArrowDown') {
         e.preventDefault();
         setFocusedSuggestionIndex(prev => (prev + 1) % suggestions.length);
@@ -220,8 +224,9 @@ const InputField: React.FC<InputFieldProps> = ({
 
   return (
     <div className="space-y-1 relative" onBlur={handleBlur}> 
-      <label htmlFor={id} className="block text-sm font-medium text-teal-600 dark:text-teal-500"> 
-        {label}
+      <label htmlFor={id} className="block text-sm font-medium text-teal-600 dark:text-teal-500" title={tooltip ? t(tooltip) : undefined}> 
+        {t(label)}
+        {tooltip && <span className="text-xs text-sky-400 ml-1">(?)</span>}
       </label>
       {description && <p className="text-xs text-[var(--text-secondary)] dark:text-slate-400 mb-0.5">{description}</p>} 
       
@@ -254,9 +259,9 @@ const InputField: React.FC<InputFieldProps> = ({
             rows={initialRows} 
             className={`${commonClasses} resize-none overflow-y-hidden ${prClass}`}
             style={{ minHeight: `${initialRows * 1.5}rem` }} 
-            aria-autocomplete="list"
-            aria-expanded={showSuggestions && (suggestions.length > 0 || isFetchingSuggestions || !!suggestionError)}
-            aria-controls={`${id}-suggestions`}
+            aria-autocomplete={apiKeyAvailable && showAiSuggestButton ? "list" : "none"}
+            aria-expanded={apiKeyAvailable && showAiSuggestButton && showSuggestions && (suggestions.length > 0 || isFetchingSuggestions || !!suggestionError)}
+            aria-controls={apiKeyAvailable && showAiSuggestButton ? `${id}-suggestions` : undefined}
           />
         ) : (
           <input
@@ -270,24 +275,25 @@ const InputField: React.FC<InputFieldProps> = ({
             placeholder={actualPlaceholder} 
             className={`${commonClasses} ${prClass}`}
             style={{ minHeight: `calc(1.5rem * ${initialRows > 1 ? initialRows * 0.7 : 1} + 1.25rem)` }} 
-            aria-autocomplete="list"
-            aria-expanded={showSuggestions && (suggestions.length > 0 || isFetchingSuggestions || !!suggestionError)}
-            aria-controls={`${id}-suggestions`}
+            aria-autocomplete={apiKeyAvailable && showAiSuggestButton ? "list" : "none"}
+            aria-expanded={apiKeyAvailable && showAiSuggestButton && showSuggestions && (suggestions.length > 0 || isFetchingSuggestions || !!suggestionError)}
+            aria-controls={apiKeyAvailable && showAiSuggestButton ? `${id}-suggestions` : undefined}
           />
         )}
         <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center space-x-0"> 
-            {showSuggestButton && (
+            {showAiSuggestButton && ( // This already correctly checks apiKeyAvailable
                  <button
                     type="button"
-                    onClick={handleSuggest}
-                    className="p-1 text-purple-400 hover:text-purple-200 active:text-purple-500 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button" 
-                    title={effectiveSuggestButtonTitle}
+                    onClick={handleSuggest} 
+                    className={`p-1 text-purple-400 hover:text-purple-200 active:text-purple-500 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-full ai-suggest-button`} 
+                    title={effectiveSuggestButtonTitle} 
                     aria-label={t('suggestButtonTitle')}
                     disabled={isFetchingSuggestions} 
                 >
-                    <AppLogoIcon 
-                        animatedAsAiIndicator
-                        className={`w-4 h-4 api-status-indicator ${isFetchingSuggestions ? 'opacity-70 animate-pulse' : ''}`} 
+                    <AiTextIcon 
+                        isAiFeatureActive={apiKeyAvailable} 
+                        enableSwayAndGlow={apiKeyAvailable && !isFetchingSuggestions} 
+                        isLoading={isFetchingSuggestions}
                     /> 
                 </button>
             )}
@@ -296,14 +302,14 @@ const InputField: React.FC<InputFieldProps> = ({
                 type="button"
                 onClick={handleClear}
                 className="p-1 text-slate-400 hover:text-slate-100 active:text-slate-300 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-teal-500 rounded-full" 
-                aria-label={`Clear input for ${label}`}
+                aria-label={t('clearInputForLabelAria', t(label))}
             >
                 <XCircleIcon className="w-4 h-4" /> 
             </button>
             )}
         </div>
       </div>
-      {showSuggestions && (isFetchingSuggestions || suggestionError || suggestions.length > 0) && (
+      {apiKeyAvailable && showAiSuggestButton && showSuggestions && (isFetchingSuggestions || suggestionError || suggestions.length > 0) && ( 
         <div className="absolute z-10 w-full mt-0.5 bg-[var(--bg-tertiary)] dark:bg-slate-700 border border-[var(--border-color)] dark:border-slate-600 rounded-md shadow-lg max-h-52 overflow-y-auto" id={`${id}-suggestions`} role="listbox"> 
           {isFetchingSuggestions && (
             <div className="px-2.5 py-1.5 text-xs text-slate-400 animate-pulse">{t('suggestionsLoading')}</div>

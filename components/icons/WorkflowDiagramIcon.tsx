@@ -3,45 +3,48 @@ import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { TranslationKey } from '../../types';
 
-interface SVGProps extends React.SVGProps<SVGSVGElement> {}
+interface SVGProps extends React.SVGProps<SVGSVGElement> {
+  'data-apikeyavailable'?: string;
+}
 
 export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
   const { t } = useLanguage();
+  const apiKeyAvailable = props['data-apikeyavailable'] === 'true';
 
-  const boxWidth = 115;
-  const boxHeight = 70; 
-  const horizontalSpacing = 25;
-  const verticalSpacing = 30; 
-  const numberCircleRadius = 9;
-  const numberFontSize = 9;
-  const labelFontSize = 10;
-  const svgPadding = 20;
+  const boxWidth = 125; // Slightly increased width
+  const boxHeight = 65; // Slightly decreased height
+  const horizontalSpacing = 20; // Reduced spacing
+  const verticalSpacing = 25;
+  const numberCircleRadius = 8;
+  const numberFontSize = 8;
+  const labelFontSize = 8.5; // Reduced for better fit
+  const svgPadding = 15; // Reduced padding
+
+  const step2LabelKey = apiKeyAvailable ? 'diagramStep2Premium' : 'diagramStep2Free';
+  const step5LabelKey = apiKeyAvailable ? 'diagramStep5Premium' : 'diagramStep5Free';
+  const step3LabelKey = apiKeyAvailable ? 'diagramStep3Premium' : 'diagramStep3Free';
 
 
-  // S-flow layout coordinates
   const nodes = [
     { id: 'step1', labelKey: 'diagramStep1' as TranslationKey, tooltipKey: 'howToUseStep1' as TranslationKey, x: svgPadding, y: svgPadding, number: 1 },
-    { id: 'step2', labelKey: 'diagramStep2' as TranslationKey, tooltipKey: 'howToUseStep2' as TranslationKey, x: svgPadding + boxWidth + horizontalSpacing, y: svgPadding, number: 2 },
-    { id: 'step3', labelKey: 'diagramStep3' as TranslationKey, tooltipKey: 'howToUseStep3' as TranslationKey, x: svgPadding + 2 * (boxWidth + horizontalSpacing), y: svgPadding, number: 3 },
+    { id: 'step2', labelKey: step2LabelKey as TranslationKey, tooltipKey: (apiKeyAvailable ? 'howToUseStep2Premium' : 'howToUseStep2Free') as TranslationKey, x: svgPadding + boxWidth + horizontalSpacing, y: svgPadding, number: 2 },
+    { id: 'step3', labelKey: step3LabelKey as TranslationKey, tooltipKey: (apiKeyAvailable ? 'howToUseStep3Premium' : 'howToUseStep3Free') as TranslationKey, x: svgPadding + 2 * (boxWidth + horizontalSpacing), y: svgPadding, number: 3 },
     
     { id: 'step4', labelKey: 'diagramStep4' as TranslationKey, tooltipKey: 'howToUseStep4' as TranslationKey, x: svgPadding + 2 * (boxWidth + horizontalSpacing), y: svgPadding + boxHeight + verticalSpacing, number: 4 },
-    { id: 'step5', labelKey: 'diagramStep5' as TranslationKey, tooltipKey: 'howToUseStep5' as TranslationKey, x: svgPadding + boxWidth + horizontalSpacing, y: svgPadding + boxHeight + verticalSpacing, number: 5 },
+    { id: 'step5', labelKey: step5LabelKey as TranslationKey, tooltipKey: (apiKeyAvailable ? 'howToUseStep5Premium' : 'howToUseStep5Free') as TranslationKey, x: svgPadding + boxWidth + horizontalSpacing, y: svgPadding + boxHeight + verticalSpacing, number: 5 },
     { id: 'step6', labelKey: 'diagramStep6' as TranslationKey, tooltipKey: 'howToUseStep6' as TranslationKey, x: svgPadding, y: svgPadding + boxHeight + verticalSpacing, number: 6 },
   ];
 
   const edges = [
-    // Top row: L-R
-    { from: nodes[0], to: nodes[1] }, 
-    { from: nodes[1], to: nodes[2] }, 
-    // Connection 3 -> 4 (Vertical)
-    { 
-      from: nodes[2], 
-      to: nodes[3], 
+    { from: nodes[0], to: nodes[1] },
+    { from: nodes[1], to: nodes[2] },
+    {
+      from: nodes[2],
+      to: nodes[3],
       path: `M${nodes[2].x + boxWidth / 2},${nodes[2].y + boxHeight} L${nodes[3].x + boxWidth / 2},${nodes[3].y}`
     },
-    // Bottom row: R-L
-    { from: nodes[3], to: nodes[4] }, 
-    { from: nodes[4], to: nodes[5] }, 
+    { from: nodes[3], to: nodes[4] },
+    { from: nodes[4], to: nodes[5] },
   ];
 
   const viewBoxWidth = 3 * boxWidth + 2 * horizontalSpacing + 2 * svgPadding;
@@ -57,22 +60,21 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
     >
       <title id="workflow-diagram-title">{t('howToUseDiagramTitle')}</title>
       <desc id="workflow-diagram-desc">
-        {`${t(nodes[0].tooltipKey)}, then ${t(nodes[1].tooltipKey)}, then ${t(nodes[2].tooltipKey)}, then ${t(nodes[3].tooltipKey)}, then ${t(nodes[4].tooltipKey)}, finally ${t(nodes[5].tooltipKey)}.`}
+        {`${t(nodes[0].tooltipKey).replace(/\n/g, ' ')}, then ${t(nodes[1].tooltipKey).replace(/\n/g, ' ')}, then ${t(nodes[2].tooltipKey).replace(/\n/g, ' ')}, then ${t(nodes[3].tooltipKey).replace(/\n/g, ' ')}, then ${t(nodes[4].tooltipKey).replace(/\n/g, ' ')}, finally ${t(nodes[5].tooltipKey).replace(/\n/g, ' ')}.`}
       </desc>
       <defs>
         <marker
           id="arrowhead"
-          markerWidth="10" // Increased for visibility
-          markerHeight="7"
-          refX="9" // Adjusted for better tip alignment (was 0, now 9 based on markerWidth 10)
-          refY="3.5"
+          markerWidth="8" // Slightly smaller
+          markerHeight="5.6" // Adjusted ratio
+          refX="7"
+          refY="2.8"
           orient="auto"
         >
-          <polygon points="0 0, 10 3.5, 0 7" fill="var(--text-accent, #0F766E)" />
+          <polygon points="0 0, 8 2.8, 0 5.6" fill="var(--text-accent, #0F766E)" />
         </marker>
       </defs>
 
-      {/* Edges (Arrows) */}
       {edges.map((edge, index) => {
         const fromNode = edge.from;
         const toNode = edge.to;
@@ -83,13 +85,12 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
             d = edge.path;
         } else {
             let x1, y1, x2, y2;
-            // Horizontal connections
             y1 = fromNode.y + boxHeight / 2;
             y2 = toNode.y + boxHeight / 2;
-            if (fromNode.x < toNode.x) { // Left to Right (Top Row)
+            if (fromNode.x < toNode.x) {
                 x1 = fromNode.x + boxWidth;
                 x2 = toNode.x;
-            } else { // Right to Left (Bottom Row)
+            } else {
                 x1 = fromNode.x;
                 x2 = toNode.x + boxWidth;
             }
@@ -101,14 +102,13 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
             key={`edge-${index}`}
             d={d}
             stroke="var(--text-accent, #0F766E)"
-            strokeWidth="1.8"
+            strokeWidth="1.5" // Slightly thinner
             fill="none"
             markerEnd="url(#arrowhead)"
           />
         );
       })}
 
-      {/* Nodes (Boxes and Text) */}
       {nodes.map((node) => (
         <g key={node.id} role="group" aria-labelledby={`${node.id}-title`}>
           <title id={`${node.id}-title`}>{t(node.tooltipKey).replace(/\n/g, ' ')}</title>
@@ -117,25 +117,23 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
             y={node.y}
             width={boxWidth}
             height={boxHeight}
-            rx="8" 
-            ry="8"
+            rx="6"
+            ry="6" // Slightly smaller radius
             fill="var(--bg-tertiary, #334155)"
             stroke="var(--text-accent, #0F766E)"
-            strokeWidth="1.5"
+            strokeWidth="1.2" // Slightly thinner
           />
-          {/* Step Number Background Circle */}
-          <circle 
-            cx={node.x + numberCircleRadius + 6} 
-            cy={node.y + numberCircleRadius + 6} 
+          <circle
+            cx={node.x + numberCircleRadius + 5} // Adjusted position
+            cy={node.y + numberCircleRadius + 5} // Adjusted position
             r={numberCircleRadius}
             fill="var(--text-accent-active, #134E4A)"
           />
-          {/* Step Number Text */}
           <text
-            x={node.x + numberCircleRadius + 6}
-            y={node.y + numberCircleRadius + 6}
+            x={node.x + numberCircleRadius + 5} // Adjusted position
+            y={node.y + numberCircleRadius + 5} // Adjusted position
             textAnchor="middle"
-            dominantBaseline="central" 
+            dominantBaseline="central"
             fill="var(--text-primary, #f1f5f9)"
             fontSize={numberFontSize}
             fontFamily="sans-serif"
@@ -145,17 +143,12 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
             {node.number}
           </text>
           
-          {/* Step Label (using the shorter diagramStepX for visual brevity) */}
           {t(node.labelKey).split('\n').map((line: string, i: number, arr: string[]) => {
-            const lineHeight = labelFontSize + 3; // Estimated line height including some spacing
-            const totalTextBlockHeight = arr.length * lineHeight - (arr.length > 1 ? 3 : 0); // Reduce spacing for last line
+            const lineHeight = labelFontSize + 2; // Adjusted line height
+            const totalTextBlockHeight = arr.length * lineHeight;
             
-            const spaceForNumber = numberCircleRadius * 2 + 8; // Diameter + top margin + bit of space below number
-            const availableVerticalSpaceForText = boxHeight - spaceForNumber - 5; // 5 is bottom padding
-            
-            const textBlockStartY = node.y + spaceForNumber + (availableVerticalSpaceForText - totalTextBlockHeight) / 2;
-            
-            const lineY = textBlockStartY + (i * lineHeight) + (lineHeight / 2) - (labelFontSize / 2.5); // Adjust for dominant-baseline
+            const textBlockStartY = node.y + (boxHeight - totalTextBlockHeight) / 2 + (labelFontSize / 2); // Centering logic
+            const lineY = textBlockStartY + (i * lineHeight);
 
             return (
               <text
@@ -163,12 +156,11 @@ export const WorkflowDiagramIcon: React.FC<SVGProps> = (props) => {
                 x={node.x + boxWidth / 2}
                 y={lineY}
                 textAnchor="middle"
-                dominantBaseline="middle" // Better for vertical centering of each line
+                dominantBaseline="middle"
                 fill="var(--text-primary, #f1f5f9)"
                 fontSize={labelFontSize}
                 fontFamily="sans-serif"
-                fontWeight="medium"
-                aria-hidden="true"
+                fontWeight="medium" // Corrected typo from "medium---"
               >
                 {line}
               </text>

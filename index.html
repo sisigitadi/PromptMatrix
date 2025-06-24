@@ -1,216 +1,540 @@
+
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="An AI-powered prompt builder using guided frameworks." />
-    <title>PromptMatrix – AI Prompt Builder</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              dark: {
-                800: '#1a1e24',
-                900: '#0d1117'
-              }
-            }
-          }
-        }
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptMatrix</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='appLogoGradFaviconTeal' x1='0.5' y1='0' x2='0.5' y2='1'%3E%3Cstop offset='0%25' stop-color='%230D9488'/%3E%3Cstop offset='100%25' stop-color='%230F766E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='6' y='6' width='8' height='8' rx='1' fill='url(%23appLogoGradFaviconTeal)'/%3E%3Crect x='18' y='6' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='6' y='18' width='8' height='8' rx='1' fill='rgba(13,148,136,0.7)'/%3E%3Crect x='18' y='18' width='8' height='8' rx='1' fill='url(%23appLogoGradFaviconTeal)'/%3E%3C/svg%3E" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg-primary: #0f172a; /* slate-900 */
+      --bg-secondary: #1e293b; /* slate-800 */
+      --bg-tertiary: #334155; /* slate-700 */
+      --text-primary: #f1f5f9; /* slate-100 */
+      --text-secondary: #94a3b8; /* slate-400 */
+      --text-accent: #0F766E; /* teal-700 */
+      --text-accent-hover: #0D9488; /* teal-600 */
+      --text-accent-active: #134E4A; /* teal-900 (darker for active state on teal) */
+      --border-color: #475569; /* slate-600 */
+      --ring-color: #0F766E; /* teal-700 */
+      --selection-bg: #0F766E; /* teal-700 */
+      --selection-text: #ffffff;
+      --scrollbar-thumb: #0F766E; /* teal-700 */
+      --scrollbar-track: #1e293b; /* slate-800 */
+
+      /* Text animation colors for TEAL accent */
+      --text-anim-default-hover: #14B8A6; /* teal-500 */
+      --text-anim-default-active: #A3FAF0; /* teal-200 */
+      --text-anim-accent-bg-hover: #F0FDFA; /* teal-50 */
+      --text-anim-accent-bg-active: #CCFBF1; /* teal-100 */
+      
+      /* Colors for Plan Badges & AI Icon Glow */
+      --badge-premium-bg-start: #8B5CF6; /* purple-500 */
+      --badge-premium-bg-end: #6D28D9;   /* purple-700 */
+      --badge-premium-border: #A78BFA;   /* purple-400 */
+      --badge-premium-icon: #FACC15;   /* yellow-400 */
+      --badge-premium-text: #FFFFFF;
+      /* Adjusted glow for AI icons - brighter */
+      --badge-premium-glow: rgba(192, 132, 252, 0.85); /* purple-300 with higher alpha */
+
+
+      --badge-free-bg: #334155;       /* slate-700 */
+      --badge-free-border: #475569;   /* slate-600 */
+      --badge-free-icon: #2DD4BF;     /* teal-400 */
+      --badge-free-text: #E2E8F0;     /* slate-200 */
+      --badge-free-glow: rgba(45, 212, 191, 0.7); /* teal-400 with increased alpha for consistency */
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      scrollbar-width: thin;
+    }
+
+    ::selection {
+      background-color: var(--selection-bg);
+      color: var(--selection-text);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-accent-hover);
+    }
+
+    .text-xxs { /* Added for dev toggle info text */
+      font-size: 0.65rem; /* Roughly 10.4px */
+      line-height: 0.9rem; /* Roughly 14.4px */
+    }
+
+    @keyframes pulse-bg-intensified {
+      0%, 100% { background-color: var(--text-accent); transform: scale(1.03); }
+      50% { background-color: color-mix(in srgb, var(--text-accent) 70%, white); transform: scale(1.06); }
+    }
+    .animate-pulse-bg-custom {
+      animation: pulse-bg-intensified 1.2s infinite ease-in-out;
+    }
+
+    @keyframes click-text-effect {
+      0% { color: inherit; transform: scale(1); }
+      25% { color: var(--text-accent-hover); transform: scale(1.05); }
+      50% { color: var(--text-accent); transform: scale(0.95); opacity: 0.7; }
+      75% { color: var(--text-accent-active); transform: scale(1.05); opacity: 1; }
+      100% { color: inherit; transform: scale(1); }
+    }
+    .animate-just-clicked-text > span {
+      display: inline-block;
+      animation: click-text-effect 0.8s ease-in-out;
+    }
+
+     @keyframes footer-sig-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .animated-signature {
+      animation: footer-sig-blink 2.2s infinite ease-in-out;
+      font-weight: bold;
+      color: color-mix(in srgb, var(--text-accent) 80%, var(--text-primary) 20%);
+    }
+
+    footer a[href^="mailto:si.sigitadi@gmail.com"] {
+      color: var(--text-accent-hover);
+      text-decoration: none;
+    }
+    footer a[href^="mailto:si.sigitadi@gmail.com"]:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes header-frame-glow-animation {
+      0%, 100% {
+        border-color: color-mix(in srgb, var(--text-accent) 60%, transparent);
+        box-shadow: 0 0 5px color-mix(in srgb, var(--text-accent) 50%, transparent),
+                    0 0 8px color-mix(in srgb, var(--text-accent) 30%, transparent) inset;
       }
-    </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body class="bg-dark-900 text-white min-h-screen font-['Inter']">
-    <div id="root">
-      <!-- Header Section -->
-      <header class="p-6 border-b border-gray-800">
-        <div class="container mx-auto flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <i class="fas fa-robot text-teal-400 text-2xl"></i>
-            <h1 class="text-2xl font-bold">PromptMatrix</h1>
-          </div>
-        </div>
-      </header>
+      50% {
+        border-color: var(--text-accent-hover);
+        box-shadow: 0 0 10px var(--text-accent-hover),
+                    0 0 12px var(--text-accent-hover) inset,
+                    0 0 12px var(--text-accent-hover);
+      }
+    }
+    .header-glowing-frame {
+      border-width: 2px;
+      border-style: solid;
+      animation: header-frame-glow-animation 3.5s infinite ease-in-out;
+    }
 
-      <!-- Main Content -->
-      <main class="container mx-auto px-6 py-8">
-        <!-- Category & Search Section -->
-        <section class="mb-12">
-          <h2 class="text-xl font-semibold mb-6 flex items-center">
-            <span class="text-teal-400 mr-2">1.</span>
-            Category & Search
-          </h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <button class="bg-dark-800 hover:bg-gray-800 p-4 rounded-lg flex flex-col items-center transition-all hover:-translate-y-1">
-              <i class="fas fa-text-height text-teal-400 text-xl mb-2"></i>
-              <span>Text</span>
-            </button>
-            <button class="bg-dark-800 hover:bg-gray-800 p-4 rounded-lg flex flex-col items-center transition-all hover:-translate-y-1">
-              <i class="fas fa-image text-teal-400 text-xl mb-2"></i>
-              <span>Image</span>
-            </button>
-            <button class="bg-dark-800 hover:bg-gray-800 p-4 rounded-lg flex flex-col items-center transition-all hover:-translate-y-1">
-              <i class="fas fa-video text-teal-400 text-xl mb-2"></i>
-              <span>Video</span>
-            </button>
-            <button class="bg-dark-800 hover:bg-gray-800 p-4 rounded-lg flex flex-col items-center transition-all hover:-translate-y-1">
-              <i class="fas fa-music text-teal-400 text-xl mb-2"></i>
-              <span>Music</span>
-            </button>
-          </div>
+    @keyframes word-up-down-animation { 
+      0%, 100% { transform: translateY(0); }
+      25% { transform: translateY(-1px); }
+      75% { transform: translateY(1px); }
+    }
 
-          <div class="bg-dark-800 p-6 rounded-lg mb-8">
-            <h3 class="text-lg font-semibold mb-4 flex items-center">
-              <i class="fas fa-robot text-teal-400 mr-2"></i>
-              AI Framework Finder & ResearcherAi
-            </h3>
-            <p class="text-gray-400 mb-4">Describe your goal. AI will suggest matching frameworks. You can also research new techniques from the web. (Premium AI Feature - Subscription Coming Soon!)</p>
-            <button class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2 rounded-lg transition-all hover:-translate-y-1 flex items-center">
-              <i class="fas fa-magic mr-2"></i>
-              Get Framework SuggestionsAi
-            </button>
-          </div>
-        </section>
+    .subtitle-3d-effect {
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); 
+    }
 
-        <!-- Text Frameworks Section -->
-        <section class="mb-12">
-          <h2 class="text-xl font-semibold mb-6 flex items-center">
-            <span class="text-teal-400 mr-2">2.</span>
-            Text Frameworks
-          </h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button class="bg-dark-800 hover:bg-gray-800 p-4 rounded-lg text-left transition-all hover:-translate-y-1">
-              <h3 class="font-semibold mb-2">AIDA</h3>
-              <p class="text-sm text-gray-400">Attention, Interest, Desire, Action</p>
-            </button>
-            <button class="bg-dark-800 hover:bg-gray-800 p-4 rounded-lg text-left transition-all hover:-translate-y-1">
-              <h3 class="font-semibold mb-2">APE</h3>
-              <p class="text-sm text-gray-400">Action, Purpose, Expectation</p>
-            </button>
-            <button class="bg-dark-800 hover:bg-gray-800 p-4 rounded-lg text-left transition-all hover:-translate-y-1">
-              <h3 class="font-semibold mb-2">CARE</h3>
-              <p class="text-sm text-gray-400">Context, Action, Result, Example</p>
-            </button>
-            <button class="bg-dark-800 hover:bg-gray-800 p-4 rounded-lg text-left transition-all hover:-translate-y-1">
-              <h3 class="font-semibold mb-2">Chain-of-Thought</h3>
-              <p class="text-sm text-gray-400">Step-by-step reasoning process</p>
-            </button>
-          </div>
-        </section>
+    .collapsible-content {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out 0.1s, visibility 0s linear 0.5s;
+      visibility: hidden;
+    }
+    .collapsible-content.open {
+      max-height: 2000px; 
+      opacity: 1;
+      visibility: visible;
+      transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
+    }
+    
+    /* Styles for interactive sections (multiple choice collapsible headers) */
+    .interactive-section-header button svg {
+      transition: transform 0.3s ease-in-out;
+    }
+    .interactive-section-header button[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+    /* General content for collapsible interactive sections (like multiple choice) */
+    .interactive-collapsible-content {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out, padding 0.35s ease-in-out;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .interactive-collapsible-content.open {
+      max-height: 500px; /* Adjust as needed for content */
+      opacity: 1;
+      transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out, padding 0.35s ease-in-out;
+    }
 
-        <!-- Components Section -->
-        <section class="mb-12">
-          <h2 class="text-xl font-semibold mb-6 flex items-center">
-            <span class="text-teal-400 mr-2">3.</span>
-            Components:
-          </h2>
-          <div class="bg-dark-800 p-6 rounded-lg">
-            <p class="text-gray-400">Choose a framework from the grid to see its components and start building your prompt. Each component will provide an example.</p>
-          </div>
-        </section>
 
-        <!-- Prompt Preview Section -->
-        <section class="mb-12">
-          <h2 class="text-xl font-semibold mb-6">Prompt Preview:</h2>
-          <div class="bg-dark-800 p-6 rounded-lg border border-gray-800">
-            <p class="text-gray-400">Your structured prompt will appear here. AI feedback & analysis are premium features (subscription coming soon).</p>
-          </div>
-        </section>
+    .non-copyable-input-field {
+      user-select: none;
+      -webkit-user-select: none; 
+      -moz-user-select: none;    
+      -ms-user-select: none;     
+    }
+    .non-copyable-input-field::placeholder {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      font-style: italic;
+    }
 
-        <!-- AI Analysis Section -->
-        <section class="mb-12 space-y-6">
-          <div class="bg-dark-800 p-6 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 flex items-center">
-              <i class="fas fa-robot text-teal-400 mr-2"></i>
-              AI Feedback & Suggestions (Overall Prompt)
-            </h3>
-            <p class="text-gray-400 mb-4">Click 'Get AI Suggestions' for overall prompt feedback. (Premium Feature - Subscription Coming Soon)</p>
-            <button class="bg-gray-700 text-gray-400 px-6 py-2 rounded-lg cursor-not-allowed opacity-70 flex items-center">
-              <i class="fas fa-magic mr-2"></i>
-              Get AI SuggestionsAi
-            </button>
-          </div>
+    @keyframes subtle-button-pulse {
+      0%, 100% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--text-accent) 40%, transparent);
+        transform: scale(1.0);
+      }
+      50% {
+        box-shadow: 0 0 0 5px color-mix(in srgb, var(--text-accent) 10%, transparent);
+        transform: scale(1.03);
+      }
+    }
+    .animate-subtle-pulse {
+      animation: subtle-button-pulse 2s infinite ease-in-out;
+    }
 
-          <div class="bg-dark-800 p-6 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 flex items-center">
-              <i class="fas fa-chart-line text-teal-400 mr-2"></i>
-              Detailed AI Analysis
-            </h3>
-            <p class="text-gray-400 mb-4">Click 'Detailed Analysis' to get an in-depth review. (Premium Feature - Subscription Coming Soon)</p>
-            <button class="bg-gray-700 text-gray-400 px-6 py-2 rounded-lg cursor-not-allowed opacity-70 flex items-center">
-              <i class="fas fa-chart-bar mr-2"></i>
-              Detailed AnalysisAi
-            </button>
-          </div>
+    .button-text-content {
+      display: inline-block; 
+      transition: transform 0.1s ease-out, color 0.1s ease-out;
+      will-change: transform, color; 
+    }
 
-          <div class="bg-dark-800 p-6 rounded-lg">
-            <h3 class="text-lg font-semibold mb-4 flex items-center">
-              <i class="fas fa-globe text-teal-400 mr-2"></i>
-              AI Web Research
-            </h3>
-            <p class="text-gray-400 mb-4">Click 'Research Web' to discover new prompting techniques from the internet. (Premium Feature - Subscription Coming Soon)</p>
-            <button class="bg-gray-700 text-gray-400 px-6 py-2 rounded-lg cursor-not-allowed opacity-70 flex items-center">
-              <i class="fas fa-search mr-2"></i>
-              Research WebAi
-            </button>
-          </div>
-        </section>
+    /* General 3D Button Effect for Header */
+    .button-header-3d {
+      position: relative;
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, top 0.1s ease-out;
+      box-shadow: 0 2px 0 0 var(--bg-tertiary); /* Default shadow, adjust color if needed */
+    }
+    .button-header-3d:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 0 0 var(--bg-tertiary);
+    }
+    .button-header-3d:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 0 0 var(--bg-tertiary);
+    }
+    /* Specific hover text color for header buttons if not covered by existing rules */
+    .button-header-3d.text-purple-300:hover .button-text-content { color: var(--text-yellow-300, #FDE047); } /* Assuming yellow-300 equivalent */
+    .button-header-3d.text-slate-300:hover .button-text-content { color: var(--text-teal-400, #2DD4BF); }
 
-        <!-- Saved Prompts Section -->
-        <section class="mb-12">
-          <h2 class="text-xl font-semibold mb-6">Saved Prompts</h2>
-          <div class="bg-dark-800 p-6 rounded-lg">
-            <div class="flex flex-wrap gap-4 mb-6">
-              <button class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-all hover:-translate-y-1 flex items-center">
-                <i class="fas fa-download mr-2"></i>
-                Export All
-              </button>
-              <button class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg transition-all hover:-translate-y-1 flex items-center">
-                <i class="fas fa-upload mr-2"></i>
-                Import from File
-              </button>
-            </div>
-            <p class="text-gray-400">No prompts saved yet. Create a prompt and click 'Save Prompt'!</p>
-          </div>
-        </section>
-      </main>
+    button:hover .button-text-content {
+      color: var(--text-anim-default-hover);
+    }
+    button:active .button-text-content {
+      color: var(--text-anim-default-active);
+      transform: translateY(1px); 
+    }
 
-      <!-- Footer -->
-      <footer class="border-t border-gray-800 mt-12">
-        <div class="container mx-auto px-6 py-8">
-          <div class="bg-dark-800 p-6 rounded-lg mb-8">
-            <h2 class="text-xl font-semibold mb-4 flex items-center">
-              <i class="fas fa-info-circle text-teal-400 mr-2"></i>
-              About PromptMatrix
-            </h2>
-            <ul class="space-y-4 text-gray-400">
-              <li class="flex items-start">
-                <span class="text-teal-400 mr-2">•</span>
-                Learn to build & understand structured AI prompts with guided frameworks.
-              </li>
-              <li class="flex items-start">
-                <span class="text-teal-400 mr-2">•</span>
-                This is an educational aid. Core prompt building (framework selection, input fields, prompt preview, copy, save/load) is free. Advanced AI-powered features (AI Framework Finder & Researcher, AI Per-Field Input Suggestions, AI Overall Prompt Feedback, AI Detailed Prompt Analysis, AI Web Research) are premium and will require a future subscription.
-              </li>
-              <li class="flex items-start">
-                <span class="text-teal-400 mr-2">•</span>
-                Free core features are provided 'as is' & respect your privacy. No personal data collected for core use. Ad-free & promotion-free.
-              </li>
-            </ul>
-            <p class="mt-6 text-gray-400">
-              Feedback & Questions: 
-              <a href="mailto:si.sigitadi@gmail.com" class="text-teal-400 hover:underline">si.sigitadi@gmail.com</a>
-            </p>
-          </div>
-          <div class="text-center text-gray-500">
-            <p>PromptMatrix © 2023</p>
-          </div>
-        </div>
-      </footer>
-    </div>
-  </body>
+    button.bg-slate-600:hover .button-text-content,
+    button.bg-slate-700:hover .button-text-content,
+    button.bg-slate-500:hover .button-text-content { 
+        color: var(--text-anim-accent-bg-hover); 
+    }
+    button.bg-slate-600:active .button-text-content,
+    button.bg-slate-700:active .button-text-content,
+    button.bg-slate-500:active .button-text-content { 
+        color: var(--text-anim-accent-bg-active);
+        transform: translateY(1px);
+    }
+
+    button.bg-teal-700 > .button-text-content,
+    button.bg-teal-600 > .button-text-content {
+        color: #FFFFFF; 
+    }
+    button.bg-teal-700:hover > .button-text-content,
+    button.bg-teal-600:hover > .button-text-content {
+      color: var(--text-anim-accent-bg-hover); 
+    }
+    button.bg-teal-700:active > .button-text-content,
+    button.bg-teal-600:active > .button-text-content {
+      color: var(--text-anim-accent-bg-active); 
+      transform: translateY(1px);
+    }
+
+    button.bg-rose-600 > .button-text-content {
+       color: #FFFFFF; 
+    }
+    button.bg-rose-600:hover > .button-text-content {
+      color: #FFE4E6; 
+    }
+    button.bg-rose-600:active > .button-text-content {
+      color: #FFF1F2; 
+      transform: translateY(1px);
+    }
+
+    button.bg-green-500 > .button-text-content {
+       color: #FFFFFF; 
+    }
+    button.bg-green-500:hover > .button-text-content {
+      color: #D1FAE5; 
+    }
+    button.bg-green-500:active > .button-text-content {
+      color: #F0FDF4; 
+      transform: translateY(1px);
+    }
+
+    button.bg-sky-600 > .button-text-content {
+       color: #FFFFFF;
+    }
+    button.bg-sky-600:hover > .button-text-content {
+      color: #E0F2FE; 
+    }
+    button.bg-sky-600:active > .button-text-content {
+      color: #F0F9FF; 
+      transform: translateY(1px);
+    }
+
+    button.bg-teal-600.border-teal-500.text-white:hover > .button-text-content,
+    button.bg-teal-700.border-teal-500.text-white:hover > .button-text-content {
+      color: var(--text-anim-accent-bg-hover);
+    }
+    button.bg-teal-600.border-teal-500.text-white:active > .button-text-content,
+    button.bg-teal-700.border-teal-500.text-white:active > .button-text-content {
+      color: var(--text-anim-accent-bg-active);
+      transform: translateY(1px);
+    }
+    button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700 > .button-text-content,
+    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-slate-600 > .button-text-content {
+        color: #E2E8F0; 
+    }
+    button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700:hover > .button-text-content,
+    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:hover > .button-text-content { 
+        color: var(--text-anim-accent-bg-hover); 
+    }
+    button.bg-slate-600.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content,
+    button.bg-slate-700.dark\\:bg-slate-700.hover\\:bg-teal-700:active > .button-text-content {
+        color: var(--text-anim-accent-bg-active);
+        transform: translateY(1px);
+    }
+
+    button.bg-purple-600 > .button-text-content {
+       color: #FFFFFF;
+    }
+    button.bg-purple-600:hover > .button-text-content {
+      color: #E9D5FF; 
+    }
+    button.bg-purple-600:active > .button-text-content {
+      color: #F3E8FF; 
+      transform: translateY(1px);
+    }
+
+    button.bg-indigo-600 > .button-text-content { 
+       color: #FFFFFF;
+    }
+    button.bg-indigo-600:hover > .button-text-content {
+      color: #E0E7FF; 
+    }
+    button.bg-indigo-600:active > .button-text-content {
+      color: #EEF2FF; 
+      transform: translateY(1px);
+    }
+
+
+    select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748B' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); 
+      background-position: right 0.5rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+      padding-right: 2.5rem; 
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    select:focus { 
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230D9488' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); 
+    }
+
+    select option {
+      background-color: var(--bg-secondary); 
+      color: var(--text-primary);       
+    }
+    select option:checked,
+    select option:hover {
+      background-color: var(--text-accent); 
+      color: var(--text-primary);          
+    }
+
+    select option[value="LAINNYA_INTERAKTIF_PLACEHOLDER"] {
+      font-style: italic;
+      color: var(--text-secondary); 
+    }
+
+    .ai-suggestion-textarea {
+      min-height: 60px; 
+    }
+
+    .interactive-suggestion-list-container {
+      margin-top: 0.125rem; 
+      position: absolute;
+      z-index: 20;
+      width: 100%;
+      background-color: var(--bg-tertiary); 
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem; 
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+      max-height: 13rem; 
+      overflow-y: auto;
+    }
+    
+    @keyframes global-activity-fade-in-out {
+      0%, 100% { opacity: 0; transform: translateY(10px) scale(0.95); }
+      10%, 90% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .global-activity-indicator-animation {
+      animation: global-activity-fade-in-out 4s ease-in-out forwards;
+    }
+    .animate-spin-slow {
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes progress-bar-animation {
+      0% { width: 100%; }
+      100% { width: 0%; }
+    }
+    .animate-progress-bar {
+      animation: progress-bar-animation 5s linear forwards; /* Changed from 15s to 5s */
+    }
+
+    /* Custom Plan Badge Styles */
+    .plan-badge {
+      display: flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem; /* py-1 px-3 */
+      font-size: 0.75rem; /* text-xs */
+      font-weight: 700; /* font-bold */
+      border-radius: 0.375rem; /* rounded-md */
+      /* Removed base shadow to apply glow directly */
+    }
+    .plan-badge-premium {
+      background-image: linear-gradient(to right, var(--badge-premium-bg-start), var(--badge-premium-bg-end));
+      color: var(--badge-premium-text);
+      border: 1px solid var(--badge-premium-border);
+    }
+    .plan-badge-premium svg {
+      color: var(--badge-premium-icon);
+    }
+    .plan-badge-free {
+      background-color: var(--badge-free-bg);
+      color: var(--badge-free-text);
+      border: 1px solid var(--badge-free-border);
+    }
+    .plan-badge-free svg {
+      color: var(--badge-free-icon);
+    }
+    .plan-badge svg {
+      width: 1rem; /* w-4 */
+      height: 1rem; /* h-4 */
+      margin-right: 0.375rem; /* mr-1.5 */
+    }
+
+    /* Badge Animations */
+    @keyframes badgeGlowPremiumAnimation {
+      0%, 100% { box-shadow: 0 0 4px 1px var(--badge-premium-glow); }
+      50% { box-shadow: 0 0 10px 3px var(--badge-premium-glow); }
+    }
+    .plan-badge-glow-premium {
+      animation: badgeGlowPremiumAnimation 2.8s infinite ease-in-out;
+    }
+
+    @keyframes badgeGlowFreeAnimation {
+      0%, 100% { box-shadow: 0 0 4px 1px var(--badge-free-glow); }
+      50% { box-shadow: 0 0 10px 3px var(--badge-free-glow); }
+    }
+    .plan-badge-glow-free {
+      animation: badgeGlowFreeAnimation 2.8s infinite ease-in-out;
+    }
+
+    @keyframes badgeSwayAnimation { /* Renamed to badgeBounceAnimation internally, but keep name for CSS class */
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2px); } /* Subtle bounce up, removed rotate */
+    }
+    .plan-badge-sway { /* Common class for sway/bounce */
+      animation-name: badgeSwayAnimation; /* Will use the modified keyframes */
+      animation-duration: 3s; /* Adjusted duration for bounce */
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+    .plan-badge-animated { /* Base class to combine animations */
+        /* Add other base styles for animated badges if needed */
+    }
+
+    /* AI Icon Animations */
+    @keyframes aiIconSwayAnimation { /* Name kept, behavior changed to bounce */
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-2.5px); /* Bounce up */
+      }
+    }
+    .ai-icon-sway-glow-effect { /* Class name kept for simplicity, applies bounce */
+      animation: aiIconSwayAnimation 3.5s infinite ease-in-out;
+      /* Increased glow intensity and spread */
+      filter: drop-shadow(0 0 5px var(--badge-premium-glow)) drop-shadow(0 0 10px var(--badge-premium-glow));
+    }
+
+    /* Custom Horizontal Scrollbar for Frameworks */
+    .horizontal-scrollbar-custom {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+    .horizontal-scrollbar-custom::-webkit-scrollbar {
+      height: 6px; /* Adjusted for horizontal */
+      width: 6px; /* Keep consistent for vertical within this if needed */
+    }
+    .horizontal-scrollbar-custom::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 3px;
+    }
+    .horizontal-scrollbar-custom::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 3px;
+    }
+    .horizontal-scrollbar-custom::-webkit-scrollbar-thumb:hover {
+      background: var(--text-accent-hover);
+    }
+
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@0.12.0",
+    "vite": "https://esm.sh/vite@^6.3.5",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2",
+    "path": "https://esm.sh/path@^0.12.7"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="antialiased theme-dark">
+  <div id="root"></div>
+  <script type="module" src="./index.tsx"></script>
+<script type="module" src="/index.tsx"></script>
+</body>
 </html>

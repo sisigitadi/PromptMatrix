@@ -1,7 +1,6 @@
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import path from 'path'; // Import the 'path' module
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,11 +14,6 @@ export default defineConfig({
     // The value of process.env.API_KEY on the right side of the colon
     // comes from the build environment (e.g., GitHub Actions Secrets for GitHub Pages).
     'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
-  },
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, '.'), // Alias '@' to the project root directory
-    },
   },
   build: {
     rollupOptions: {

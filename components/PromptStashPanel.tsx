@@ -35,7 +35,7 @@ const PromptStashPanel: React.FC<PromptStashPanelProps> = ({
   reloadPrompts,
   appVersion, // Destructure appVersion
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage(); // Added language here
   const [isExpanded, setIsExpanded] = useState(true);
   const [editingPromptId, setEditingPromptId] = useState<number | null>(null);
   const [editText, setEditText] = useState('');
@@ -70,7 +70,7 @@ const PromptStashPanel: React.FC<PromptStashPanelProps> = ({
   };
 
   const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleDateString(t('languageID') === 'id' ? 'id-ID' : 'en-US', {
+    return new Date(timestamp).toLocaleDateString(language === 'id' ? 'id-ID' : 'en-US', { // Use language state
       year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
     });
   };
@@ -138,6 +138,7 @@ const PromptStashPanel: React.FC<PromptStashPanelProps> = ({
               promptToCopy: item.promptToCopy,
               language: item.language || 'en',
               selectedFrameworkName: item.selectedFrameworkName || item.name,
+              notes: item.notes || '',
             };
             await addPromptToDB(promptToAdd);
             importedCount++;
@@ -164,7 +165,8 @@ const PromptStashPanel: React.FC<PromptStashPanelProps> = ({
     return (
       prompt.name.toLowerCase().includes(searchTermLower) ||
       (prompt.selectedFrameworkName && prompt.selectedFrameworkName.toLowerCase().includes(searchTermLower)) ||
-      prompt.promptToCopy.toLowerCase().includes(searchTermLower)
+      prompt.promptToCopy.toLowerCase().includes(searchTermLower) ||
+      (prompt.notes && prompt.notes.toLowerCase().includes(searchTermLower))
     );
   });
 
@@ -256,13 +258,18 @@ const PromptStashPanel: React.FC<PromptStashPanelProps> = ({
                   </div>
                 ) : (
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex-grow mb-1.5 sm:mb-0">
-                      <p className="text-xs font-semibold text-teal-400 dark:text-teal-300 break-all">{prompt.name}</p>
+                    <div className="flex-grow mb-1.5 sm:mb-0 min-w-0"> {/* Added min-w-0 for flex child truncation */}
+                      <p className="text-xs font-semibold text-teal-400 dark:text-teal-300 break-words">{prompt.name}</p> {/* Changed from break-all to break-words */}
                       <p className="text-[0.65rem] text-slate-400 dark:text-slate-500">
                         {prompt.selectedFrameworkName ? `${prompt.selectedFrameworkName} | ` : ''}
                         {formatDate(prompt.timestamp)}
                       </p>
-                       <p className="text-[0.7rem] italic text-slate-300 mt-0.5 break-all">{promptPreviewText(prompt.promptToCopy)}</p>
+                       <p className="text-[0.7rem] italic text-slate-300 mt-0.5 break-words">{promptPreviewText(prompt.promptToCopy)}</p> {/* Changed from break-all to break-words */}
+                        {prompt.notes && (
+                           <p className="text-[0.65rem] text-amber-300/80 mt-1 pt-1 border-t border-slate-600/50 break-words">
+                             <strong>{t('promptNotesInputPlaceholder').replace(':', '')}:</strong> {prompt.notes}
+                           </p>
+                        )}
                     </div>
                     <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0 mt-1 sm:mt-0 self-end sm:self-center">
                       <button

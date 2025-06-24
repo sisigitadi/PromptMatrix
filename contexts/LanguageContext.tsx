@@ -1,7 +1,7 @@
 
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { Language, Translations, TranslationKey } from '../types';
-import { translations } from '../translations';
+import { Language, Translations, TranslationKey, TranslationFunction } from '../types';
+import { allTranslations } from '../translations'; // Changed from 'translations' to 'allTranslations'
 
 interface LanguageContextType {
   language: Language;
@@ -33,12 +33,27 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const t = (key: TranslationKey, ...args: any[]): string => {
-    const translationSet = translations[language];
-    const translation = translationSet[key];
-    if (typeof translation === 'function') {
-      return (translation as (...args: any[]) => string)(...args);
+    const translationSet = allTranslations[language]; // Changed from 'translations' to 'allTranslations'
+    const translationValue = translationSet[key]; // Value can be string, string[], or Function
+
+    if (typeof translationValue === 'function') {
+      // Assuming TranslationFunction always returns string as per its definition in types.ts
+      return (translationValue as TranslationFunction)(...args);
     }
-    return translation || key.toString(); // Fallback to key if translation not found
+    
+    if (typeof translationValue === 'string') {
+      return translationValue;
+    }
+
+    // If translationValue is an array (e.g., quickPromptTipsList) or undefined (key not found).
+    // This indicates a misuse of t() for array-type keys, or the key simply doesn't exist.
+    // In either case, fallback to returning the key itself as a string.
+    // A warning could be logged here in development mode if desired for keys resolving to arrays.
+    // e.g., if (Array.isArray(translationValue) && process.env.NODE_ENV === 'development') {
+    //   console.warn(`Translation key '${key}' resolved to an array and was called with t(). Returning key as string.`);
+    // }
+    
+    return key.toString(); // Fallback for undefined or array types
   };
   
 
