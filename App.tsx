@@ -1,5 +1,6 @@
 
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useMemo } from 'react';
+import clsx from 'clsx';
 import InputField from './components/InputField';
 import PromptOutput from './components/PromptOutput';
 import { EraserIcon } from './components/icons/EraserIcon';
@@ -108,37 +109,42 @@ const App: React.FC = (): ReactElement => {
 
   const currentYear = new Date().getFullYear();
 
-  const filteredFrameworks = frameworks
-  .filter(fw => {
-    if (!frameworkSearchTerm.trim()) return true;
-    const locale = language === 'id' ? fw.idLocale : fw.enLocale;
-    const searchTermLower = frameworkSearchTerm.toLowerCase();
-    return (
-      t(locale.name).toLowerCase().includes(searchTermLower) ||
-      t(locale.shortName).toLowerCase().includes(searchTermLower) ||
-      t(locale.description).toLowerCase().includes(searchTermLower) ||
-      t(locale.shortDescription).toLowerCase().includes(searchTermLower)
-    );
-  })
-  .sort((a, b) => {
-    const aLocale = language === 'id' ? a.idLocale : a.enLocale;
-    const bLocale = language === 'id' ? b.idLocale : b.enLocale;
-    return t(aLocale.name).localeCompare(t(bLocale.name));
-  });
-
-  const displayedFrameworks = frameworkSearchTerm.trim()
-  ? (forceGlobalSearchDisplay || !selectedCategory)
-    ? filteredFrameworks
-    : filteredFrameworks.filter(fw => fw.idLocale.category === selectedCategory)
-  : selectedCategory
-    ? frameworks.filter(fw => fw.idLocale.category === selectedCategory).sort((a,b) => {
+  const filteredFrameworks = useMemo(() => {
+    return frameworks
+      .filter(fw => {
+        if (!frameworkSearchTerm.trim()) return true;
+        const locale = language === 'id' ? fw.idLocale : fw.enLocale;
+        const searchTermLower = frameworkSearchTerm.toLowerCase();
+        return (
+          t(locale.name).toLowerCase().includes(searchTermLower) ||
+          t(locale.shortName).toLowerCase().includes(searchTermLower) ||
+          t(locale.description).toLowerCase().includes(searchTermLower) ||
+          t(locale.shortDescription).toLowerCase().includes(searchTermLower)
+        );
+      })
+      .sort((a, b) => {
         const aLocale = language === 'id' ? a.idLocale : a.enLocale;
         const bLocale = language === 'id' ? b.idLocale : b.enLocale;
         return t(aLocale.name).localeCompare(t(bLocale.name));
-      })
-    : frameworks.filter(fw => fw.idLocale.category === 'text').sort((a,b) => {
-        return t(language === 'id' ? a.idLocale.name : a.enLocale.name).localeCompare(t(language === 'id' ? b.idLocale.name : b.enLocale.name));
       });
+  }, [frameworkSearchTerm, language, t]);
+
+  const displayedFrameworks = useMemo(() => {
+    if (frameworkSearchTerm.trim()) {
+      return (forceGlobalSearchDisplay || !selectedCategory)
+        ? filteredFrameworks
+        : filteredFrameworks.filter(fw => fw.idLocale.category === selectedCategory);
+    }
+    if (selectedCategory) {
+      return frameworks.filter(fw => fw.idLocale.category === selectedCategory).sort((a, b) => {
+        const aLocale = language === 'id' ? a.idLocale : a.enLocale;
+        const bLocale = language === 'id' ? b.idLocale : b.enLocale;
+        return t(aLocale.name).localeCompare(t(bLocale.name));
+      });
+    }
+    // Default case
+    return frameworks.filter(fw => fw.idLocale.category === 'text').sort((a, b) => t(language === 'id' ? a.idLocale.name : a.enLocale.name).localeCompare(t(language === 'id' ? b.idLocale.name : b.enLocale.name)));
+  }, [filteredFrameworks, frameworkSearchTerm, forceGlobalSearchDisplay, selectedCategory, language, t]);
 
   const currentFrameworkLocale = selectedFramework ? (language === 'id' ? selectedFramework.idLocale : selectedFramework.enLocale) : null;
 
@@ -283,17 +289,17 @@ const App: React.FC = (): ReactElement => {
                 {['text', 'media', 'music'].map((cat) => {
                     const category = cat as 'text' | 'media' | 'music';
                     const IconComponent = category === 'text' ? PencilIcon : category === 'media' ? CameraIcon : MusicNoteIcon;
+                    const isActive = selectedCategory === category && !frameworkSearchTerm.trim();
                     return (
                         <button
                         key={category}
                         onClick={() => handleCategorySelect(category)}
                         title={t(`${category}FrameworksCategoryTooltip`)}
-                        className={`py-2 px-2.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ease-in-out flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-1.5 transform active:scale-95 shadow-md
-                                    ${selectedCategory === category && !frameworkSearchTerm.trim()
-                                    ? 'bg-teal-700 dark:bg-teal-700 text-white ring-2 ring-teal-500 dark:ring-teal-500 ring-offset-1 ring-offset-[var(--bg-secondary)] dark:ring-offset-slate-800'
-                                    : 'bg-slate-500 dark:bg-slate-600 hover:bg-teal-700/80 dark:hover:bg-teal-700/70 text-slate-100 hover:text-white focus:ring-1 focus:ring-teal-500 dark:focus:ring-teal-600'
-                                    }`}
-                        aria-pressed={selectedCategory === category}
+                        className={clsx('py-2 px-2.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ease-in-out flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-1.5 transform active:scale-95 shadow-md', {
+                          'bg-teal-700 dark:bg-teal-700 text-white ring-2 ring-teal-500 dark:ring-teal-500 ring-offset-1 ring-offset-[var(--bg-secondary)] dark:ring-offset-slate-800': isActive,
+                          'bg-slate-500 dark:bg-slate-600 hover:bg-teal-700/80 dark:hover:bg-teal-700/70 text-slate-100 hover:text-white focus:ring-1 focus:ring-teal-500 dark:focus:ring-teal-600': !isActive,
+                        })}
+                        aria-pressed={isActive}
                         >
                         <IconComponent className="w-4 h-4" />
                         <span className="button-text-content">{t(category === 'text' ? 'categoryLabelText' : category === 'media' ? 'categoryLabelImage' : 'categoryLabelMusic')}</span>
