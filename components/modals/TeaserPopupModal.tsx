@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react'; // Moved to components/modals
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { AiTextIcon } from './AiTextIcon'; 
 import { XCircleIcon } from './icons/XCircleIcon';
 

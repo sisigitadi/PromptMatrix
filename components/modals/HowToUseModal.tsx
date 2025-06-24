@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react'; // Moved to components/modals
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { WorkflowDiagramIcon } from './icons/WorkflowDiagramIcon';
 import { TranslationKey } from '../types'; 
 

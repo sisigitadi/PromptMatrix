@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react'; // Moved to components/modals
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { InfoIcon } from './icons/InfoIcon';
 
 interface DisclaimerModalProps {

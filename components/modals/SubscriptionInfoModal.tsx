@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef } from 'react'; // Moved to components/modals
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { StarIcon } from './icons/StarIcon';
 import { AiTextIcon } from './AiTextIcon'; 
 
