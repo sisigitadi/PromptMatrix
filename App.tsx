@@ -30,7 +30,7 @@ import { StarIcon } from './components/icons/StarIcon';
 
 import { frameworks } from './frameworks';
 
-const APP_VERSION = "V6.2.0"; 
+const APP_VERSION = "V6.2.1"; 
 
 const KONAMI_CODE_SEQUENCE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
 const TITLE_TAP_TARGET_COUNT = 9;
@@ -1315,7 +1315,7 @@ const App: React.FC = (): ReactElement => {
 
         <footer className="bg-slate-900/80 backdrop-blur-sm text-center py-3 sm:py-4 border-t border-slate-700/50">
           <p className="text-xs text-slate-400 dark:text-slate-500">
-            PromptMatrix© V7.0 - 2025 | Built by Engineer not Coder
+            {`PromptMatrix© ${APP_VERSION} - ${currentYear} | Built by Engineer not Coder`}
           </p>
           <div className="flex justify-center space-x-4 mt-1.5">
             <a href="mailto:si.sigitadi@gmail.com" title="Email" className="text-slate-400 hover:text-teal-400 transition-colors">
