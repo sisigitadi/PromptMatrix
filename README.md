@@ -25,7 +25,7 @@ This version introduces a new text framework.
 ## ✨ What's New in V6.2.1 (Content Update)
 
 This version focuses on refining the available text frameworks.
-*   **Content Update:** Added the "SPICE" framework to the Text Prompt Frameworks and removed the obsolete "RIDE" framework.
+*   **Content Update:** Re-added the "RIDE" framework and introduced the new "SPICE" framework to the Text Prompt Frameworks.
 *   **Version Update:** Application version updated to `V6.2.1`.
 
 ## ✨ What's New in V6.2.0 (UI/UX Fixes)
