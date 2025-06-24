@@ -4,6 +4,13 @@
 Dokumen ini mencatat perubahan teknis detail untuk setiap versi PromptMatrix.
 
 ---
+## [V6.2.1] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
+### Changed
+- **Pembersihan Konten:** Framework "RIDE" yang sudah usang telah dihapus dari kategori framework Teks.
+### Technical Notes
+- Pembaruan ini hanya memengaruhi data konten (misalnya, `frameworks.ts`) dan dokumentasi (`README.md`). Tidak ada perubahan fungsional pada kode aplikasi.
+
+---
 ## [V6.0.0] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
 ### Added
 - **Fitur Inti: Analisis & Penilaian Prompt oleh AI (Membutuhkan Kunci API):**
