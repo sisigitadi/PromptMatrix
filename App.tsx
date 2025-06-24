@@ -27,7 +27,6 @@ import { useAppLogic } from './hooks/useAppLogic';
 import { useLanguage } from './contexts/LanguageContext';
 import { frameworks } from './frameworks';
 import { APP_VERSION } from './constants';
-import React from 'react';
 
 const App: React.FC = (): ReactElement => {
   const {
