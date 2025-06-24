@@ -81,7 +81,7 @@ PromptMatrix V6.2.0 provides structured inputs and guidance for understanding an
 ### 📜 Text Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/pencil.svg" width="16" height="16"> icon):
 
 (Uses standard component-based input. Used for crafting prompts for AI like ChatGPT, Gemini, Claude, etc.)
-*   RTF, AIDA, CARE, CO-STAR, BAB, TAG, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RIDE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, SPARK, IDEATE, PACT, Chain-of-Thought (CoT), Zero-shot CoT, Self-Consistency, Generated Knowledge, Least-to-Most Prompting, Self-Refine, Tree of Thoughts (ToT), Prompt Ensembling, Factive Prompting, EmotionPrompt, Prompt Chaining, Instruction Tuning Basics, Role Prompting, Few-Shot Prompting. *(Now 29 Text Frameworks)*
+*   RTF, AIDA, CARE, CO-STAR, BAB, TAG, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, SPARK, IDEATE, PACT, Chain-of-Thought (CoT), Zero-shot CoT, Self-Consistency, Generated Knowledge, Least-to-Most Prompting, Self-Refine, Tree of Thoughts (ToT), Prompt Ensembling, Factive Prompting, EmotionPrompt, Prompt Chaining, Instruction Tuning Basics, Role Prompting, Few-Shot Prompting. *(Now 41 Text Frameworks)*
 
 ### 🖼️ Image & Video Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/camera.svg" width="16" height="16"> icon):
 
