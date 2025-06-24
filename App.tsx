@@ -1321,7 +1321,7 @@ const App: React.FC = (): ReactElement => {
             <a href="mailto:si.sigitadi@gmail.com" title="Email" className="text-slate-400 hover:text-teal-400 transition-colors">
               <GmailIcon className="w-4 h-4" />
             </a>
-            <a href="https://github.com/sigit-purnomo" target="_blank" rel="noopener noreferrer" title="GitHub" className="text-slate-400 hover:text-teal-400 transition-colors">
+            <a href="https://github.com/sisigitadi" target="_blank" rel="noopener noreferrer" title="GitHub" className="text-slate-400 hover:text-teal-400 transition-colors">
               <GithubIcon className="w-4 h-4" />
             </a>
             <a href="https://medium.com/@sigit-purnomo" target="_blank" rel="noopener noreferrer" title="Medium" className="text-slate-400 hover:text-teal-400 transition-colors">
