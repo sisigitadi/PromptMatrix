@@ -1,7 +1,7 @@
 
-import React, { useEffect, useRef, useState } from 'react'; // Moved to components/modals
-import { ExternalLinkIcon } from '../icons/ExternalLinkIcon';
-import { useLanguage } from '../contexts/LanguageContext';
+import React, { useEffect, useRef, useState } from 'react';
+import { ExternalLinkIcon } from '../icons/ExternalLinkIcon'; // Corrected path
+import { useLanguage } from '../../contexts/LanguageContext'; // Corrected path
 
 interface ToolLinkSelectorModalProps {
   isOpen: boolean;

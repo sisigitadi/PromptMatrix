@@ -1,8 +1,8 @@
 
-import React, { useEffect, useState, useRef } from 'react'; // Moved to components/modals
-import { useLanguage } from '../../contexts/LanguageContext';
-import { AiTextIcon } from '../AiTextIcon'; 
-import { XCircleIcon } from '../icons/XCircleIcon';
+import React, { useEffect, useState, useRef } from 'react';
+import { useLanguage } from '../../contexts/LanguageContext'; // Corrected path
+import { AiTextIcon } from '../AiTextIcon'; // Corrected path
+import { XCircleIcon } from '../icons/XCircleIcon'; // Corrected path
 
 interface TeaserPopupModalProps {
   isOpen: boolean;

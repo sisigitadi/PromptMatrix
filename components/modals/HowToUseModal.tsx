@@ -1,7 +1,7 @@
 
-import React, { useEffect, useRef, useState } from 'react'; // Moved to components/modals
-import { useLanguage } from '../../contexts/LanguageContext';
-import { WorkflowDiagramIcon } from '../icons/WorkflowDiagramIcon';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '../../contexts/LanguageContext'; // Corrected path
+import { WorkflowDiagramIcon } from '../icons/WorkflowDiagramIcon'; // Corrected path
 import { TranslationKey } from '../types'; 
 
 interface HowToUseModalProps {

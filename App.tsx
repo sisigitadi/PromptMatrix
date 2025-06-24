@@ -28,8 +28,6 @@ import { useLanguage } from './contexts/LanguageContext';
 import { frameworks } from './frameworks';
 import { APP_VERSION } from './constants';
 
-
-const App: React.FC = (): ReactElement => {
   const {
     language,
     t,

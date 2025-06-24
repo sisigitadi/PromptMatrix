@@ -18,6 +18,13 @@ This version introduces a new text framework and refines existing ones.
 
 ## ✨ What's New in V6.2.2 (Content Update)
 
+This version introduces a new text framework and refines existing ones.
+*   **Content Update:** Added the "STAR" framework to the Text Prompt Frameworks.
+*   **Framework Refinement:** Removed the "isNew" tag from "RIDE", "SPICE", and "SOAR" frameworks.
+*   **Version Update:** Application version updated to `V6.2.3`.
+
+## ✨ What's New in V6.2.2 (Content Update)
+
 This version introduces a new text framework.
 *   **Content Update:** Added the "SOAR" framework to the Text Prompt Frameworks.
 *   **Version Update:** Application version updated to `V6.2.2`.

@@ -1,7 +1,7 @@
 
-import React, { useEffect, useRef, useState } from 'react'; // Moved to components/modals
-import { useLanguage } from '../../contexts/LanguageContext';
-import { InfoIcon } from '../icons/InfoIcon';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '../../contexts/LanguageContext'; // Corrected path
+import { InfoIcon } from '../icons/InfoIcon'; // Corrected path
 
 interface DisclaimerModalProps {
   isOpen: boolean;
