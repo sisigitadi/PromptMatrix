@@ -6,6 +6,7 @@ This document provides a history of major features and updates to the PromptMatr
 ---
 ## V6.2.1 (Content Update)
 *   **Content Update:**
+    *   Re-added the "RIDE" (Report, Interpret, Describe, Evaluate) framework to the list of Text Prompt Frameworks.
     *   Added the "SPICE" (Situation, Problem, Implication, Consequence, Example) framework to the list of Text Prompt Frameworks.
     *   Removed the obsolete "RIDE" framework from the text category.
 *   **Version Update:** Application version updated to `V6.2.1` across all relevant files and documentation.
