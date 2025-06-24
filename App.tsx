@@ -27,7 +27,9 @@ import { useAppLogic } from './hooks/useAppLogic';
 import { useLanguage } from './contexts/LanguageContext';
 import { frameworks } from './frameworks';
 import { APP_VERSION } from './constants';
+import React from 'react';
 
+const App: React.FC = (): ReactElement => {
   const {
     language,
     t,
@@ -602,6 +604,7 @@ import { APP_VERSION } from './constants';
       <GlobalActivityIndicator activityMessage={globalActivityMessage} apiKeyAvailable={apiKeyAvailable} />
     </React.Fragment>
   );
+
 };
 
 export default App;
