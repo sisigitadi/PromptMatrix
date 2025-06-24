@@ -18,13 +18,6 @@ This version introduces a new text framework and refines existing ones.
 
 ## ✨ What's New in V6.2.2 (Content Update)
 
-This version introduces a new text framework and refines existing ones.
-*   **Content Update:** Added the "STAR" framework to the Text Prompt Frameworks.
-*   **Framework Refinement:** Removed the "isNew" tag from "RIDE", "SPICE", and "SOAR" frameworks.
-*   **Version Update:** Application version updated to `V6.2.3`.
-
-## ✨ What's New in V6.2.2 (Content Update)
-
 This version introduces a new text framework.
 *   **Content Update:** Added the "SOAR" framework to the Text Prompt Frameworks.
 *   **Version Update:** Application version updated to `V6.2.2`.
@@ -77,7 +70,7 @@ This version focused on refining existing informational content, ensuring versio
 ## ✨ Features (Core & Enhanced in V6.2.0)
 
 *   **Educational Focus:** Learn the "why" and "how" behind effective prompts.
-*   **Multi-Framework Support:** Explore diverse prompting frameworks, plus **interactive frameworks** for image, video, and music.
+*   **Multi-Framework Support:** Explore diverse prompting framework, plus **interactive framework** for image, video, and music.
 *   **Interactive Prompt Studio (for Media/Music):** Step-by-step guidance with dropdowns, collapsible checkboxes, and "Other..." options.
 *   **Structured Input Guidance (Text Frameworks):** Dynamically updating input fields with examples.
 *   **AI-Powered Features (Premium - Subscription Coming Soon):**
@@ -95,10 +88,10 @@ This version focused on refining existing informational content, ensuring versio
 *   **Free Core Features, 'as is', respects privacy. No personal data collected. Ad-free.**
 
 ## 🖼️ Screenshots
- 
-<!-- TODO: Update screenshots for V6.2.3, showcasing the AiTextIcon states, premium feature indications, and new frameworks. -->
-**Example Screenshot Placeholder (Replace with actual screenshots):**
-![PromptMatrix V6.2.3 Screenshot](https://via.placeholder.com/800x450.png?text=PromptMatrix+V6.2.3+Content+Update)
+
+<!-- TODO: Update screenshots for V6.2.0, showcasing the AiTextIcon states and premium feature indications. -->
+**Example Screenshot Placeholder (Replace this):**
+![PromptMatrix V6.2.0 Screenshot](https://via.placeholder.com/800x450.png?text=PromptMatrix+V6.2.0+UI+Fixes)
 
 ## 🛠️ Framework Supported
 
@@ -107,7 +100,7 @@ PromptMatrix V6.2.0 provides structured inputs and guidance for understanding an
 ### 📜 Text Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/pencil.svg" width="16" height="16"> icon):
 
 (Uses standard component-based input. Used for crafting prompts for AI like ChatGPT, Gemini, Claude, etc.)
-*   RTF, AIDA, CARE, CO-STAR, BAB, TAG, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RIDE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, SPARK, SOAR, SPICE, IDEATE, PACT, Chain-of-Thought (CoT), Zero-shot CoT, Self-Consistency, Generated Knowledge, Least-to-Most Prompting, Self-Refine, Tree of Thoughts (ToT), Prompt Ensembling, Factive Prompting, EmotionPrompt, Prompt Chaining, Instruction Tuning Basics, Role Prompting, Few-Shot Prompting. *(Now 45 Text Frameworks)*
+*   RTF, AIDA, CARE, CO-STAR, BAB, TAG, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RIDE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, SPARK, SOAR, SPICE, IDEATE, PACT, Chain-of-Thought (CoT), Zero-shot CoT, Self-Consistency, Generated Knowledge, Least-to-Most Prompting, Self-Refine, Tree of Thoughts (ToT), Prompt Ensembling, Factive Prompting, EmotionPrompt, Prompt Chaining, Instruction Tuning Basics, Role Prompting, Few-Shot Prompting. *(Now 44 Text Frameworks)*
 
 ### 🖼️ Image & Video Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/camera.svg" width="16" height="16"> icon):
 
@@ -146,7 +139,7 @@ PromptMatrix V6.2.0 provides structured inputs and guidance for understanding an
 *   **State Management:** React Context API (language), React `useState` & `useCallback`.
 *   **Deployment:** GitHub Pages.
 
-## 🧑‍💻 How to Use PromptMatrix V6.2.3
+## 🧑‍💻 How to Use PromptMatrix V6.2.2
 
 PromptMatrix V6.2.1 offers core features for free, with advanced AI assistance planned as premium subscription features.
 

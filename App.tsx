@@ -286,14 +286,16 @@ const App: React.FC = (): ReactElement => {
                 {['text', 'media', 'music'].map((cat) => {
                     const category = cat as 'text' | 'media' | 'music';
                     const IconComponent = category === 'text' ? PencilIcon : category === 'media' ? CameraIcon : MusicNoteIcon;
-                    const isActive = selectedCategory === category && !frameworkSearchTerm.trim();
+                    // Corrected logic for isActive: it should be active if it's the selected category AND there's no search term,
+                    // OR if there's a search term and this category is the selected one (to maintain visual state during search within category)
+                    const isActive = (selectedCategory === category && !frameworkSearchTerm.trim()) || (selectedCategory === category && frameworkSearchTerm.trim() && !forceGlobalSearchDisplay);
                     return (
                         <button
                         key={category}
                         onClick={() => handleCategorySelect(category)}
                         title={t(`${category}FrameworksCategoryTooltip`)}
                         className={clsx('py-2 px-2.5 text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ease-in-out flex flex-col sm:flex-row items-center justify-center space-y-1 sm:space-y-0 sm:space-x-1.5 transform active:scale-95 shadow-md', {
-                          'bg-teal-700 dark:bg-teal-700 text-white ring-2 ring-teal-500 dark:ring-teal-500 ring-offset-1 ring-offset-[var(--bg-secondary)] dark:ring-offset-slate-800': isActive,
+                          'bg-teal-700 dark:bg-teal-700 text-white ring-2 ring-teal-500 dark:ring-teal-500 ring-offset-1 ring-offset-[var(--bg-secondary)] dark:ring-offset-slate-800': isActive, // Use isActive directly
                           'bg-slate-500 dark:bg-slate-600 hover:bg-teal-700/80 dark:hover:bg-teal-700/70 text-slate-100 hover:text-white focus:ring-1 focus:ring-teal-500 dark:focus:ring-teal-600': !isActive,
                         })}
                         aria-pressed={isActive}
@@ -485,7 +487,7 @@ const App: React.FC = (): ReactElement => {
                     )}
                     
                     <InputField
-                        id="userDefinedInteraction"
+                        id="userDefinedInteraction" // This ID is fine as it's a standalone input
                         label={t('userDefinedInteractionLabel')}
                         value={userDefinedInteraction}
                         onChange={(e) => handleUserInteractionChange(e as React.ChangeEvent<HTMLTextAreaElement>)}

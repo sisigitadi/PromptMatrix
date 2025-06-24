@@ -1,8 +1,8 @@
 
-import React, { useEffect, useRef } from 'react';
-import { useLanguage } from '../../contexts/LanguageContext'; // Corrected path
-import { StarIcon } from '../icons/StarIcon'; // Corrected path
-import { AiTextIcon } from '../AiTextIcon'; // Corrected path
+import React, { useEffect, useRef } from 'react'; 
+import { useLanguage } from '../../contexts/LanguageContext'; 
+import { StarIcon } from '../icons/StarIcon'; 
+import { AiTextIcon } from '../AiTextIcon'; 
 
 interface SubscriptionInfoModalProps {
   isOpen: boolean;
