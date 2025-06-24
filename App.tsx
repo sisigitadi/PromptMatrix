@@ -39,18 +39,22 @@
     return { ...selectedFramework };
   }, [selectedFramework, language]);
 
-
-
   const langToggleAriaLabel = language === 'id' ? t('switchToEnglish') : t('switchToIndonesian');
+
+  let frameworkListTitle: string;
+  if (frameworkSearchTerm.trim()) {
+    if (forceGlobalSearchDisplay || !selectedCategory) {
         frameworkListTitle = t('globalSearchResultsTitle');
+    } else {
+        frameworkListTitle = t('searchResultsInCategoryTitle', { categoryName: t(`${selectedCategory}FrameworksTitle` as TranslationKey) });
     }
   } else if (selectedFramework && currentFrameworkLocale) {
     const selectedFrameworkName = currentFrameworkLocale.name;
-    frameworkListTitle = t('frameworkListTitleNumbered', '2', selectedFrameworkName);
+    frameworkListTitle = t('frameworkListTitleNumbered', { number: '2', frameworkName: selectedFrameworkName });
   } else if (selectedCategory) {
-    frameworkListTitle = t('frameworkListTitleNumbered', '2', t(`${selectedCategory}FrameworksTitle` as TranslationKey));
+    frameworkListTitle = t('frameworkListTitleNumbered', { number: '2', frameworkName: t(`${selectedCategory}FrameworksTitle` as TranslationKey) });
   } else {
-    frameworkListTitle = t('frameworkListTitleNumbered', '2', t('textFrameworksTitle'));
+    frameworkListTitle = t('frameworkListTitleNumbered', { number: '2', frameworkName: t('textFrameworksTitle') });
   }
 
   const inputPanelTitleText = selectedFramework && currentFrameworkLocale
@@ -121,4 +125,3 @@
                 </p>
               )}
             </div>
-
