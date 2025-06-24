@@ -54,6 +54,11 @@
       scrollbar-width: thin;
     }
 
+    ::-moz-selection {
+      background-color: var(--selection-bg);
+      color: var(--selection-text);
+    }
+
     ::selection {
       background-color: var(--selection-bg);
       color: var(--selection-text);
@@ -159,8 +164,16 @@
       visibility: visible;
       transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
     }
-
-    .collapsible-mc-content {
+    
+    /* Styles for interactive sections (multiple choice collapsible headers) */
+    .interactive-section-header button svg {
+      transition: transform 0.3s ease-in-out;
+    }
+    .interactive-section-header button[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+    /* General content for collapsible interactive sections (like multiple choice) */
+    .interactive-collapsible-content {
       max-height: 0;
       opacity: 0;
       overflow: hidden;
@@ -168,17 +181,25 @@
       padding-top: 0;
       padding-bottom: 0;
     }
-    .collapsible-mc-content.open {
-      max-height: 500px; 
+    .interactive-collapsible-content.open {
+      max-height: 500px; /* Adjust as needed for content */
       opacity: 1;
       transition: max-height 0.35s ease-in-out, opacity 0.25s ease-in-out, padding 0.35s ease-in-out;
     }
+
 
     .non-copyable-input-field {
       user-select: none;
       -webkit-user-select: none; 
       -moz-user-select: none;    
       -ms-user-select: none;     
+    }
+    .non-copyable-input-field::-moz-placeholder {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      font-style: italic;
     }
     .non-copyable-input-field::placeholder {
       user-select: none;
@@ -384,12 +405,6 @@
       max-height: 13rem; 
       overflow-y: auto;
     }
-    .mc-collapsible-header button svg {
-      transition: transform 0.3s ease-in-out;
-    }
-    .mc-collapsible-header button[aria-expanded="true"] svg {
-      transform: rotate(180deg);
-    }
     
     @keyframes global-activity-fade-in-out {
       0%, 100% { opacity: 0; transform: translateY(10px) scale(0.95); }
@@ -492,6 +507,27 @@
       filter: drop-shadow(0 0 5px var(--badge-premium-glow)) drop-shadow(0 0 10px var(--badge-premium-glow));
     }
 
+    /* Custom Horizontal Scrollbar for Frameworks */
+    .horizontal-scrollbar-custom {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+    .horizontal-scrollbar-custom::-webkit-scrollbar {
+      height: 6px; /* Adjusted for horizontal */
+      width: 6px; /* Keep consistent for vertical within this if needed */
+    }
+    .horizontal-scrollbar-custom::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+      border-radius: 3px;
+    }
+    .horizontal-scrollbar-custom::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 3px;
+    }
+    .horizontal-scrollbar-custom::-webkit-scrollbar-thumb:hover {
+      background: var(--text-accent-hover);
+    }
+
   </style>
 
 <link rel="stylesheet" href="/index.css">
@@ -503,11 +539,12 @@
     "react/": "https://esm.sh/react@^19.1.0/",
     "@google/genai": "https://esm.sh/@google/genai@0.12.0",
     "vite": "https://esm.sh/vite@^6.3.5",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2"
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.5.2",
+    "path": "https://esm.sh/path@^0.12.7"
   }
 }
 </script>
-  <script type="module" crossorigin src="/promptmatrix/assets/index-Be-yDE9a.js"></script>
+  <script type="module" crossorigin src="/promptmatrix/assets/index-VtKEPTha.js"></script>
 </head>
 <body class="antialiased theme-dark">
   <div id="root"></div>
