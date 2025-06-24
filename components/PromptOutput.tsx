@@ -411,7 +411,7 @@ const PromptOutput: React.FC<PromptOutputProps> = ({
                 aria-label={t('launchToolButtonAria', (currentFrameworkLocale?.category === 'media' || currentFrameworkLocale?.category === 'music') && currentFrameworkLocale?.toolLink ? t(currentFrameworkLocale.name) : undefined)}
                 disabled={!canLaunchTool}
                 >
-                <span className="button-text-content">{t('launchToolButtonText')}</span>
+                <span className="button-text-content">{t('launchToolButtonText')}</span> {/* Keep this line as it is */}
                 <ExternalLinkIcon className="w-3.5 h-3.5 ml-1" />
                 </button>
               </div>
