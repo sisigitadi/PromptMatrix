@@ -896,6 +896,37 @@ export const frameworks: Framework[] = [
     }
   },
   {
+    id: 'ride',
+    idLocale: {
+      name: 'ride_name',
+      shortName: 'ride_shortName',
+      description: 'ride_description_updated',
+      shortDescription: 'ride_short_desc_updated',
+      category: 'text',
+      components: [
+        { id: 'role', label: 'ride_role_label', example: 'ride_role_example_updated', tooltip: 'ride_role_tooltip_updated' },
+        { id: 'instruction', label: 'ride_instruction_label', example: 'ride_instruction_example_updated', tooltip: 'ride_instruction_tooltip_updated' },
+        { id: 'details', label: 'ride_details_label', example: 'ride_details_example_updated', tooltip: 'ride_details_tooltip_updated' },
+        { id: 'example', label: 'ride_example_label', example: 'ride_example_example_updated', tooltip: 'ride_example_tooltip_updated' },
+      ],
+      genericToolLinks: mergeAndSortTextToolLinks(),
+    },
+    enLocale: {
+      name: 'ride_name',
+      shortName: 'ride_shortName',
+      description: 'ride_description_updated',
+      shortDescription: 'ride_short_desc_updated',
+      category: 'text',
+      components: [
+        { id: 'role', label: 'ride_role_label', example: 'ride_role_example_updated', tooltip: 'ride_role_tooltip_updated' },
+        { id: 'instruction', label: 'ride_instruction_label', example: 'ride_instruction_example_updated', tooltip: 'ride_instruction_tooltip_updated' },
+        { id: 'details', label: 'ride_details_label', example: 'ride_details_example_updated', tooltip: 'ride_details_tooltip_updated' },
+        { id: 'example', label: 'ride_example_label', example: 'ride_example_example_updated', tooltip: 'ride_example_tooltip_updated' },
+      ],
+      genericToolLinks: mergeAndSortTextToolLinks(),
+    }
+  },
+  {
     id: 'scenecraft-detailer',
     idLocale: {
       name: 'scenecraft_name',
