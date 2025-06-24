@@ -4,9 +4,7 @@ import { Framework, Language, PromptComponent, FrameworkComponentDetail, Transla
 import { useLanguage } from '../contexts/LanguageContext';
 import { addPromptToDB, getAllPromptsFromDB, deletePromptFromDB, updatePromptInDB, getPromptByIdFromDB } from '../db';
 import { frameworks } from '../frameworks';
-
-const KONAMI_CODE_SEQUENCE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
-const TITLE_TAP_TARGET_COUNT = 9;
+import { KONAMI_CODE_SEQUENCE, TITLE_TAP_TARGET_COUNT } from '../constants';
 
 export const useAppLogic = () => {
     const { language, setLanguage, t } = useLanguage();
