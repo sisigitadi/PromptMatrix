@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react'; // Moved to components/modals
-import { ExternalLinkIcon } from './icons/ExternalLinkIcon';
+import { ExternalLinkIcon } from '../icons/ExternalLinkIcon';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface ToolLinkSelectorModalProps {

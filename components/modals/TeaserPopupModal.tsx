@@ -1,8 +1,8 @@
 
 import React, { useEffect, useState, useRef } from 'react'; // Moved to components/modals
 import { useLanguage } from '../../contexts/LanguageContext';
-import { AiTextIcon } from './AiTextIcon'; 
-import { XCircleIcon } from './icons/XCircleIcon';
+import { AiTextIcon } from '../AiTextIcon'; 
+import { XCircleIcon } from '../icons/XCircleIcon';
 
 interface TeaserPopupModalProps {
   isOpen: boolean;
