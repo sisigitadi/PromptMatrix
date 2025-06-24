@@ -70,7 +70,7 @@ This version focused on refining existing informational content, ensuring versio
 ## ✨ Features (Core & Enhanced in V6.2.0)
 
 *   **Educational Focus:** Learn the "why" and "how" behind effective prompts.
-*   **Multi-Framework Support:** Explore diverse prompting framework, plus **interactive framework** for image, video, and music.
+*   **Multi-Framework Support:** Explore diverse prompting frameworks, plus **interactive frameworks** for image, video, and music.
 *   **Interactive Prompt Studio (for Media/Music):** Step-by-step guidance with dropdowns, collapsible checkboxes, and "Other..." options.
 *   **Structured Input Guidance (Text Frameworks):** Dynamically updating input fields with examples.
 *   **AI-Powered Features (Premium - Subscription Coming Soon):**
@@ -88,10 +88,10 @@ This version focused on refining existing informational content, ensuring versio
 *   **Free Core Features, 'as is', respects privacy. No personal data collected. Ad-free.**
 
 ## 🖼️ Screenshots
-
-<!-- TODO: Update screenshots for V6.2.0, showcasing the AiTextIcon states and premium feature indications. -->
-**Example Screenshot Placeholder (Replace this):**
-![PromptMatrix V6.2.0 Screenshot](https://via.placeholder.com/800x450.png?text=PromptMatrix+V6.2.0+UI+Fixes)
+ 
+<!-- TODO: Update screenshots for V6.2.3, showcasing the AiTextIcon states, premium feature indications, and new frameworks. -->
+**Example Screenshot Placeholder (Replace with actual screenshots):**
+![PromptMatrix V6.2.3 Screenshot](https://via.placeholder.com/800x450.png?text=PromptMatrix+V6.2.3+Content+Update)
 
 ## 🛠️ Framework Supported
 
