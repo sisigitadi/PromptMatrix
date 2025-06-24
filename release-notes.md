@@ -4,12 +4,27 @@
 Dokumen ini mencatat perubahan teknis detail untuk setiap versi PromptMatrix.
 
 ---
+## [V6.2.3] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
+### Added
+- **Konten Framework:** Framework baru "STAR" (Situation, Task, Action, Result) ditambahkan ke kategori Teks.
+### Changed
+- **Pembersihan Konten:** Tanda "isNew" telah dihapus dari framework "RIDE", "SPICE", dan "SOAR".
+### Technical Notes
+- Pembaruan ini hanya memengaruhi data konten (misalnya, `frameworks.ts`) dan dokumentasi (`README.md`). Tidak ada perubahan fungsional pada kode aplikasi.
+
+---
+## [V6.2.2] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
+### Added
+- **Konten Framework:** Framework baru "SOAR" (Strengths, Opportunities, Aspirations, Results) ditambahkan ke kategori Teks.
+### Technical Notes
+- Pembaruan ini hanya memengaruhi data konten (misalnya, `frameworks.ts`) dan dokumentasi (`README.md`). Tidak ada perubahan fungsional pada kode aplikasi.
+
+---
 ## [V6.2.1] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
 ### Added
 - **Konten Framework:** Framework "RIDE" (Report, Interpret, Describe, Evaluate) ditambahkan kembali ke kategori Teks.
 - **Konten Framework:** Framework baru "SPICE" (Situation, Problem, Implication, Consequence, Example) ditambahkan ke kategori Teks.
 ### Changed
-- **Pembersihan Konten:** Framework "RIDE" yang sudah usang telah dihapus dari kategori framework Teks.
 ### Technical Notes
 - Pembaruan ini hanya memengaruhi data konten (misalnya, `frameworks.ts`) dan dokumentasi (`README.md`). Tidak ada perubahan fungsional pada kode aplikasi.
 

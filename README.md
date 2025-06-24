@@ -1,13 +1,26 @@
 
-# PromptMatrix V6.2.1
+# PromptMatrix V6.2.3
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An intuitive web application designed to help users **understand prompt engineering principles** and **construct effective, well-structured prompts** for various AI models. PromptMatrix V6.2.1 is your enhanced guide and toolkit for mastering AI communication, offering structured and interactive framework for text, image, video, and music generation. This tool is **not an AI itself**, but a powerful assistant for building and learning about prompts.
+An intuitive web application designed to help users **understand prompt engineering principles** and **construct effective, well-structured prompts** for various AI models. PromptMatrix V6.2.3 is your enhanced guide and toolkit for mastering AI communication, offering structured and interactive framework for text, image, video, and music generation. This tool is **not an AI itself**, but a powerful assistant for building and learning about prompts.
 
 **Note on Versioning:** Starting with V5.5.0, PromptMatrix adopts Semantic Versioning (SemVer: `MAJOR.MINOR.PATCH`).
 
 **[➡️ Live Demo (GitHub Pages) Link: https://sisigitadi.github.io/promptmatrix/](#)**
+
+## ✨ What's New in V6.2.3 (Content Update)
+
+This version introduces a new text framework and refines existing ones.
+*   **Content Update:** Added the "STAR" framework to the Text Prompt Frameworks.
+*   **Framework Refinement:** Removed the "isNew" tag from "RIDE", "SPICE", and "SOAR" frameworks.
+*   **Version Update:** Application version updated to `V6.2.3`.
+
+## ✨ What's New in V6.2.2 (Content Update)
+
+This version introduces a new text framework.
+*   **Content Update:** Added the "SOAR" framework to the Text Prompt Frameworks.
+*   **Version Update:** Application version updated to `V6.2.2`.
 
 ## ✨ What's New in V6.2.1 (Content Update)
 
@@ -87,7 +100,7 @@ PromptMatrix V6.2.0 provides structured inputs and guidance for understanding an
 ### 📜 Text Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/pencil.svg" width="16" height="16"> icon):
 
 (Uses standard component-based input. Used for crafting prompts for AI like ChatGPT, Gemini, Claude, etc.)
-*   RTF, AIDA, CARE, CO-STAR, BAB, TAG, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RIDE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, SPARK, SPICE, IDEATE, PACT, Chain-of-Thought (CoT), Zero-shot CoT, Self-Consistency, Generated Knowledge, Least-to-Most Prompting, Self-Refine, Tree of Thoughts (ToT), Prompt Ensembling, Factive Prompting, EmotionPrompt, Prompt Chaining, Instruction Tuning Basics, Role Prompting, Few-Shot Prompting. *(Now 43 Text Frameworks)*
+*   RTF, AIDA, CARE, CO-STAR, BAB, TAG, PAS, FAB, PREPARE, Google Guide, CIDI, LIMA "S", RISE, RIDE, RACE, TRACE, CRISPE, APE, STAR, CTF, TREF, GRADE, ROSES, RDIREC, RSCET, SPARK, SOAR, SPICE, IDEATE, PACT, Chain-of-Thought (CoT), Zero-shot CoT, Self-Consistency, Generated Knowledge, Least-to-Most Prompting, Self-Refine, Tree of Thoughts (ToT), Prompt Ensembling, Factive Prompting, EmotionPrompt, Prompt Chaining, Instruction Tuning Basics, Role Prompting, Few-Shot Prompting. *(Now 45 Text Frameworks)*
 
 ### 🖼️ Image & Video Prompt Framework (Represented by <img src="https://raw.githubusercontent.com/tailwindlabs/heroicons/master/src/outline/camera.svg" width="16" height="16"> icon):
 
@@ -126,7 +139,7 @@ PromptMatrix V6.2.0 provides structured inputs and guidance for understanding an
 *   **State Management:** React Context API (language), React `useState` & `useCallback`.
 *   **Deployment:** GitHub Pages.
 
-## 🧑‍💻 How to Use PromptMatrix V6.2.1
+## 🧑‍💻 How to Use PromptMatrix V6.2.3
 
 PromptMatrix V6.2.1 offers core features for free, with advanced AI assistance planned as premium subscription features.
 

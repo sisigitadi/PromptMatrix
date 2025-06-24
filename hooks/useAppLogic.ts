@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { Framework, Language, PromptComponent, FrameworkComponentDetail, TranslationKey, SavedPrompt, WebResearchDataSource } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
-import { addPromptToDB, getAllPromptsFromDB, deletePromptFromDB, updatePromptInDB, getPromptByIdFromDB } from '../db';
 import { frameworks } from '../frameworks';
 import { KONAMI_CODE_SEQUENCE, TITLE_TAP_TARGET_COUNT } from '../constants';
+import { addPromptToDB, getAllPromptsFromDB, deletePromptFromDB, updatePromptInDB, getPromptByIdFromDB } from '../db';
 
 export const useAppLogic = () => {
     const { language, setLanguage, t } = useLanguage();

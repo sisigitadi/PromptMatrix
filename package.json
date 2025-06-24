@@ -1,7 +1,7 @@
 {
   "name": "promptmatrix",
   "private": true,
-  "version": "6.2.1",
+  "version": "6.2.3",
   "type": "module",
   "homepage": "https://sisigitadi.github.io/promptmatrix/",
   "scripts": {

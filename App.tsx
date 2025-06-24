@@ -26,10 +26,8 @@ import { StarIcon } from './components/icons/StarIcon';
 import { useAppLogic } from './hooks/useAppLogic';
 import { useLanguage } from './contexts/LanguageContext';
 import { frameworks } from './frameworks';
-import { TranslationKey } from './types';
+import { APP_VERSION } from './constants';
 
-
-const APP_VERSION = "V6.2.1"; 
 
 const App: React.FC = (): ReactElement => {
   const {

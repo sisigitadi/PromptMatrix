@@ -4,6 +4,13 @@
 This document provides a history of major features and updates to the PromptMatrix application, helping users understand its evolution and current capabilities.
 
 ---
+## V6.2.3 (Content Update)
+*   **Content Update:**
+    *   Added the "STAR" (Situation, Task, Action, Result) framework to the list of Text Prompt Frameworks.
+    *   Removed the "isNew" tag from "RIDE", "SPICE", and "SOAR" frameworks.
+*   **Version Update:** Application version updated to `V6.2.3` across all relevant files and documentation.
+
+---
 ## V6.2.1 (Content Update)
 *   **Content Update:**
     *   Re-added the "RIDE" (Report, Interpret, Describe, Evaluate) framework to the list of Text Prompt Frameworks.
