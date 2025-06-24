@@ -286,8 +286,6 @@ const App: React.FC = (): ReactElement => {
                 {['text', 'media', 'music'].map((cat) => {
                     const category = cat as 'text' | 'media' | 'music';
                     const IconComponent = category === 'text' ? PencilIcon : category === 'media' ? CameraIcon : MusicNoteIcon;
-                    // Corrected logic for isActive: it should be active if it's the selected category AND there's no search term,
-                    // OR if there's a search term and this category is the selected one (to maintain visual state during search within category)
                     const isActive = (selectedCategory === category && !frameworkSearchTerm.trim()) || (selectedCategory === category && frameworkSearchTerm.trim() && !forceGlobalSearchDisplay);
                     return (
                         <button
