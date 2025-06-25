@@ -55,9 +55,6 @@
   }
 
   const inputPanelTitleText = selectedFramework && currentFrameworkLocale
-Unchanged lines                        <p className="whitespace-pre-wrap">{currentFrameworkLocale.description}</p>
-                      </div>
-                    )}
                     {currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 ? (
                       currentFrameworkLocale.components.map((componentDetail) => { // Iterate over the translated component details
                           const componentValue = promptComponents.find(pc => pc.id === componentDetail.id)?.value || ''; // Find the current value from promptComponents state
