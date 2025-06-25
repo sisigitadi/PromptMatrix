@@ -54,7 +54,6 @@
     frameworkListTitle = t('frameworkListTitleNumbered', { number: '2', frameworkName: t('textFrameworksTitle') }); // Pass object for t()
   }
 
-  const inputPanelTitleText = selectedFramework && currentFrameworkLocale
                     {currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 ? (
                       currentFrameworkLocale.components.map((componentDetail) => { // Iterate over the translated component details
                           const componentValue = promptComponents.find(pc => pc.id === componentDetail.id)?.value || ''; // Find the current value from promptComponents state
