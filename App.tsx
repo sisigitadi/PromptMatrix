@@ -1,9 +1,46 @@
-import React, { useMemo, useState } from 'react'; // Tambahkan import yang relevan
+import React, { useMemo, useState, useCallback } from 'react';
 import { InputField } from '@/components/InputField'; // Import komponen baru
-// Import lainnya yang diperlukan (t, frameworks, dll.)
+// Asumsikan file-file ini ada untuk menyediakan data dan tipe
+// import { frameworks as allFrameworks } from './frameworks'; 
+// import { useTranslation } from 'react-i18next';
+// import { Framework, PromptComponent, TranslationKey } from './types';
+
+// --- Placeholder Data & Tipe (Hapus jika Anda sudah punya) ---
+type Framework = any;
+type PromptComponent = { id: string; value: string };
+type TranslationKey = string;
+const allFrameworks: Framework[] = []; // Ganti dengan data framework Anda
+const useTranslation = () => ({ t: (key: string, _?: any) => key, i18n: { language: 'en' } });
+// --- Akhir Placeholder ---
 
 const App: React.FC = () => { // Bungkus semua logika dalam komponen App
-  // Asumsikan semua state dan fungsi (useState, handleInputChange, dll.) didefinisikan di sini
+  // --- START: Definisi State & Fungsi yang Hilang ---
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
+
+  const [frameworks] = useState<Framework[]>(allFrameworks);
+  const [frameworkSearchTerm, setFrameworkSearchTerm] = useState('');
+  const [selectedFramework, setSelectedFramework] = useState<Framework | null>(frameworks.length > 0 ? frameworks[0] : null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>('text');
+  const [promptComponents, setPromptComponents] = useState<PromptComponent[]>([]);
+  const [isInputPanelExpanded, setIsInputPanelExpanded] = useState(true);
+  const [apiKeyAvailable, setApiKeyAvailable] = useState(true); // Ganti sesuai logika Anda
+
+  const handleInputChange = useCallback((id: string, value: string) => {
+    setPromptComponents(prev => {
+      const existing = prev.find(p => p.id === id);
+      if (existing) {
+        return prev.map(p => (p.id === id ? { ...p, value } : p));
+      }
+      return [...prev, { id, value }];
+    });
+  }, []);
+
+  const fetchSuggestionsForField = useCallback((fieldId: string) => {
+    console.log(`Fetching suggestions for ${fieldId}...`);
+    // Logika untuk mengambil saran AI
+  }, []);
+  // --- END: Definisi State & Fungsi yang Hilang ---
 
   const filteredFrameworks = useMemo(() => {
     if (!frameworkSearchTerm.trim()) {
