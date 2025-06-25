@@ -1,12 +1,10 @@
 
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { Language, Translations, TranslationKey, TranslationFunction } from '../types';
-import { allTranslations } from '../translations'; // Changed from 'translations' to 'allTranslations'
+import { Language } from '../types'; // Hanya butuh tipe Language di sini
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (language: Language) => void;
-  t: (key: TranslationKey, ...args: any[]) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

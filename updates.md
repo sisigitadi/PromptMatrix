@@ -4,6 +4,19 @@
 This document provides a history of major features and updates to the PromptMatrix application, helping users understand its evolution and current capabilities.
 
 ---
+## V6.2.3 (Content Update)
+*   **Content Update:**
+    *   Added the "STAR" (Situation, Task, Action, Result) framework to the list of Text Prompt Frameworks.
+    *   Removed the "isNew" tag from "RIDE", "SPICE", and "SOAR" frameworks.
+*   **Version Update:** Application version updated to `V6.2.3` across all relevant files and documentation.
+
+---
+## V6.2.1 (Content Update)
+*   **Content Update:**
+    *   Added the "SPICE" (Situation, Problem, Implication, Consequence, Example) framework to the list of Text Prompt Frameworks.
+*   **Version Update:** Application version updated to `V6.2.1` across all relevant files and documentation.
+
+---
 ## V6.2.0 (Current Version - UI/UX Fixes)
 *   **UI/UX Bug Fixes & Polish:**
     *   **Mobile Subtitle Wrapping:** Fixed an issue where the app subtitle in the header could be truncated on mobile devices by ensuring proper text wrapping logic. The subtitle now correctly wraps to multiple lines if necessary on smaller screens.
