@@ -1,5 +1,5 @@
 import React from 'react';
-import { AiTextIcon } from '../AiTextIcon';
+import { AiTextIcon } from '@/components/AiTextIcon';
 
 interface InputFieldProps {
   id: string;

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'; // Tambahkan import yang relevan
-import { InputField } from './src/components/InputField'; // Import komponen baru
+import { InputField } from '@/components/InputField'; // Import komponen baru
 // Import lainnya yang diperlukan (t, frameworks, dll.)
 
 const App: React.FC = () => { // Bungkus semua logika dalam komponen App
