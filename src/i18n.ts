@@ -46,9 +46,8 @@ i18n
     fallbackLng: 'en', // Bahasa fallback jika terjemahan tidak ditemukan
     interpolation: {
       escapeValue: false, // React sudah melindungi dari XSS
-    },
-    // Debugging (aktifkan ini jika Anda ingin melihat log i18next di konsol)
-    // debug: true,
+    }, // Debugging (aktifkan ini jika Anda ingin melihat log i18next di konsol)
+    debug: true, // Aktifkan debugging i18next
   });
 
 export default i18n;

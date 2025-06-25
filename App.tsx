@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'; // Ini akan berfungsi setelah i1
 import { Framework, PromptComponent, TranslationKey } from './types';
 
 const App: React.FC = () => {
+  console.log('App.tsx: App component rendering.');
   const { t, i18n } = useTranslation();
   const language = i18n.language;
 
@@ -20,6 +21,7 @@ const App: React.FC = () => {
   const handleInputChange = useCallback((id: string, value: string) => {
     setPromptComponents(prev => {
       const existing = prev.find(p => p.id === id);
+      console.log(`App.tsx: handleInputChange - id: ${id}, value: ${value}`);
       return existing
         ? prev.map(p => (p.id === id ? { ...p, value } : p))
         : [...prev, { id, value }]; // Tambahkan komponen baru jika belum ada
@@ -32,6 +34,7 @@ const App: React.FC = () => {
 
   const handleFrameworkSelect = (framework: Framework) => {
     setSelectedFramework(framework);
+    console.log(`App.tsx: handleFrameworkSelect - selected: ${framework.name}`);
     setPromptComponents([]); // Reset input saat framework baru dipilih (penting!)
   };
 
@@ -42,6 +45,7 @@ const App: React.FC = () => {
       const name = language === 'id' && fw.translations?.id?.name ? fw.translations.id.name : fw.name;
       const description = language === 'id' && fw.translations?.id?.description ? fw.translations.id.description : fw.description;
       return name.toLowerCase().includes(searchTermLower) || description.toLowerCase().includes(searchTermLower);
+      console.log('App.tsx: filteredFrameworks memo re-calculated.');
     });
   }, [frameworks, frameworkSearchTerm, language]);
 
@@ -54,6 +58,7 @@ const App: React.FC = () => {
       const aName = language === 'id' && a.translations?.id?.name ? a.translations.id.name : a.name;
       const bName = language === 'id' && b.translations?.id?.name ? b.translations.id.name : b.name;
       return aName.localeCompare(bName);
+      console.log('App.tsx: displayedFrameworks memo re-calculated.');
     });
   }, [filteredFrameworks, frameworks, frameworkSearchTerm, selectedCategory, language]);
 
@@ -68,6 +73,7 @@ const App: React.FC = () => {
         components: idTrans.components || selectedFramework.components,
         predefinedOptions: idTrans.predefinedOptions || selectedFramework.predefinedOptions,
       };
+      console.log('App.tsx: currentFrameworkLocale memo re-calculated (ID).');
     }
     return selectedFramework; // Fallback ke bahasa default (Inggris)
   }, [selectedFramework, language]);
