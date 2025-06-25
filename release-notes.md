@@ -13,33 +13,6 @@ Dokumen ini mencatat perubahan teknis detail untuk setiap versi PromptMatrix.
 - Pembaruan ini hanya memengaruhi data konten (misalnya, `frameworks.ts`) dan dokumentasi (`README.md`). Tidak ada perubahan fungsional pada kode aplikasi.
 
 ---
-## [V6.2.3] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
-### Added
-- **Konten Framework:** Framework baru "STAR" (Situation, Task, Action, Result) ditambahkan ke kategori Teks.
-### Changed
-- **Pembersihan Konten:** Tanda "isNew" telah dihapus dari framework "RIDE", "SPICE", dan "SOAR".
-### Technical Notes
-- Pembaruan ini hanya memengaruhi data konten (misalnya, `frameworks.ts`) dan dokumentasi (`README.md`). Tidak ada perubahan fungsional pada kode aplikasi.
-
----
-## [V6.2.3] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
-### Added
-- **Konten Framework:** Framework baru "STAR" (Situation, Task, Action, Result) ditambahkan ke kategori Teks.
-### Changed
-- **Pembersihan Konten:** Tanda "isNew" telah dihapus dari framework "RIDE", "SPICE", dan "SOAR".
-### Technical Notes
-- Pembaruan ini hanya memengaruhi data konten (misalnya, `frameworks.ts`) dan dokumentasi (`README.md`). Tidak ada perubahan fungsional pada kode aplikasi.
-
----
-## [V6.2.3] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
-### Added
-- **Konten Framework:** Framework baru "STAR" (Situation, Task, Action, Result) ditambahkan ke kategori Teks.
-### Changed
-- **Pembersihan Konten:** Tanda "isNew" telah dihapus dari framework "RIDE", "SPICE", dan "SOAR".
-### Technical Notes
-- Pembaruan ini hanya memengaruhi data konten (misalnya, `frameworks.ts`) dan dokumentasi (`README.md`). Tidak ada perubahan fungsional pada kode aplikasi.
-
----
 ## [V6.2.2] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
 ### Added
 - **Konten Framework:** Framework baru "SOAR" (Strengths, Opportunities, Aspirations, Results) ditambahkan ke kategori Teks.
