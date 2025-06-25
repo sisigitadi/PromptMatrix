@@ -1,13 +1,3 @@
-                          key={fw.id}
-                          onClick={() => handleFrameworkSelect(fw)}
-                          title={fwShortDescription || fw.description}
-                          className={`relative w-full h-16 sm:h-20 p-2 rounded-lg text-left transition-all duration-200 ease-in-out transform hover:scale-[1.03] active:scale-98 shadow-md focus:outline-none focus:ring-2 flex flex-col justify-center items-center ${
-                            selectedFramework?.id === fw.id
-                              ? 'bg-teal-700 dark:bg-teal-600 text-white ring-teal-500 dark:ring-teal-400 ring-offset-1 ring-offset-[var(--bg-secondary)] dark:ring-offset-slate-800'
-                              : 'bg-white dark:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 ring-transparent'
-                          }`}
-                        >
-
   const filteredFrameworks = useMemo(() => {
     if (!frameworkSearchTerm.trim()) {
       return frameworks;
