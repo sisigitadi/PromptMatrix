@@ -1,3 +1,10 @@
+import React, { useMemo, useState } from 'react'; // Tambahkan import yang relevan
+import { InputField } from './src/components/InputField'; // Import komponen baru
+// Import lainnya yang diperlukan (t, frameworks, dll.)
+
+const App: React.FC = () => { // Bungkus semua logika dalam komponen App
+  // Asumsikan semua state dan fungsi (useState, handleInputChange, dll.) didefinisikan di sini
+
   const filteredFrameworks = useMemo(() => {
     if (!frameworkSearchTerm.trim()) {
       return frameworks;
@@ -54,35 +61,44 @@
     frameworkListTitle = t('frameworkListTitleNumbered', { number: '2', frameworkName: t('textFrameworksTitle') }); // Pass object for t()
   }
 
-                    {currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 ? (
-                      currentFrameworkLocale.components.map((componentDetail) => { // Iterate over the translated component details
-                          const componentValue = promptComponents.find(pc => pc.id === componentDetail.id)?.value || ''; // Find the current value from promptComponents state
-                          return (
-                            <InputField
-                                key={`${selectedFramework.id}-${componentDetail.id}-${language}`}
-                                id={componentDetail.id}
-                                label={componentDetail.name} // Already translated string
-                                value={componentValue}
-                                onChange={handleInputChange}
-                                placeholder={componentDetail.placeholder || t('inputFieldPlaceholder', { label: componentDetail.name })} // Pass object for t()
-                                isTextarea
-                                rows={2}
-                                description={t('inputFieldDescription', { label: componentDetail.name, frameworkName: currentFrameworkLocale.name })} // Pass object for t()
-                                predefinedOptions={componentDetail?.options}
-                                isVisible={isInputPanelExpanded}
-                                fetchSuggestions={fetchSuggestionsForField}
-                                frameworkName={currentFrameworkLocale.name}
-                                apiKeyAvailable={apiKeyAvailable}
-                                exampleText={componentDetail.placeholder} // Already translated string
-                                tooltip={componentDetail.tooltip} // Already translated string
-                            />
-                          );
-                        })
-                    ) : null}
-                  </div>
-               {!isInputPanelExpanded && selectedFramework && (
-                 <p className="px-4 sm:px-6 py-2.5 text-xs text-center text-slate-400 italic">
-                    {t('clickToExpandInputPanel', { frameworkName: selectedFramework ? currentFrameworkLocale?.name : '' })} // Pass object for t()
-                </p>
-              )}
-            </div>
+  return (
+    // Asumsikan ini adalah bagian dari struktur layout utama Anda
+    <div className="prompt-studio-panel">
+      {/* ... UI lainnya seperti header, pemilihan framework, dll. ... */}
+
+      {/* Bagian yang dirender dari snippet Anda */}
+      <div className="input-fields-container p-4">
+        {currentFrameworkLocale && currentFrameworkLocale.components && currentFrameworkLocale.components.length > 0 ? (
+          currentFrameworkLocale.components.map((componentDetail) => {
+            const componentValue = promptComponents.find(pc => pc.id === componentDetail.id)?.value || '';
+            return (
+              <InputField
+                  key={`${selectedFramework.id}-${componentDetail.id}-${language}`}
+                  id={componentDetail.id}
+                  label={componentDetail.name}
+                  value={componentValue}
+                  onChange={handleInputChange}
+                  placeholder={componentDetail.placeholder || t('inputFieldPlaceholder', { label: componentDetail.name })}
+                  isTextarea
+                  rows={2}
+                  description={t('inputFieldDescription', { label: componentDetail.name, frameworkName: currentFrameworkLocale.name })}
+                  isVisible={isInputPanelExpanded}
+                  fetchSuggestions={fetchSuggestionsForField}
+                  frameworkName={currentFrameworkLocale.name}
+                  apiKeyAvailable={apiKeyAvailable}
+                  tooltip={componentDetail.tooltip}
+              />
+            );
+          })
+        ) : null}
+      </div>
+      {!isInputPanelExpanded && selectedFramework && (
+        <p className="px-4 sm:px-6 py-2.5 text-xs text-center text-slate-400 italic">
+          {t('clickToExpandInputPanel', { frameworkName: selectedFramework ? currentFrameworkLocale?.name : '' })}
+        </p>
+      )}
+    </div>
+  );
+};
+
+export default App;
