@@ -87,8 +87,8 @@ const PromptStashPanel: React.FC<PromptStashPanelProps> = ({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      // Construct filename with version
-      const filename = `promptmatrix_stash_backup_${appVersion.replace(/\./g, '_')}.json`;
+      // Construct a cleaner filename with version, removing the leading 'V' from APP_VERSION
+      const filename = `promptmatrix_backup_v${appVersion.replace(/^V/i, '')}.json`;
       a.download = filename;
       document.body.appendChild(a);
       a.click();
