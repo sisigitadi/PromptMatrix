@@ -1,5 +1,5 @@
 import React from 'react';
-import { AiTextIcon } from './AiTextIcon'; // Asumsikan path ini benar
+import { AiTextIcon } from '../AiTextIcon';
 
 interface InputFieldProps {
   id: string;
