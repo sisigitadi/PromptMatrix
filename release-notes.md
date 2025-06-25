@@ -22,7 +22,6 @@ Dokumen ini mencatat perubahan teknis detail untuk setiap versi PromptMatrix.
 ---
 ## [V6.2.1] - YYYY-MM-DD (Tanggal Rilis Sebenarnya)
 ### Added
-- **Konten Framework:** Framework "RIDE" (Report, Interpret, Describe, Evaluate) ditambahkan kembali ke kategori Teks.
 - **Konten Framework:** Framework baru "SPICE" (Situation, Problem, Implication, Consequence, Example) ditambahkan ke kategori Teks.
 ### Changed
 ### Technical Notes
