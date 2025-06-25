@@ -2,7 +2,7 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { InputField } from '@/components/InputField'; // Import komponen baru
 // Impor ini sekarang diasumsikan berfungsi. ErrorBoundary akan menangkap jika ada masalah.
 import { frameworks as allFrameworks } from './frameworks';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next'; // Ini akan berfungsi setelah i18n diinisialisasi di index.tsx
 import { Framework, PromptComponent, TranslationKey } from './types';
 
 const App: React.FC = () => {
@@ -10,10 +10,10 @@ const App: React.FC = () => {
   const language = i18n.language;
 
   const [frameworks] = useState<Framework[]>(Array.isArray(allFrameworks) ? allFrameworks : []);
-  const [frameworkSearchTerm, setFrameworkSearchTerm] = useState('');
-  const [selectedFramework, setSelectedFramework] = useState<Framework | null>(null); // Mulai dengan null
-  const [selectedCategory, setSelectedCategory] = useState<string>('text');
-  const [promptComponents, setPromptComponents] = useState<PromptComponent[]>([]);
+  const [frameworkSearchTerm, setFrameworkSearchTerm] = useState<string>('');
+  const [selectedFramework, setSelectedFramework] = useState<Framework | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('text'); // Default ke 'text'
+  const [promptComponents, setPromptComponents] = useState<PromptComponent[]>([]); // Inisialisasi sebagai array kosong
   const [isInputPanelExpanded, setIsInputPanelExpanded] = useState(true);
   const [apiKeyAvailable, setApiKeyAvailable] = useState(true);
 
@@ -22,8 +22,8 @@ const App: React.FC = () => {
       const existing = prev.find(p => p.id === id);
       return existing
         ? prev.map(p => (p.id === id ? { ...p, value } : p))
-        : [...prev, { id, value }];
-    });
+        : [...prev, { id, value }]; // Tambahkan komponen baru jika belum ada
+    }); // Pastikan ini adalah array
   }, []);
 
   const fetchSuggestionsForField = useCallback((fieldId: string) => {
@@ -32,7 +32,7 @@ const App: React.FC = () => {
 
   const handleFrameworkSelect = (framework: Framework) => {
     setSelectedFramework(framework);
-    setPromptComponents([]); // Reset input saat framework baru dipilih
+    setPromptComponents([]); // Reset input saat framework baru dipilih (penting!)
   };
 
   const filteredFrameworks = useMemo(() => {
@@ -47,7 +47,7 @@ const App: React.FC = () => {
 
   const displayedFrameworks = useMemo(() => {
     const sourceFrameworks = frameworkSearchTerm.trim() ? filteredFrameworks : frameworks;
-    const categoryFiltered = selectedCategory
+    const categoryFiltered = selectedCategory // Filter berdasarkan kategori yang dipilih
       ? sourceFrameworks.filter(fw => fw.category === selectedCategory)
       : sourceFrameworks.filter(fw => fw.category === 'text');
     return categoryFiltered.sort((a, b) => {
@@ -61,7 +61,7 @@ const App: React.FC = () => {
     if (!selectedFramework) return null;
     if (language === 'id' && selectedFramework.translations?.id) {
       const idTrans = selectedFramework.translations.id;
-      return {
+      return { // Gabungkan terjemahan dengan data dasar
         ...selectedFramework,
         name: idTrans.name || selectedFramework.name,
         description: idTrans.description || selectedFramework.description,
@@ -69,7 +69,7 @@ const App: React.FC = () => {
         predefinedOptions: idTrans.predefinedOptions || selectedFramework.predefinedOptions,
       };
     }
-    return selectedFramework;
+    return selectedFramework; // Fallback ke bahasa default (Inggris)
   }, [selectedFramework, language]);
 
   return (
@@ -79,7 +79,7 @@ const App: React.FC = () => {
         <h1 className="text-2xl font-bold text-teal-600 dark:text-teal-400">PromptMatrix</h1>
         <p className="text-sm text-slate-500">Select a framework below to begin.</p>
         <div className="flex gap-2 mt-4 flex-wrap">
-          {displayedFrameworks.slice(0, 10).map(fw => (
+          {displayedFrameworks.slice(0, 10).map(fw => ( // Tampilkan beberapa framework sebagai contoh
             <button
               key={fw.id}
               onClick={() => handleFrameworkSelect(fw)}
@@ -93,10 +93,10 @@ const App: React.FC = () => {
 
       <main className="flex-grow p-4 md:p-6 overflow-y-auto">
         {selectedFramework && currentFrameworkLocale ? (
-          // Tampilan saat framework sudah dipilih
+          // Tampilan saat framework sudah dipilih (Prompt Studio)
           <div className="prompt-studio-panel max-w-4xl mx-auto">
             <h2 className="text-2xl font-bold mb-2">{currentFrameworkLocale.name}</h2>
-            <p className="text-base text-slate-600 dark:text-slate-400 mb-6">{currentFrameworkLocale.description}</p>
+            <p className="text-base text-slate-600 dark:text-slate-400 mb-6">{currentFrameworkLocale.description}</p> {/* Deskripsi framework */}
 
             <div className="input-fields-container bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg">
               {currentFrameworkLocale.components?.map((componentDetail: any) => {
@@ -104,20 +104,20 @@ const App: React.FC = () => {
                 return (
                   <InputField
                     key={`${selectedFramework.id}-${componentDetail.id}-${language}`}
-                    id={componentDetail.id}
-                    label={componentDetail.name}
-                    value={componentValue}
-                    onChange={handleInputChange}
-                    placeholder={componentDetail.placeholder || t('inputFieldPlaceholder', { label: componentDetail.name })}
-                    isTextarea
-                    rows={2}
-                    description={t('inputFieldDescription', { label: componentDetail.name, frameworkName: currentFrameworkLocale.name })}
-                    isVisible={isInputPanelExpanded}
-                    fetchSuggestions={fetchSuggestionsForField}
-                    frameworkName={currentFrameworkLocale.name}
-                    apiKeyAvailable={apiKeyAvailable}
-                    tooltip={componentDetail.tooltip}
-                  />
+                    id={componentDetail.id} // ID komponen
+                    label={componentDetail.name} // Label komponen
+                    value={componentValue} // Nilai saat ini
+                    onChange={handleInputChange} // Handler perubahan
+                    placeholder={componentDetail.placeholder || t('inputFieldPlaceholder', { label: componentDetail.name })} // Placeholder
+                    isTextarea // Apakah ini textarea
+                    rows={2} // Jumlah baris untuk textarea
+                    description={t('inputFieldDescription', { label: componentDetail.name, frameworkName: currentFrameworkLocale.name })} // Deskripsi
+                    isVisible={isInputPanelExpanded} // Visibilitas
+                    fetchSuggestions={fetchSuggestionsForField} // Fungsi saran AI
+                    frameworkName={currentFrameworkLocale.name} // Nama framework
+                    apiKeyAvailable={apiKeyAvailable} // Ketersediaan API key
+                    tooltip={componentDetail.tooltip} // Tooltip
+                  /> // Komponen InputField
                 );
               })}
             </div>
@@ -125,7 +125,7 @@ const App: React.FC = () => {
         ) : (
           // Tampilan saat belum ada framework yang dipilih (layar sambutan)
           <div className="flex items-center justify-center h-full">
-            <div className="text-center text-slate-500 dark:text-slate-400">
+            <div className="text-center text-slate-500 dark:text-slate-400"> {/* Pesan selamat datang */}
               <h2 className="text-3xl font-bold">Welcome to PromptMatrix</h2>
               <p className="mt-2 text-lg">Please select a framework from the header to start building your prompt.</p>
             </div>
