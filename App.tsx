@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { InputField } from '@/components/InputField'; // Import komponen baru
+import InputField from '@/components/InputField'; // Import komponen baru
 // Impor ini sekarang diasumsikan berfungsi. ErrorBoundary akan menangkap jika ada masalah.
 import { frameworks as allFrameworks } from './frameworks';
 import { useTranslation } from 'react-i18next'; // Ini akan berfungsi setelah i18n diinisialisasi di index.tsx
