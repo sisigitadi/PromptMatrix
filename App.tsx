@@ -100,10 +100,11 @@ const App: React.FC = () => {
       <main className="flex-grow p-4 md:p-6 overflow-y-auto">
         {selectedFramework && currentFrameworkLocale ? (
           // Tampilan saat framework sudah dipilih (Prompt Studio)
-          <div className="prompt-studio-panel max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-2">{currentFrameworkLocale.name}</h2>
-            <p className="text-base text-slate-600 dark:text-slate-400 mb-6">{currentFrameworkLocale.description}</p> {/* Deskripsi framework */}
-
+          <div className="prompt-studio-panel max-w-4xl mx-auto space-y-4">
+            {currentFrameworkLocale.category === 'text' && (
+              <h2 className="text-2xl font-bold">{t('frameworkOverviewTitleWithFramework', t(currentFrameworkLocale.name))}</h2>
+            )}
+            <p className="text-base text-slate-600 dark:text-slate-400">{currentFrameworkLocale.description}</p>
             <div className="input-fields-container bg-white dark:bg-slate-800 p-6 rounded-lg shadow-lg">
               {currentFrameworkLocale.components?.map((componentDetail: any) => {
                 const componentValue = promptComponents.find(pc => pc.id === componentDetail.id)?.value || '';
