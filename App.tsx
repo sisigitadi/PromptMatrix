@@ -18,9 +18,11 @@ const App: React.FC = () => { // Bungkus semua logika dalam komponen App
   const { t, i18n } = useTranslation();
   const language = i18n.language;
 
-  const [frameworks] = useState<Framework[]>(allFrameworks);
+  // Safeguard: Pastikan allFrameworks adalah array untuk mencegah crash jika impor gagal.
+  const [frameworks] = useState<Framework[]>(Array.isArray(allFrameworks) ? allFrameworks : []);
   const [frameworkSearchTerm, setFrameworkSearchTerm] = useState('');
-  const [selectedFramework, setSelectedFramework] = useState<Framework | null>(frameworks.length > 0 ? frameworks[0] : null);
+  // Inisialisasi dengan framework pertama yang valid, atau null jika daftar kosong.
+  const [selectedFramework, setSelectedFramework] = useState<Framework | null>(() => (frameworks.length > 0 ? frameworks[0] : null));
   const [selectedCategory, setSelectedCategory] = useState<string | null>('text');
   const [promptComponents, setPromptComponents] = useState<PromptComponent[]>([]);
   const [isInputPanelExpanded, setIsInputPanelExpanded] = useState(true);
@@ -110,7 +112,8 @@ const App: React.FC = () => { // Bungkus semua logika dalam komponen App
             const componentValue = promptComponents.find(pc => pc.id === componentDetail.id)?.value || '';
             return (
               <InputField
-                  key={`${selectedFramework.id}-${componentDetail.id}-${language}`}
+                  // Safeguard: Gunakan optional chaining (?) untuk mencegah error jika selectedFramework null.
+                  key={`${selectedFramework?.id}-${componentDetail.id}-${language}`}
                   id={componentDetail.id}
                   label={componentDetail.name}
                   value={componentValue}
